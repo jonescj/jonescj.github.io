@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/http//jonescj.github.io/static/css/main.073c9b0a.css",
+    "main.js": "/http//jonescj.github.io/static/js/main.207d8248.js",
+    "static/js/787.a488e39c.chunk.js": "/http//jonescj.github.io/static/js/787.a488e39c.chunk.js",
+    "static/media/logo.svg": "/http//jonescj.github.io/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/http//jonescj.github.io/index.html",
+    "main.073c9b0a.css.map": "/http//jonescj.github.io/static/css/main.073c9b0a.css.map",
+    "main.207d8248.js.map": "/http//jonescj.github.io/static/js/main.207d8248.js.map",
+    "787.a488e39c.chunk.js.map": "/http//jonescj.github.io/static/js/787.a488e39c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.073c9b0a.css",
+    "static/js/main.207d8248.js"
+  ]
+}
