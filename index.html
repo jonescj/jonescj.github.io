@@ -170,6 +170,14 @@
     }
     .social-link:hover { color: var(--accent); }
 
+    .mobile-home {
+      display: none;
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+
     /* ── Main Content ── */
     .main {
       margin-left: var(--nav-w);
@@ -763,6 +771,17 @@
       .skills-clusters { grid-template-columns: 1fr; }
       .exp-grid { grid-template-columns: 1fr 1fr; }
       .stats-row { grid-template-columns: 1fr; }
+      .mobile-home {
+        display: inline-block;
+        position: fixed;
+        top: 14px;
+        left: 20px;
+        z-index: 200;
+        padding: 6px 12px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+      }
     }
 
     /* ------------?----------- */
@@ -828,6 +847,7 @@
     }
 
     .brand-link { text-decoration: none; }
+
   </style>
 </head>
 <body>
@@ -1348,6 +1368,8 @@
 
       return (
         <div className="layout">
+          {/* Mobile-only home link — lives outside .sidebar so it survives */}
+          <a href="/" className="mobile-home">C.J. Jones</a>
           {/* Sidebar */}
           <nav className="sidebar">
             <div className="sidebar-brand">
