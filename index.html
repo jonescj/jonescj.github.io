@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio — [Your Name]</title>
+  <link rel="icon" type="image/png" href="supporting-images/fav.png">
+  <title>Portfolio, C.J. Jones</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
@@ -180,8 +181,7 @@
     /* ── Section ── */
     .section {
       padding-top: 80px;
-      padding-bottom: 64px;
-      border-bottom: 1px solid var(--border);
+      padding-bottom: 32px;
       animation: fadeUp 0.5s ease both;
     }
 
@@ -202,7 +202,7 @@
 
     .section-label {
       font-family: var(--mono);
-      font-size: 0.68rem;
+      font-size: 1.5rem;
       color: var(--accent);
       letter-spacing: 0.15em;
       text-transform: uppercase;
@@ -216,7 +216,7 @@
 
     .section-num {
       font-family: var(--mono);
-      font-size: 0.68rem;
+      font-size: 1.5rem;
       color: var(--text3);
     }
 
@@ -347,7 +347,7 @@
 
     .stat-label {
       font-family: var(--mono);
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       color: var(--text3);
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -379,7 +379,7 @@
 
     .card-label {
       font-family: var(--mono);
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       color: var(--text3);
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -412,13 +412,13 @@
 
     .card-meta {
       font-family: var(--mono);
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       color: var(--text3);
     }
 
     .card-link {
       font-family: var(--mono);
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       color: var(--accent);
       text-decoration: none;
       letter-spacing: 0.05em;
@@ -482,7 +482,7 @@
 
     .pill {
       font-family: var(--mono);
-      font-size: 0.62rem;
+      font-size: 0.7rem;
       padding: 3px 8px;
       border-radius: 3px;
       background: var(--surface);
@@ -556,7 +556,7 @@
     /* ── Resume ── */
     .resume-section-title {
       font-family: var(--mono);
-      font-size: 0.7rem;
+      font-size: 1.0rem;
       color: var(--accent2);
       letter-spacing: 0.15em;
       text-transform: uppercase;
@@ -621,7 +621,7 @@
 
     .skill-cluster-title {
       font-family: var(--mono);
-      font-size: 0.65rem;
+      font-size: 1.0rem;
       color: var(--text3);
       margin-bottom: 10px;
       letter-spacing: 0.08em;
@@ -712,7 +712,7 @@
 
     .exp-status {
       font-family: var(--mono);
-      font-size: 0.6rem;
+      font-size: 0.7rem;
       letter-spacing: 0.1em;
       padding: 3px 8px;
       border-radius: 3px;
@@ -764,6 +764,70 @@
       .exp-grid { grid-template-columns: 1fr 1fr; }
       .stats-row { grid-template-columns: 1fr; }
     }
+
+    /* ------------?----------- */
+    .carousel { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .carousel-card { position: relative; animation: fade-in 0.4s ease; }
+
+    .card-image {
+      width: 100%;
+      height: 425px;
+      object-fit: contain;   /* crops nicely instead of stretching */
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .card-image-new {
+      width: 100%;
+      height: 475px;
+      object-fit: contain;   /* crops nicely instead of stretching */
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .card-image-new-new {
+      width: 100%;
+      height: 525px;
+      object-fit: contain;   /* crops nicely instead of stretching */
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .card-image-new-new-new {
+      width: 100%;
+      height: 200px;
+      object-fit: contain;   /* crops nicely instead of stretching */
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .carousel-thumbs { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+    .carousel-thumb {
+      border: 2px solid transparent;
+      border-radius: 6px;
+      padding: 0;
+      background: none;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.2s, border-color 0.2s;
+    }
+    .carousel-thumb img {
+      width: 100px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+      display: block;
+    }
+    .carousel-thumb.is-active { opacity: 1; border-color: currentColor; }
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand-link { text-decoration: none; }
   </style>
 </head>
 <body>
@@ -775,64 +839,147 @@
     // ── Data ─────────────────────────────────────────────────────────────────
 
     const NAV = [
-      { id: 'home',        label: 'Home',                 idx: '00' },
-      { id: 'work',        label: 'Work & Projects',      idx: '01' },
-      { id: 'case-studies',label: 'Case Studies',         idx: '02' },
-      { id: 'experiments', label: 'Experiments',          idx: '03' },
-      { id: 'about',       label: 'About',                idx: '04' },
-      { id: 'resume',      label: 'Résumé',               idx: '05' },
-      { id: 'contact',     label: 'Contact',              idx: '06' },
+      { id: 'home',        label: 'Home',                         idx: '00' },
+      { id: 'work',        label: 'Featured Work',                idx: '01' },
+      { id: 'about',       label: 'About Me',                     idx: '02' },
+      { id: 'case-studies',label: 'Case Studies',                 idx: '03' },
+      { id: 'strategy',    label: 'Product Strategy',             idx: '04' },
+      { id: 'experiments', label: 'Concept Plans & Testing',      idx: '05' },
+      { id: 'history',     label: 'Projects & Accomplishments',   idx: '06' },
+      { id: 'contact',     label: 'Contact',                      idx: '07' },
     ];
 
     const PROJECTS = [
-      { label: 'Web App', title: 'Lorem Ipsum System',     desc: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute.', year: '2024', accent: 'var(--accent)' },
-      { label: 'Research', title: 'Dolor Sit Amet Tool',   desc: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum lorem.', year: '2024', accent: 'var(--accent2)' },
-      { label: 'Design System', title: 'Consectetur Adipiscing', desc: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem.', year: '2023', accent: 'var(--accent3)' },
-      { label: 'Algorithm', title: 'Nemo Enim Ipsam',      desc: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores.', year: '2023', accent: 'var(--accent)' },
+
+      { label: 'Design', title: 'Urban Wildlife Signal: The Shared City Project',   desc: 'Conducted mixed-method field research across Seattle neighborhoods, synthesized findings into personas and design requirements, generated and evaluated speculative concepts, built and usability-tested physical and NFC-enabled prototypes, and iterated the final system into three ambient park installations that translate nearby bird behaviors into subtle directional cues encouraging non-intrusive human-wildlife awareness.', year: 'ACADEMIC', accent: 'var(--accent3)', external:true, site: "case-studies/wildlife-signals-case-study.html", image: 'supporting-images/uws_0001.png' },
+
+      { label: 'Development', title: 'Remote Shopping, Together: A Social Shopping Experience',   desc: 'Led product strategy, rapid user research, experience design, feature prioritization, and cross-functional development of a three-day hackathon prototype that combined live video, a synchronized retail catalog, shared product queues, voting, expert support, virtual events, and private carts to recreate collaborative shopping remotely, earning First Place and the People’s Choice Award.', year: 'PROFESSIONAL', accent: 'var(--accent3)', external:true, site: "case-studies/social-shopping-case-study.html", image: 'supporting-images/rst_0001.png' },
+
+      { label: 'Development', title: 'Reuse, Not Rebuild: Automating the Creation of Datadog Resources',   desc: 'Researched developer, platform-engineering, and analyst workflows, audited existing Datadog resources and costs, designed a searchable observability catalog and governance architecture, and prototyped API-driven automation that let teams discover and reuse proven dashboards, metrics, and alerts or generate missing configurations from tagged requests, reducing a fragmented hours-or-days setup process to an intended self-service workflow measured in minutes.', year: 'PROFESSIONAL', accent: 'var(--accent3)', external:true, site: "case-studies/dogwalker-case-study.html", image: 'supporting-images/rnr_0001.png' },
+
+      { label: 'Development', title: 'Built for the Spike: Resigning A Network Traffic Monitor',   desc: 'Conducted stakeholder interviews and usability walkthroughs across security operations, security engineering, and platform teams, synthesized performance and discoverability failures, restructured the platform’s information architecture around investigative workflows, and prototyped progressive data loading, direct chart-based time selection, interactive network visualizations, contextual guidance, and searchable documentation so analysts could isolate critical DNS activity immediately during high-volume attacks without waiting for more than one million records to load.', year: 'PROFESSIONAL', accent: 'var(--accent3)', external:true, site: "case-studies/built-for-the-spike-case-study.html", image: 'supporting-images/bfts_0001.png' },
+
+      { label: 'Design', title: 'How Do I Pee In This Cup: A Usability Study on the UTI Testing Workflow',   desc: 'Planned and conducted a remote, naturalistic usability study with five participants using think-aloud sessions, interviews, full clean-catch simulations, and error-recovery scenarios, then synthesized contamination risks, instruction gaps, physical barriers, and mismatches between confidence and correctness into recommendations for clearer sequencing, visual guidance, accessible terminology, troubleshooting support, and more ergonomic at-home urine-collection materials.', year: 'ACADEMIC', accent: 'var(--accent3)', external:true, site: "case-studies/clean-catch-uti-case-study.html", image: 'supporting-images/hdipitc_0001.png' },
+
+      { label: 'Design', title: 'Two Views, One Moment: Designing for Dementia with AR/MR',   desc: 'Designed a speculative two-sided AR/MR dementia-care system through stakeholder-informed research planning, low-fidelity storyboarding, Wizard-of-Oz prototyping, and risk analysis, designing synchronized patient and caregiver views that adapt a loved one’s appearance to the patient’s perceived reality while privately guiding the caregiver’s role, tone, and response during recognition mismatches.', year: 'ACADEMIC', accent: 'var(--accent3)', external:true, site: "speculative-designs/two-views-one-moment-speculative-design.html", image: 'supporting-images/tvom_0001.png' },
+
+      { label: 'Approach', title: 'Access by Design: A Speculative Proposal for Tech Co.',   desc: 'Developed a 24-month enterprise accessibility program proposal that translated fragmented standards and practices into a measurable operating model by defining portfolio priorities, distributed ownership, governance and escalation structures, role-specific training, product-delivery controls, disabled-user research, phased rollout gates, staffing and budget requirements, risk mitigations, and outcome-based KPIs for improving critical customer journeys without centralizing delivery responsibility.', year: 'ACADEMIC', accent: 'var(--accent3)', external:true, site: "strategic-items/tech-co-accessibility-program-proposal.html", image: 'supporting-images/abdtc_0001.png' },
     ];
 
     const CASE_STUDIES = [
       {
         num: 'CS–01',
-        title: 'Redesigning the Lorem Ipsum Workflow',
-        summary: 'A full end-to-end UX investigation into how dolor sit amet users navigate complex multi-step processes. Consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-        tags: ['User Research', 'Interaction Design', 'Prototyping', 'A/B Testing'],
-        outcome: 'Lorem ipsum outcome metric +42%',
+        title: 'Urban Wildlife Signal: The Shared City Project',
+        summary: 'Conducted mixed-method field research across Seattle neighborhoods, synthesized findings into personas and design requirements, generated and evaluated speculative concepts, built and usability-tested physical and NFC-enabled prototypes, and iterated the final system into three ambient park installations that translate nearby bird behaviors into subtle directional cues encouraging non-intrusive human-wildlife awareness.',
+        tags: ['Featured', 'User Research', 'Prototyping', 'A/B Testing', 'Personas', 'Interviews', 'Surveys'],
+        external:true, 
+        site: "case-studies/wildlife-signals-case-study.html",
+        video: "supporting-images/uws_0024.mov"
       },
       {
         num: 'CS–02',
-        title: 'Modeling Dolor Sit Amet at Scale',
-        summary: 'Applied statistical modeling and information visualization techniques to uncover patterns in ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
-        tags: ['Data Viz', 'Statistical Modeling', 'React', 'D3.js'],
-        outcome: 'Published in Lorem Conference 2024',
+        title: 'Built for the Spike: Resigning A Network Traffic Monitor',
+        summary: 'Conducted stakeholder interviews and usability walkthroughs across security operations, security engineering, and platform teams, synthesized performance and discoverability failures, restructured the platform’s information architecture around investigative workflows, and prototyped progressive data loading, direct chart-based time selection, interactive network visualizations, contextual guidance, and searchable documentation so analysts could isolate critical DNS activity immediately during high-volume attacks without waiting for more than one million records to load.',
+        tags: ['Featured', 'User Research', 'Software Development','Interviews','A/B Testing'],
+        external:true, 
+        site: "case-studies/built-for-the-spike-case-study.html",
+        image: "supporting-images/bfts_0001.png"
       },
       {
         num: 'CS–03',
-        title: 'Accessibility Audit: Consectetur Systems',
-        summary: 'Comprehensive WCAG 2.2 audit and remediation of a large-scale quis nostrud exercitation platform used by over lorem ipsum daily active users.',
-        tags: ['Accessibility', 'WCAG 2.2', 'Usability Testing', 'Design Systems'],
-        outcome: 'Achieved WCAG AA compliance',
+        title: 'Remote Shopping, Together: A Social Shopping Experience',
+        summary: 'Led product strategy, rapid user research, experience design, feature prioritization, and cross-functional development of a three-day hackathon prototype that combined live video, a synchronized retail catalog, shared product queues, voting, expert support, virtual events, and private carts to recreate collaborative shopping remotely, earning First Place and the People’s Choice Award.',
+        tags: ['Featured', 'User Research', 'Prototyping','Software Development','Interviews'],
+        external:true, 
+        site: "case-studies/social-shopping-case-study.html",
+        image: "supporting-images/rst_0001.png"
+      },
+      {
+        num: 'CS–04',
+        title: 'Reuse, Not Rebuild: Automating the Creation of Datadog Resources',
+        summary: 'Researched developer, platform-engineering, and analyst workflows, audited existing Datadog resources and costs, designed a searchable observability catalog and governance architecture, and prototyped API-driven automation that let teams discover and reuse proven dashboards, metrics, and alerts or generate missing configurations from tagged requests, reducing a fragmented hours-or-days setup process to an intended self-service workflow measured in minutes.',
+        tags: ['Featured', 'User Research', 'Prototyping','Interviews','Software Development'],
+        external:true, 
+        site: "case-studies/dogwalker-case-study.html",
+        image: "supporting-images/rnr_0001.png"
+      },
+      {
+        num: 'CS–05',
+        title: 'How Do I Pee In This Cup: A Usability Study on the UTI Testing Workflow',
+        summary: 'Planned and conducted a remote, naturalistic usability study with five participants using think-aloud sessions, interviews, full clean-catch simulations, and error-recovery scenarios, then synthesized contamination risks, instruction gaps, physical barriers, and mismatches between confidence and correctness into recommendations for clearer sequencing, visual guidance, accessible terminology, troubleshooting support, and more ergonomic at-home urine-collection materials.',
+        tags: ['Featured', 'User Research', 'Prototyping', 'A/B Testing', 'Personas', 'Interviews', 'Surveys'],
+        external:true, 
+        site: "case-studies/clean-catch-uti-case-study.html",
+        image: "supporting-images/hdipitc_0001.png"
+      },
+      {
+        num: 'CS–06',
+        title: 'Designing for the Seattle Waterfront: Community Art Walkway and Bioacoustic Animal Radio',
+        summary: 'Conducted site observations of the Seattle Waterfront, translated findings about passive and linear visitor movement into two multisensory public-installation concepts, specified ten pressure-, proximity-, tactile-, audio-, and visual-input/output interactions with accessibility adaptations, and built and tested Wizard-of-Oz and physical prototypes to refine a responsive community light walkway and an interactive bioacoustic marine-life radio.',
+        tags: ['User Research', 'Prototyping','Interaction Design','Hybrid Design'],
+        external:true, 
+        site: "case-studies/seattle-waterfront-case-study.html",
+        image: "supporting-images/stc_0001.png"
+      },
+      {
+        num: 'CS–07',
+        title: 'Rin: An Invitation-Based App To Managed Cognitive Overload',
+        summary: 'Developed an invitation-based mobile companion for cognitive and sensory overload by translating contextual stress patterns into six product requirements, designing three lightweight intervention modes for temporarily reducing distractions, recording place-based reflections, and creating private haptic cues, and carrying the concept from interaction patterns and low-fidelity flows through visual direction, high-fidelity mockups, risk analysis, and a structured usability-testing plan.',
+        tags: ['Prototyping', 'Software Development','Interaction Design','User Research'],
+        external:true, 
+        site: "case-studies/rin-case-study.html",
+        image: "supporting-images/rin_0001.png"
       },
     ];
 
+     const STRATEGY_ITEMS = [
+      {
+        num: 'STRATEGY-01',
+        title: 'Enterprise Accessibility Governance, Training & Evaluation Framework',
+        summary: 'Developed an enterprise accessibility strategy covering governance, stakeholder training, WCAG-aligned workflows, user testing, remediation processes, and continuous improvement across digital products and services.',
+        tags: ['Accessibility'],
+        external:true, 
+        site: "strategic-items/tech-co-accessibility-program-proposal.html",
+        image: "supporting-images/abdtc_0001.png"
+      }
+    ];
+
     const EXPERIMENTS = [
-      { title: 'Generative Geometry',   desc: 'Procedural pattern generation using L-systems and recursive tiling.',    status: 'active',   tags: ['Canvas', 'Math'] },
-      { title: 'NLP Sentiment Atlas',   desc: 'Visualizing sentiment gradients across large corpora of lorem ipsum.',     status: 'complete', tags: ['NLP', 'D3'] },
-      { title: 'Constraint Solver UI',  desc: 'Building an interactive interface for exploring SAT/CSP solutions.',       status: 'active',   tags: ['CS', 'UI'] },
-      { title: 'Typography Classifier', desc: 'ML model trained to identify font families from rendered screenshots.',    status: 'draft',    tags: ['ML', 'Design'] },
-      { title: 'Force-Directed Notes',  desc: 'A spatial note-taking experiment using physics-based graph layouts.',      status: 'complete', tags: ['Graph', 'UX'] },
-      { title: 'Proof Visualization',   desc: 'Animated step-by-step proof walkthroughs for introductory topology.',      status: 'draft',    tags: ['Math', 'Edu'] },
+
+      { title: 'Accountability by Design, Agentic AI Governance',   desc: 'Designed a tiered accountability model for agentic AI using risk-based permissions, alerts, escalation, audit trails, consent safeguards, and appeals to prevent harm before it occurs.', status: 'complete', tags: ['AI', 'Sec', 'Res'], external: true, site: "speculative-designs/accountability-by-design-speculative-design.html", image: "supporting-images/abdaag_0001.png" },
+
+      { title: 'Smart-City Social Infrastructure, Participatory Systems Design',   desc: 'Compared five smart-city initiatives across four continents, identifying how participation, accessibility, trust, data governance, and community power shape failures and human-centered urban design.', status: 'complete', tags: ['UX', 'Arch', 'Sys'], external: true, site: "speculative-designs/smart-cities-speculative-design-review.html", image: "supporting-images/scsi_0001.png"  },
+
+      { title: 'Memory Space, Two-Sided Dementia Care System',   desc: 'Designed a two-sided AR/MR dementia-care concept using research planning, storyboards, Wizard-of-Oz testing, and risk analysis to align patient perception with private caregiver guidance.', status: 'complete', tags: ['UX', 'Hlth', 'Res'], external: true, site: "speculative-designs/two-views-one-moment-speculative-design.html", image: "supporting-images/msdem_0001.png"  },
+
+      { title: 'Chronotypic Diversity Workplace Policy',   desc: 'Designed a flexible scheduling policy for chronotypic diversity, combining a 6 a.m.–8 p.m. work window, shared core hours, an earned output-based track, and governance safeguards.', status: 'complete', tags: ['UX', 'Pol', 'Res'], external: true, site: "speculative-designs/designing-around-the-clock-speculative-design.html", image: "supporting-images/cdwp_0001.png"},
+
+      { title: 'Open Bionics Hero Arm, Real-World Use Evaluation',   desc: 'Evaluated the Open Bionics Hero Arm beyond lab performance, using contextual research, interviews, personas, journey mapping, and usability testing to identify barriers to sustained daily adoption.', status: 'complete', tags: ['UX', 'Hlth', 'Res'], external: true, site: "speculative-designs/after-the-lab-speculative-design.html", image: "supporting-images/obha_0001.png"  },
+
+      { title: 'Comfort by Contact, Responsive Comfort Companion',   desc: 'Designed and tested a responsive comfort object that translates petting and hugging into configurable scent, warmth, vibration, expression, and posture feedback triggered only by deliberate touch.', status: 'complete', tags: ['UX', 'Hlth', 'Res'], external: true, site: "speculative-designs/smart-cat-speculative-design.html", image: "supporting-images/cbc_0001.png"  }
     ];
 
-    const RESUME_EXPERIENCE = [
-      { role: 'Senior UX Researcher',   org: 'Lorem Ipsum Co.',         date: '2022–Present', detail: 'Led mixed-methods research across dolor sit amet product lines. Collaborated with engineering on information architecture.' },
-      { role: 'Software Engineer II',   org: 'Consectetur Corp.',        date: '2019–2022',    detail: 'Built frontend systems in React/TypeScript. Contributed to open-source design system with 2k+ stars.' },
-      { role: 'Research Assistant',     org: 'Lorem University',         date: '2017–2019',    detail: 'Assisted in computational topology research. Co-authored two papers on applied lorem ipsum methods.' },
-    ];
+    const HISTORY = [
 
-    const RESUME_EDUCATION = [
-      { role: 'M.S. Computer Science', org: 'Lorem University',       date: '2019',      detail: 'Concentration in Human-Computer Interaction. Thesis on dolor sit amet interaction paradigms.' },
-      { role: 'B.S. Mathematics',      org: 'Ipsum State University',  date: '2017',      detail: 'Minor in Computer Science. Honors thesis on topological data analysis.' },
+      { label: 'Strategy', title: 'AI Enablement Strategy: Safe Integration for Consumer Products',   desc: 'Supported the development, rollout, and review of AI features by defining safety constraints, usability patterns, and operational safeguards for consumer applications.', year: 'PROFESSIONAL', accent: 'var(--accent2)', image: "supporting-images/aies_0001.png"},
+
+      { label: 'Development', title: 'Multimodal Language Learning System',     desc: 'Built a flashcard-based web application that integrates translation, native script recognition, audio comprehension, and contextual usage cues to support more comprehensive language acquisition.', year: 'PERSONAL', accent: 'var(--accent)', image: "supporting-images/mlls_0001.png"},
+
+      { label: 'Development', title: 'Indoor Navigation System: In-Store Wayfinding & Proximity Networking',   desc: 'Built a mobile wayfinding system using indoor positioning to guide users to products and enable proximity-based peer interaction.', year: 'PROFESSIONAL', accent: 'var(--accent2)', image: "supporting-images/ins_0001.png" },
+
+      { label: 'Automation', title: 'Medical Imaging Pipeline: Diagnostic Data Transformation',   desc: 'Helped build pipelines that convert raw medical imaging data into structured outputs for detecting tumors and other abnormalities.', year: 'PROFESSIONAL', accent: 'var(--accent2)', image: "supporting-images/mip_0001.png" },
+
+      { label: 'Infrastructure', title: 'Cloud Infrastructure Modernization: Licensing System Migration & Scaling',   desc: 'Migrated a large-scale licensing system from on-prem to cloud environments and then into containerized systems, enabling scalable deployment based on user demand.', year: 'PROFESSIONAL', accent: 'var(--accent2)', image: "supporting-images/cim_0001.png" },
+
+      { title: 'OneStep Relief Platform: Low-Bandwidth Education Delivery System',   desc: 'Designed and built a web platform to create, manage, and distribute training content in bandwidth-constrained, high-need environments.', year: 'ACADEMIC', accent: 'var(--accent2)', image: "supporting-images/orp_0001.png" },
+
+      { title: 'Mixed Reality Spatial Mapping: Real-Time Environment Reconstruction',   desc: 'Evaluated Augmented Reality, Virtual Reality, and Mixed Reality systems for real-time capture and reconstruction of indoor living spaces.', year: 'PROFESSIONAL', accent: 'var(--accent2)', image: "supporting-images/mrsp_0001.png" },
+
+      { title: 'Automatic Differentiation in MATLAB for Scientific Computing',  desc: 'Developed automatic differentiation extensions in MATLAB to support complex data structures and differential operators such as Poisson equation for physics research teams.', year: 'ACADEMIC', accent: 'var(--accent2)', image: "supporting-images/adim_0001.png" },
+
+      { title: 'MRI-Based Tumor Detection Using Machine Learning', desc: 'Collaborated with clinical partners to apply data analytics, computer vision, and machine learning techniques to improve brain tumor detection from Magnetic Resonance Imaging data.', year: 'ACADEMIC', accent: 'var(--accent2)', image: "supporting-images/mri_0001.png" },
+
+      { title: 'Crisis Response Knowledge Archive: Digital Collection & Retrieval System',  desc: 'Built a digital archiving pipeline to aggregate, index, and surface disaster recovery strategies for rapid access and application during crisis response scenarios.', year: 'ACADEMIC', accent: 'var(--accent2)', image: "supporting-images/crka_0001.png" }
     ];
 
     // ── Components ────────────────────────────────────────────────────────────
@@ -852,18 +999,18 @@
         <section id="home" className="section">
           <div className="hero-eyebrow">Available for new projects</div>
           <h1 className="hero-title">
-            Math. Code.<br /><em>Design.</em>
+            From Systems to <br /><em>Experiences.</em>
           </h1>
           <p className="hero-subtitle">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. A researcher and engineer who builds things at the intersection of rigorous thinking and thoughtful experience design.
+            I'm a senior software, systems, and design engineer with a wandering curiosity of systems UX, working across the seams of technology, people, and design to uncover where they shape everyday life and discover ways to make them better.
           </p>
           <div className="hero-tags">
-            <span className="tag tag-math">Mathematics</span>
-            <span className="tag tag-cs">Computer Science</span>
-            <span className="tag tag-ux">UX Research</span>
-            <span className="tag tag-cs">Information Design</span>
-            <span className="tag tag-math">Algorithms</span>
-            <span className="tag tag-ux">Interaction Design</span>
+            <span className="tag tag-cs">Software Engineering</span>
+            <span className="tag tag-ux">Human-Computer Interaction</span>
+            <span className="tag tag-math">Digital & Web Accessibility</span>
+            <span className="tag tag-cs">Distributed Systems</span>
+            <span className="tag tag-ux">Developer Experience</span>
+            <span className="tag tag-math">Applied Mathematics</span>
           </div>
           <div className="hero-cta">
             <a className="btn btn-primary" onClick={() => scrollTo('work')}>View Work →</a>
@@ -872,16 +1019,59 @@
 
           <div className="stats-row">
             <div className="stat">
-              <div className="stat-num">12+</div>
-              <div className="stat-label">Projects shipped</div>
+              <div className="stat-num">11</div>
+              <div className="stat-label">Digital Projects</div>
             </div>
             <div className="stat">
-              <div className="stat-num">5 yrs</div>
-              <div className="stat-label">Industry experience</div>
+              <div className="stat-num">5</div>
+              <div className="stat-label">Physical Projects</div>
             </div>
             <div className="stat">
-              <div className="stat-num">3</div>
-              <div className="stat-label">Published papers</div>
+              <div className="stat-num">8</div>
+              <div className="stat-label">Hybrid Projects</div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function AboutSection() {
+      return (
+        <section id="about" className="section">
+          <SectionHeader label="About Me" num="02" />
+            <div className="about-body">
+            <p>
+              I am a senior software and systems engineer with a background in platform and reliability engineering, <strong>focused on systems modeling, automation, and usability of complex systems</strong>. My work centers on improving complex technical and organizational systems by designing tools that increase clarity, reduce friction, and support better decision-making.
+            </p>
+            <p>
+              With a background in mathematics, software engineering, and human-centered design, I approach problems through systems thinking, quantitative modeling, and practical usability. My experience <strong>spans distributed applications, internal tooling, data-driven modeling, and workflow automation</strong>, with a consistent focus on making large-scale systems more coherent and sustainable.
+            </p>
+            <p>
+              My graduate work in user-centered design <strong>deepened my perspective on the human side of complex systems</strong> across healthcare, urban, and social contexts, reinforcing an interest in where engineering precision meets lived experience. I extend this into personal projects in agent-based simulation and adaptive systems, building digital environments that model real-world dynamics.
+            </p>
+            <p>
+              Overall, my core question is, <strong>"How can design make complex systems more legible, navigable, humane, and agency-preserving?"</strong>
+            </p>
+          </div>
+          <div className="resume-section-title">Skills</div>
+          <div className="skills-clusters">
+            <div className="skill-cluster">
+              <div className="skill-cluster-title" style={{ color: 'var(--accent2)' }}>Engineering</div>
+              <ul>
+                {['Distributed Systems','Stream Processing','Workflow Automation','Systems Optimization','Internal Tooling'].map((s,i) => <li key={i}>{s}</li>)}
+              </ul>
+            </div>
+            <div className="skill-cluster">
+              <div className="skill-cluster-title" style={{ color: 'var(--accent)' }}>Mathematics</div>
+              <ul>
+                {['Scientific Computing','Stochastic Modeling','Quantitative Analysis','Symbolic Computation','Simulation Modeling'].map((s,i) => <li key={i}>{s}</li>)}
+              </ul>
+            </div>
+            <div className="skill-cluster">
+              <div className="skill-cluster-title" style={{ color: 'var(--accent3)' }}>UX / Design</div>
+              <ul>
+                {['Interaction Design','Prototyping','Systems Design','Accessibility','UX Research'].map((s,i) => <li key={i}>{s}</li>)}
+              </ul>
             </div>
           </div>
         </section>
@@ -889,22 +1079,55 @@
     }
 
     function WorkSection() {
+      const [active, setActive] = useState(0);
+      useEffect(() => {
+        const id = setInterval(() => {
+          setActive((prev) => (prev + 1) % PROJECTS.length);
+        }, 15000);
+          return () => clearInterval(id);
+      }, [active]);
+
+      const p = PROJECTS[active];
+
       return (
         <section id="work" className="section">
-          <SectionHeader label="Work & Projects" num="01" />
-          <div className="cards-grid">
-            {PROJECTS.map((p, i) => (
-              <div className="card" key={i}>
-                <div className="card-accent-bar" style={{ background: p.accent }} />
-                <div className="card-label">{p.label}</div>
-                <div className="card-title">{p.title}</div>
-                <div className="card-desc">{p.desc}</div>
-                <div className="card-footer">
-                  <span className="card-meta">{p.year}</span>
-                  <a className="card-link" href="#">View project →</a>
-                </div>
+          <SectionHeader label="Featured Work" num="01" />
+
+          <div className="carousel">
+            {/* Active slide — key={active} forces a remount so the fade animation replays */}
+            <div className="card carousel-card" key={active}>
+              <div className="card-accent-bar" style={{ background: p.accent }} />
+              {p.image && <img className="card-image" src={p.image} alt={p.title} />}
+              <div className="card-label">{p.label}</div>
+              <div className="card-title">{p.title}</div>
+              <div className="card-desc">{p.desc}</div>
+              <div className="card-footer">
+                <span className="card-meta">{p.year}</span>
+                {p.external ? (
+                    <a className="card-link"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    href={encodeURI(p.site)}
+                  >
+                    View project →
+                  </a>
+                ) : null}
               </div>
-            ))}
+            </div>
+
+            {/* Thumbnail selector */}
+            <div className="carousel-thumbs">
+              {PROJECTS.map((proj, i) => (
+                <button
+                  key={i}
+                  className={`carousel-thumb ${i === active ? "is-active" : ""}`}
+                  onClick={() => setActive(i)}
+                  aria-label={`View ${proj.title}`}
+                >
+                  <img src={proj.image} alt={proj.title} />
+                </button>
+              ))}
+            </div>
           </div>
         </section>
       );
@@ -913,22 +1136,85 @@
     function CaseStudiesSection() {
       return (
         <section id="case-studies" className="section">
-          <SectionHeader label="Case Studies" num="02" />
+          <SectionHeader label="Case Studies" num="03" />
+          <p style={{ color: 'var(--text2)', fontSize: '0.9rem', fontWeight: 300, lineHeight: 1.7, marginBottom: 32, maxWidth: 600 }}>
+            End-to-end project narratives that walk through how I frame problems, conduct research, make design decisions, prototype, and evaluate outcomes.
+          </p>
           {CASE_STUDIES.map((cs, i) => (
             <div className="case-study-card" key={i}>
               <div className="case-study-header">
                 <div>
+                  {cs.video ? (
+                    <video
+                      className="case-study-video"
+                      src={cs.video}
+                      controls
+                      preload="metadata"
+                      style={{ width: '100%', borderRadius: 8, marginBottom: 16 }}
+                    />
+                  ) : null}
+                  {cs.image ? (
+                    <img
+                      className="card-image-new"
+                      src={cs.image}
+                      alt={cs.title}
+                      style={{ width: '100%', borderRadius: 8, marginBottom: 16 }}
+                    />
+                  ) : null}
                   <div className="card-label">{cs.num}</div>
                   <div className="card-title" style={{ marginBottom: 0 }}>{cs.title}</div>
                 </div>
-                <span className="case-study-number">{cs.outcome}</span>
               </div>
               <p className="card-desc">{cs.summary}</p>
               <div className="case-study-tags">
                 {cs.tags.map((t, j) => <span className="pill" key={j}>{t}</span>)}
               </div>
               <div style={{ marginTop: 20 }}>
-                <a className="card-link" href="#">Read case study →</a>
+              <div className="card-footer"></div>
+              {cs.external ? (
+                <a className="card-link" target="_blank" href={encodeURI(cs.site)}>Read case study →</a>
+              ) : null}
+              </div>
+            </div>
+          ))}
+        </section>
+      );
+    }
+
+
+
+    function StrategySection() {
+      return (
+        <section id="strategy" className="section">
+          <SectionHeader label="Product Strategy" num="04" />
+          <p style={{ color: 'var(--text2)', fontSize: '0.9rem', fontWeight: 300, lineHeight: 1.7, marginBottom: 32, maxWidth: 600 }}>
+            How I connect design to business goals — setting direction, prioritizing roadmaps, and shaping systems and vision beyond individual features.
+          </p>
+          {STRATEGY_ITEMS.map((cs, i) => (
+            <div className="case-study-card" key={i}>
+              <div className="case-study-header">
+                <div>
+                  {cs.image ? (
+                    <img
+                      className="card-image-new-new"
+                      src={cs.image}
+                      alt={cs.title}
+                      style={{ width: '100%', borderRadius: 8, marginBottom: 16 }}
+                    />
+                  ) : null}
+                  <div className="card-label">{cs.num}</div>
+                  <div className="card-title" style={{ marginBottom: 0 }}>{cs.title}</div>
+                </div>
+              </div>
+              <p className="card-desc">{cs.summary}</p>
+              <div className="case-study-tags">
+                {cs.tags.map((t, j) => <span className="pill" key={j}>{t}</span>)}
+              </div>
+              <div style={{ marginTop: 20 }}>
+              <div className="card-footer"></div>
+              {cs.external ? (
+                <a className="card-link" target="_blank" href={encodeURI(cs.site)}>Review product strategy →</a>
+              ) : null}
               </div>
             </div>
           ))}
@@ -939,19 +1225,32 @@
     function ExperimentsSection() {
       return (
         <section id="experiments" className="section">
-          <SectionHeader label="Experiments & Research" num="03" />
+          <SectionHeader label="Concept Plans & Testing" num="05" />
           <p style={{ color: 'var(--text2)', fontSize: '0.9rem', fontWeight: 300, lineHeight: 1.7, marginBottom: 32, maxWidth: 600 }}>
-            A collection of ongoing investigations, side projects, and proofs-of-concept. Some are polished; most are intentionally unfinished.
+            Exploratory work, research concepts, speculative systems, and early-stage frameworks investigating emerging social, technical, accessibility, and interaction-design challenges.
           </p>
           <div className="exp-grid">
             {EXPERIMENTS.map((e, i) => (
               <div className="exp-card" key={i}>
                 <div className="exp-card-header">
                   <div className="card-label">{e.tags.join(' · ')}</div>
-                  <span className={`exp-status status-${e.status}`}>{e.status}</span>
                 </div>
+                <div>
+                  {e.image ? (
+                    <img
+                      className="card-image-new-new-new"
+                      src={e.image}
+                      style={{ width: '100%', borderRadius: 8, marginBottom: 16 }}
+                    />
+                  ) : null}
+                </div>
+                <br/>
                 <div className="card-title" style={{ fontSize: '0.95rem' }}>{e.title}</div>
                 <div className="card-desc">{e.desc}</div>
+                <div className="card-footer"></div>
+                {e.external ? (
+                  <a className="card-link" target="_blank" href={encodeURI(e.site)}>View concept →</a>
+                  ) : null}
               </div>
             ))}
           </div>
@@ -959,97 +1258,37 @@
       );
     }
 
-    function AboutSection() {
+    function HistorySection() {
       return (
-        <section id="about" className="section">
-          <SectionHeader label="About" num="04" />
-          <div className="about-grid">
-            <div className="about-body">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </p>
-              <p>
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <strong>Excepteur sint occaecat cupidatat non proident</strong>, sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
-              <p>
-                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-              </p>
-              <div style={{ marginTop: 28 }}>
-                <a className="btn btn-ghost" onClick={() => scrollTo('resume')}>View full résumé →</a>
+        <section id="history" className="section">
+          <SectionHeader label="Previous Projects & Accomplishments" num="06" />
+          <p style={{ color: 'var(--text2)', fontSize: '0.9rem', fontWeight: 300, lineHeight: 1.7, marginBottom: 32, maxWidth: 600 }}>
+            Earlier professional and technical work that shaped my foundation in software development, infrastructure, automation, observability, and complex system implementation.
+          </p>
+          <div className="exp-grid">
+            {HISTORY.map((p, i) => (
+              <div className="exp-card" key={i}>
+                <div>
+                  {p.image ? (
+                    <img
+                      className="card-image-new-new-new"
+                      src={p.image}
+                      style={{ width: '100%', borderRadius: 8, marginBottom: 16 }}
+                    />
+                  ) : null}
+                </div>
+                <br/>
+                <div className="card-label">{p.label}</div>
+                <div className="card-title">{p.title}</div>
+                <div className="card-desc">{p.desc}</div>
+                <div className="card-footer">
+                  <span className="card-meta">{p.year}</span>
+                  {p.external ? (
+                  <a className="card-link" target="_blank" href={encodeURI(p.site)}>View project →</a>
+                  ) : null}
+                </div>
               </div>
-            </div>
-            <div className="about-aside">
-              <div className="aside-block">
-                <div className="aside-block-title">Interests</div>
-                <ul className="aside-list">
-                  {['Topological data analysis','Human-centered AI','Information visualization','Formal verification','Design systems at scale'].map((item, i) => (
-                    <li key={i}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="aside-block">
-                <div className="aside-block-title">Currently</div>
-                <ul className="aside-list">
-                  {['Reading: Lorem Ipsum Book', 'Building: Dolor Sit Amet App', 'Learning: Consectetur Theory'].map((item, i) => (
-                    <li key={i}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function ResumeSection() {
-      return (
-        <section id="resume" className="section">
-          <SectionHeader label="Résumé" num="05" />
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-            <a className="btn btn-ghost" href="#">Download PDF ↓</a>
-          </div>
-          <div className="resume-section-title">Experience</div>
-          {RESUME_EXPERIENCE.map((e, i) => (
-            <div className="resume-entry" key={i}>
-              <div>
-                <div className="resume-role">{e.role}</div>
-                <div className="resume-org">{e.org}</div>
-                <div className="resume-detail">{e.detail}</div>
-              </div>
-              <div className="resume-date">{e.date}</div>
-            </div>
-          ))}
-          <div className="resume-section-title">Education</div>
-          {RESUME_EDUCATION.map((e, i) => (
-            <div className="resume-entry" key={i}>
-              <div>
-                <div className="resume-role">{e.role}</div>
-                <div className="resume-org">{e.org}</div>
-                <div className="resume-detail">{e.detail}</div>
-              </div>
-              <div className="resume-date">{e.date}</div>
-            </div>
-          ))}
-          <div className="resume-section-title">Skills</div>
-          <div className="skills-clusters">
-            <div className="skill-cluster">
-              <div className="skill-cluster-title" style={{ color: 'var(--accent)' }}>Mathematics</div>
-              <ul>
-                {['Topology','Linear Algebra','Probability & Stats','Optimization','Graph Theory'].map((s,i) => <li key={i}>{s}</li>)}
-              </ul>
-            </div>
-            <div className="skill-cluster">
-              <div className="skill-cluster-title" style={{ color: 'var(--accent2)' }}>Engineering</div>
-              <ul>
-                {['TypeScript / React','Python','Data Visualization','Algorithms','Systems Design'].map((s,i) => <li key={i}>{s}</li>)}
-              </ul>
-            </div>
-            <div className="skill-cluster">
-              <div className="skill-cluster-title" style={{ color: 'var(--accent3)' }}>UX / Design</div>
-              <ul>
-                {['User Research','Interaction Design','Figma','Usability Testing','Information Architecture'].map((s,i) => <li key={i}>{s}</li>)}
-              </ul>
-            </div>
+            ))}
           </div>
         </section>
       );
@@ -1058,20 +1297,18 @@
     function ContactSection() {
       return (
         <section id="contact" className="section">
-          <SectionHeader label="Contact" num="06" />
+          <SectionHeader label="Contact" num="07" />
           <div className="contact-grid">
             <div>
-              <p className="contact-intro">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Whether it's a collaboration, research question, or just to say hello — I'd love to hear from you.
+              <p style={{ color: 'var(--text2)', fontSize: '0.9rem', fontWeight: 300, lineHeight: 1.7, marginBottom: 32, maxWidth: 600 }}>
+                For roles, collaborations, or conversations related to product strategy, systems UX, UX engineering, design technology, accessibility, responsible AI, or human-centered technical work.
               </p>
               <div className="contact-links">
                 {[
-                  { icon: '@', label: 'hello@lorem.ipsum',      sub: 'Email' },
-                  { icon: 'in', label: 'linkedin.com/in/lorem', sub: 'LinkedIn' },
-                  { icon: 'gh', label: 'github.com/lorem',      sub: 'GitHub' },
-                  { icon: '𝕏', label: '@loremipsum',            sub: 'Twitter / X' },
+                  { icon: '@', label: 'sirhcse@gmail.com',      sub: 'Email', link: 'mailto:you@example.com' },
+                  { icon: 'in', label: 'linkedin.com/in/sirhcse', sub: 'LinkedIn', link: 'https://www.linkedin.com/in/sirhcse/' }
                 ].map((l, i) => (
-                  <a className="contact-link-row" href="#" key={i}>
+                  <a className="contact-link-row" target='_blank' href={l.link} key={i}>
                     <span className="contact-link-icon">{l.icon}</span>
                     <span className="contact-link-text">{l.label}</span>
                     <span className="contact-link-sub">{l.sub}</span>
@@ -1114,8 +1351,10 @@
           {/* Sidebar */}
           <nav className="sidebar">
             <div className="sidebar-brand">
-              <span className="brand-name">[Your Name]</span>
-              <span className="brand-title">Math · CS · UX</span>
+              <a href="index.html" className="brand-link">
+                <span className="brand-name">C.J. Jones</span>
+              </a>
+              <span className="brand-title">CS · UX · MTH · ACS</span>
             </div>
             <ul className="nav-list">
               {NAV.map(n => (
@@ -1132,10 +1371,9 @@
               ))}
             </ul>
             <div className="sidebar-footer">
-              <a className="social-link" href="#">GH</a>
-              <a className="social-link" href="#">LI</a>
-              <a className="social-link" href="#">TW</a>
-              <a className="social-link" href="#">CV</a>
+              <a className="social-link" href="mailto:sirhcse@gmail.com">EMAIL</a>
+              <a className="social-link" target="_blank" href="https://www.linkedin.com/in/sirhcse/">LINKEDIN</a>
+              <a className="social-link" target="_blank" href="https://forms.gle/ohrq7YSMyn58azLk9">ISSUES?</a>
             </div>
           </nav>
 
@@ -1143,10 +1381,11 @@
           <main className="main">
             <HomeSection />
             <WorkSection />
-            <CaseStudiesSection />
-            <ExperimentsSection />
             <AboutSection />
-            <ResumeSection />
+            <CaseStudiesSection />
+            <StrategySection />
+            <ExperimentsSection />
+            <HistorySection />
             <ContactSection />
           </main>
         </div>

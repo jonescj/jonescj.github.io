@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="../supporting-images/fav.png">
+<title>What Happens After The Lab — Design Evaluation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0d0e0c;
+  --bg2:       #131513;
+  --bg3:       #1a1d19;
+  --surface:   #202419;
+  --border:    #292d29;
+  --border2:   #3b403a;
+  --text:      #ecefe8;
+  --text2:     #9ba297;
+  --text3:     #5e6459;
+  --accent:    #cfe04f;   /* citrus — the lab, the spec sheet, the demo */
+  --accent2:   #a3a8e6;   /* periwinkle — daily life, the world after */
+  --accent3:   #e8a06a;   /* amber — friction, abandonment, exclusion */
+  --mono:      'DM Mono', monospace;
+  --serif:     'DM Serif Display', serif;
+  --sans:      'DM Sans', sans-serif;
+  --nav-w:     240px;
+  --max-w:     880px;
+}
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+.layout { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--nav-w); min-height: 100vh;
+  position: fixed; top: 0; left: 0;
+  display: flex; flex-direction: column;
+  padding: 40px 0 28px;
+  border-right: 1px solid var(--border);
+  background: var(--bg); z-index: 100;
+}
+.sidebar-back { padding: 0 28px 28px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+.brand-lockup { display:flex; align-items:center; gap:11px; margin-bottom: 16px; }
+.brand-mark { flex:none; }
+.brand-name { font-family: var(--serif); font-size: 1.05rem; color: var(--text); line-height: 1.2; display: block; }
+.brand-title { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; }
+.back-link { font-family: var(--mono); font-size: 0.68rem; color: var(--text2); text-decoration: none; letter-spacing: 0.06em; display: inline-flex; align-items: center; gap: 8px; transition: gap 0.15s, color 0.15s; }
+.back-link:hover { color: var(--accent); gap: 11px; }
+.back-link-here { font-family: var(--mono); font-size: 0.66rem; text-decoration: none; letter-spacing: 0.05em; display: block; color: var(--text3); margin-top: 8px; transition: color 0.15s; }
+.back-link-here:hover { color: var(--accent); }
+.nav-list { list-style: none; flex: 1; padding: 0 14px; }
+.nav-item { margin-bottom: 1px; }
+.nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: 6px; text-decoration: none;
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 400; color: var(--text2);
+  transition: all 0.15s ease; cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-link:hover { color: var(--text); background: var(--surface); }
+.nav-link.active { color: var(--text); background: var(--surface); font-weight: 500; }
+.nav-link.active .nav-dot { background: var(--accent); box-shadow: 0 0 0 3px rgba(207,224,79,0.15); }
+.nav-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border2); flex-shrink: 0; transition: all 0.15s; }
+.nav-index { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); margin-left: auto; }
+
+.sidebar-footer { padding: 24px 28px 0; border-top: 1px solid var(--border); display: flex; gap: 12px; }
+.social-link { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); text-decoration: none; letter-spacing: 0.08em; transition: color 0.15s; }
+.social-link:hover { color: var(--accent); }
+
+/* ── Main ── */
+.main { margin-left: var(--nav-w); flex: 1; padding: 0 64px 120px; max-width: calc(var(--max-w) + 128px); }
+
+/* ── Sections ── */
+.section { padding-top: 68px; padding-bottom: 52px; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: none; }
+.section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px; }
+.section-label { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; white-space:nowrap; }
+.section-divider { flex: 1; height: 1px; background: var(--border); }
+.section-num { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); }
+
+/* ── Breadcrumb ── */
+.breadcrumb { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 22px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.breadcrumb a { color: var(--text2); text-decoration: none; transition: color 0.15s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .sep { color: var(--border2); }
+.breadcrumb .current { color: var(--text); }
+
+/* ── Hero ── */
+.detail-hero { padding-top: 56px; padding-bottom: 8px; }
+.hero-eyebrow { font-family: var(--mono); font-size: 0.72rem; color: var(--accent2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.hero-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent2); }
+.hero-grid { display:grid; grid-template-columns: 1.12fr 0.88fr; gap: 44px; align-items:center; }
+.detail-title { font-family: var(--serif); font-size: clamp(2.2rem, 4.2vw, 3.3rem); line-height: 1.1; color: var(--text); margin-bottom: 18px; letter-spacing: -0.01em; }
+.detail-title em { font-style: italic; color: var(--accent); }
+.detail-subtitle { font-family: var(--sans); font-size: 1.05rem; color: var(--text2); font-weight: 300; margin-bottom: 28px; line-height: 1.7; }
+.hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.tag { font-family: var(--mono); font-size: 0.7rem; padding: 4px 10px; border-radius: 3px; letter-spacing: 0.05em; }
+.tag-lime { background: rgba(207,224,79,0.08); color: var(--accent);  border: 1px solid rgba(207,224,79,0.22); }
+.tag-peri { background: rgba(163,168,230,0.08); color: var(--accent2); border: 1px solid rgba(163,168,230,0.22); }
+.tag-amber{ background: rgba(232,160,106,0.08); color: var(--accent3); border: 1px solid rgba(232,160,106,0.22); }
+
+/* hero art */
+.signal-stage { position: relative; }
+@keyframes drawline { to { stroke-dashoffset: 0; } }
+@keyframes fade { 0%,100%{opacity:.35} 50%{opacity:.9} }
+.decay { stroke-dasharray: 520; stroke-dashoffset: 520; animation: drawline 3.4s ease-out forwards; }
+.dropdot { animation: fade 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce){ .decay { animation:none; stroke-dashoffset:0 } .dropdot{ animation:none } }
+.stage-cap { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; text-align:center; margin-top: 12px; }
+.ax { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; }
+
+/* ── Meta bar ── */
+.meta-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 40px; }
+.meta-cell { background: var(--bg2); padding: 20px 22px; }
+.meta-key { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.meta-val { font-size: 0.86rem; color: var(--text); line-height: 1.45; }
+
+/* ── Prose ── */
+.prose p { font-size: 0.97rem; color: var(--text2); font-weight: 300; line-height: 1.85; margin-bottom: 20px; }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong, strong { font-weight: 500; color: var(--text); }
+.prose em { color: var(--text); font-style: italic; }
+.intro-lead { font-size: 1.08rem; color: var(--text2); font-weight: 300; line-height: 1.75; max-width: 64ch; }
+.intro-lead em { font-style: italic; color: var(--text); }
+
+/* ── Callout ── */
+.callout { border-left: 2px solid var(--accent); background: linear-gradient(90deg, rgba(207,224,79,0.05), transparent); padding: 22px 26px; border-radius: 0 6px 6px 0; margin: 28px 0; }
+.callout .k { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; }
+.callout-text { font-family: var(--serif); font-size: 1.24rem; line-height: 1.42; color: var(--text); font-style: italic; }
+.callout.peri { border-left-color: var(--accent2); background: linear-gradient(90deg, rgba(163,168,230,0.05), transparent); }
+.callout.peri .k { color: var(--accent2); }
+.callout.amber { border-left-color: var(--accent3); background: linear-gradient(90deg, rgba(232,160,106,0.05), transparent); }
+.callout.amber .k { color: var(--accent3); }
+
+/* ── Grids ── */
+.mt8{margin-top:8px}.mt20{margin-top:20px}.mt28{margin-top:28px}.mt40{margin-top:40px}.mt48{margin-top:48px}
+.subhead { font-family: var(--serif); font-size: 1.5rem; color: var(--text); margin-bottom: 12px; line-height:1.2; }
+.mini-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 16px; }
+
+/* ── Cards grid ── */
+.cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.cards-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.card { background: var(--bg2); padding: 26px; transition: background 0.15s; position: relative; }
+.card:hover { background: var(--bg3); }
+.card-accent-bar { position: absolute; top: 0; left: 0; width: 3px; height: 100%; }
+.bar-lime{background:var(--accent)} .bar-peri{background:var(--accent2)} .bar-amber{background:var(--accent3)}
+.card-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+.card-label.lime{color:var(--accent)} .card-label.peri{color:var(--accent2)} .card-label.amber{color:var(--accent3)}
+.card-title { font-family: var(--serif); font-size: 1.18rem; color: var(--text); margin-bottom: 10px; line-height: 1.25; }
+.card-desc { font-size: 0.87rem; color: var(--text2); line-height: 1.65; font-weight: 300; }
+.card-desc strong { color: var(--text); font-weight: 500; }
+
+/* tension note inside alignment cards */
+.card .tension { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 0.83rem; color: var(--text2); font-weight:300; line-height:1.6; display:flex; gap:9px; }
+.card .tension::before { content: '↯'; font-family: var(--mono); font-size: 0.75rem; color: var(--accent3); margin-top: 1px; }
+.card .tension .ml { font-family: var(--mono); font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color: var(--text3); display:block; margin-bottom: 3px; }
+
+/* ── Stats ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.stat { background: var(--bg2); padding: 24px 26px; }
+.stat-num { font-family: var(--serif); font-size: 1.85rem; line-height: 1; margin-bottom: 8px; color: var(--text); }
+.stat-num.accent { color: var(--accent); } .stat-num.accent2 { color: var(--accent2); } .stat-num.accent3 { color: var(--accent3); }
+.stat-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; line-height:1.4; }
+
+/* ── Method list ── */
+.methods { display:grid; grid-template-columns: repeat(2,1fr); gap:1px; background: var(--border); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.method { background: var(--bg2); padding: 20px 22px; display:flex; gap:14px; align-items:flex-start; }
+.method:hover { background: var(--bg3); }
+.m-ico { width:30px; height:30px; border-radius:6px; background: rgba(207,224,79,0.08); border:1px solid rgba(207,224,79,0.25); display:flex; align-items:center; justify-content:center; flex:none; font-family:var(--mono); font-size:0.62rem; color:var(--accent); }
+.m-name { font-family: var(--sans); font-size: 0.93rem; color: var(--text); font-weight:500; margin-bottom:3px; }
+.m-desc { font-size: 0.8rem; color: var(--text2); font-weight:300; line-height:1.5; }
+
+/* ── Lab vs life figure ── */
+.gap-fig { border:1px solid var(--border); border-radius:8px; overflow:hidden; background: var(--bg2); }
+.gap-cols { display:grid; grid-template-columns: 1fr 46px 1fr; }
+.gcol { padding: 26px 26px 28px; }
+.gcol.lab { background: linear-gradient(180deg, rgba(207,224,79,0.06), transparent 70%); }
+.gcol.life { background: linear-gradient(180deg, rgba(163,168,230,0.06), transparent 70%); }
+.gtag { font-family: var(--mono); font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+.gtag .d { width:7px; height:7px; border-radius:50%; }
+.gcol.lab .gtag { color: var(--accent); } .gcol.lab .gtag .d { background: var(--accent); }
+.gcol.life .gtag { color: var(--accent2); } .gcol.life .gtag .d { background: var(--accent2); }
+.gcol h4 { font-family: var(--serif); font-size:1.1rem; color:var(--text); margin-bottom:8px; line-height:1.3; }
+.gcol p { font-size:0.85rem; color:var(--text2); font-weight:300; line-height:1.6; }
+.glist { list-style:none; margin-top:14px; display:flex; flex-direction:column; gap:7px; }
+.glist li { font-family:var(--mono); font-size:0.68rem; color:var(--text2); display:flex; gap:9px; align-items:center; }
+.glist li::before { content:''; width:5px; height:5px; border-radius:50%; flex:none; background: var(--border2); }
+.gcol.lab .glist li::before { background: var(--accent); }
+.gcol.life .glist li::before { background: var(--accent2); }
+.gseam { position:relative; }
+.gseam::before { content:''; position:absolute; left:50%; top:20px; bottom:20px; width:1px; transform:translateX(-50%); background: linear-gradient(180deg, transparent, var(--border2) 25%, var(--border2) 75%, transparent); }
+.gseam .gnode { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:34px; height:34px; border-radius:50%; background: var(--bg3); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:0.6rem; color:var(--accent3); }
+.figure-caption { font-family: var(--mono); font-size: 0.64rem; color: var(--text3); padding: 12px 18px; border-top: 1px solid var(--border); letter-spacing: 0.03em; display:flex; gap:8px; }
+.figure-caption b { color: var(--accent); font-weight: 500; }
+
+/* ── Evolution strip ── */
+.evo { display:grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items:center; gap:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); padding: 22px 24px; }
+.evo-step { text-align:center; }
+.evo-mat { font-family: var(--mono); font-size:0.68rem; color:var(--text); letter-spacing:0.05em; margin-bottom:4px; }
+.evo-note { font-size:0.74rem; color:var(--text3); font-weight:300; }
+.evo-arrow { font-family:var(--mono); color:var(--accent); font-size:0.9rem; }
+
+/* ── Chips ── */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--mono); font-size: 0.72rem; border: 1px solid var(--border2); background: var(--bg2); border-radius: 100px; padding: 6px 14px; color: var(--text2); }
+.chip b { color: var(--text); }
+
+/* ── Page nav / footer ── */
+.page-nav { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 8px; }
+.closing { font-family: var(--serif); font-size: clamp(1.6rem,3vw,2.3rem); line-height: 1.28; color: var(--text); max-width: 24ch; }
+.closing em { font-style: italic; color: var(--accent); }
+.foot-credit { font-family: var(--mono); font-size: 0.66rem; color: var(--text3); line-height: 2; margin-top: 24px; }
+.foot-credit b { color: var(--text2); }
+.foot-credit a { color: var(--text3); text-decoration: underline; text-underline-offset: 3px; }
+.foot-credit a:hover { color: var(--accent); }
+
+/* ── Mobile topbar ── */
+.topbar { display:none; position: fixed; top:0; left:0; right:0; z-index: 120; background: rgba(13,14,12,.88); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 12px 20px; align-items:center; justify-content: space-between; }
+.topbar .tb-brand { display:flex; align-items:center; gap:9px; font-family: var(--serif); font-size: 1rem; color: var(--text); text-decoration:none; }
+.topbar .tb-phase { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+  :root { --nav-w: 0px; }
+  .sidebar { display: none; }
+  .topbar { display: flex; }
+  .main { margin-left: 0; padding: 56px 22px 80px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+  .cards-grid, .cards-grid.cols-3 { grid-template-columns: 1fr; }
+  .meta-bar { grid-template-columns: 1fr 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .methods { grid-template-columns: 1fr; }
+  .gap-cols { grid-template-columns: 1fr; }
+  .gseam { height: 46px; }
+  .gseam::before { left:20px; right:20px; top:50%; bottom:auto; width:auto; height:1px; transform:translateY(-50%); background: linear-gradient(90deg, transparent, var(--border2) 25%, var(--border2) 75%, transparent); }
+  .evo { grid-template-columns: 1fr; gap:14px; }
+  .evo-arrow { transform: rotate(90deg); }
+}
+
+/* focus */
+a:focus-visible, .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+.skip { position:absolute; left:-999px; top:0; background:var(--accent); color:#0d0e0c; padding:10px 16px; z-index:200; font-family:var(--mono); font-size:0.72rem; }
+.skip:focus { left:0; }
+
+.brand-link { text-decoration: none; }
+</style>
+</head>
+<body>
+<a href="#overview" class="skip">Skip to content</a>
+
+<!-- MOBILE TOPBAR -->
+<div class="topbar">
+  <a href="#overview" class="tb-brand">
+    <svg width="20" height="20" viewBox="0 0 26 26" aria-hidden="true"><rect x="3" y="4" width="9" height="18" rx="2" fill="var(--accent)" opacity="0.9"/><rect x="14" y="4" width="9" height="18" rx="2" fill="var(--accent2)" opacity="0.9"/><line x1="13" y1="2" x2="13" y2="24" stroke="var(--bg)" stroke-width="1.5"/></svg>
+    After The Lab
+  </a>
+  <span class="tb-phase" id="mobilePhase">Overview</span>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-back">
+      <div class="brand-lockup">
+        <svg class="brand-mark" width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="2" y="3.5" width="9.5" height="19" rx="2" fill="var(--accent)" opacity="0.9"/><rect x="14.5" y="3.5" width="9.5" height="19" rx="2" fill="var(--accent2)" opacity="0.9"/></svg>
+        <span>
+        <a href="../index.html" class="brand-link">
+          <span class="brand-name">C.J. Jones</span>
+        </a>
+          <span class="brand-title">CS · UX · MTH · ACS</span>
+        </span>
+      </div>
+      <a class="back-link" href="../index.html">← All projects</a>
+      <a class="back-link-here" href="after-the-lab.html">↳ What Happens After The Lab</a>
+    </div>
+
+    <ul class="nav-list">
+      <li class="nav-item"><a class="nav-link" href="#overview" data-target="overview"><span class="nav-dot"></span>Overview<span class="nav-index">00</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#context" data-target="context"><span class="nav-dot"></span>Context<span class="nav-index">01</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#process" data-target="process"><span class="nav-dot"></span>The Research<span class="nav-index">02</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#rationale" data-target="rationale"><span class="nav-dot"></span>Rationale<span class="nav-index">03</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#risks" data-target="risks"><span class="nav-dot"></span>Risks &amp; Challenges<span class="nav-index">04</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#alignment" data-target="alignment"><span class="nav-dot"></span>Alignment<span class="nav-index">05</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a class="social-link" href="mailto:sirhcse@gmail.com">EMAIL</a>
+      <a class="social-link" target="_blank" href="https://www.linkedin.com/in/sirhcse/">LINKEDIN</a>
+      <a class="social-link" target="_blank" href="https://forms.gle/ohrq7YSMyn58azLk9">ISSUES?</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO / OVERVIEW -->
+    <section class="detail-hero section" id="overview" style="border-bottom:1px solid var(--border)">
+      <div class="breadcrumb">
+        <a href="#overview">Design Evaluation</a>
+        <span class="sep">/</span>
+        <span class="current">What Happens After The Lab</span>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <div class="hero-eyebrow">Prosthetics · Wearable Augmentation</div>
+          <h1 class="detail-title">What Happens <em>After The Lab</em></h1>
+          <p class="detail-subtitle">Evaluating the design of the Open Bionics Hero Arm — and asking why a device can pass every benchmark and still not earn a place in someone's life.</p>
+          <div class="hero-tags">
+            <span class="tag tag-lime">Design Evaluation</span>
+            <span class="tag tag-peri">Wearable Augmentation</span>
+            <span class="tag tag-amber">Real-World Fit</span>
+          </div>
+        </div>
+        <div class="signal-stage" aria-hidden="true">
+          <svg viewBox="0 0 480 300" width="100%" role="img">
+            <rect x="0" y="0" width="480" height="300" rx="10" fill="var(--bg2)" stroke="var(--border)"/>
+            <!-- axes -->
+            <line x1="60" y1="30" x2="60" y2="220" stroke="var(--border2)" stroke-width="1"/>
+            <line x1="60" y1="220" x2="440" y2="220" stroke="var(--border2)" stroke-width="1"/>
+            <!-- gridlines -->
+            <line x1="60" y1="30" x2="440" y2="30" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 6"/>
+            <line x1="60" y1="95" x2="440" y2="95" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 6"/>
+            <!-- lab expectation: flat line at 100% -->
+            <line x1="60" y1="30" x2="420" y2="30" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="6 5" stroke-linecap="round"/>
+            <text class="ax" x="270" y="22" fill="var(--accent)" text-anchor="middle">LAB PERFORMANCE — HOLDS</text>
+            <!-- real-world decay -->
+            <polyline class="decay" points="60,30 120,38 180,51 240,64 300,74 360,85 420,95"
+              fill="none" stroke="var(--accent2)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- the gap -->
+            <line x1="420" y1="30" x2="420" y2="95" stroke="var(--accent3)" stroke-width="1.4" stroke-dasharray="3 3"/>
+            <text class="ax" x="428" y="66" fill="var(--accent3)">THE GAP</text>
+            <circle class="dropdot" cx="420" cy="95" r="6" fill="var(--accent3)"/>
+            <text class="ax" x="416" y="182" fill="var(--accent3)" text-anchor="end">1 IN 4 ABANDON</text>
+            <line x1="420" y1="103" x2="420" y2="168" stroke="var(--accent3)" stroke-width="1" stroke-dasharray="2 4" opacity="0.6"/>
+            <text class="ax" x="176" y="108" fill="var(--accent2)" text-anchor="middle">DAILY USE — DECAYS</text>
+            <!-- x labels -->
+            <text class="ax" x="60" y="240" fill="var(--text3)" text-anchor="middle">FITTING</text>
+            <text class="ax" x="420" y="240" fill="var(--text3)" text-anchor="middle">6 MONTHS</text>
+            <text class="ax" x="250" y="268" fill="var(--text3)" text-anchor="middle">TIME AFTER THE DEMO</text>
+          </svg>
+          <div class="stage-cap">Fig.00 — the gap the lab can't see</div>
+        </div>
+      </div>
+      <div class="meta-bar">
+        <div class="meta-cell"><div class="meta-key">Author</div><div class="meta-val">Christopher Jones</div></div>
+        <div class="meta-cell"><div class="meta-key">Type</div><div class="meta-val">Design evaluation</div></div>
+        <div class="meta-cell"><div class="meta-key">Subject</div><div class="meta-val">Open Bionics Hero Arm</div></div>
+        <div class="meta-cell"><div class="meta-key">Focus</div><div class="meta-val">Real-world fit &amp; sustained adoption</div></div>
+      </div>
+    </section>
+
+    <!-- HMW -->
+    <section class="section" id="hmw" style="padding-top:56px">
+      <div class="section-header">
+        <span class="section-label">How Might We</span>
+        <span class="section-divider"></span>
+        <span class="section-num">the question</span>
+      </div>
+      <div class="callout">
+        <div class="k">HMW</div>
+        <p class="callout-text">How might we design wearable augmentation systems that extend the body's awareness and capability in real-world use, not just in the lab?</p>
+      </div>
+    </section>
+
+    <!-- 01 CONTEXT -->
+    <section class="section" id="context">
+      <div class="section-header">
+        <span class="section-label">Context</span>
+        <span class="section-divider"></span>
+        <span class="section-num">01</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:20px">The device works. The adoption doesn't.</h2>
+      <div class="prose" style="max-width:66ch">
+        <p>The Hero Arm is a <strong>3D-printed, myoelectric bionic arm for below-elbow amputees</strong>, available to adults and children as young as eight. It reads residual muscle signals and translates them into grip movements — but <strong>roughly one in four users abandons their device</strong>, most citing the absence of sensory feedback and poor real-world fit.</p>
+      </div>
+
+      <div class="stats-row mt40">
+        <div class="stat"><div class="stat-num accent3">1 in 4</div><div class="stat-label">Users abandon the device</div></div>
+        <div class="stat"><div class="stat-num accent">8+</div><div class="stat-label">Age available from</div></div>
+        <div class="stat"><div class="stat-num accent2">0</div><div class="stat-label">Myoelectric systems with real touch feedback</div></div>
+        <div class="stat"><div class="stat-num">~1,000</div><div class="stat-label">Users shaping the 2025 redesigns</div></div>
+      </div>
+
+      <div class="callout amber mt40">
+        <div class="k">The broader challenge</div>
+        <p class="callout-text">Wearable augmentation systems often fail not because the technology is insufficient, but because the device does not earn a sustained place in the user's body and routine.</p>
+      </div>
+
+      <div class="gap-fig mt40">
+        <div class="gap-cols">
+          <div class="gcol lab">
+            <div class="gtag"><span class="d"></span>In the lab</div>
+            <h4>Every benchmark, passed</h4>
+            <p>Grip tasks are completed. The signal reads cleanly. The demonstration succeeds.</p>
+            <ul class="glist">
+              <li>Clinical demonstration</li>
+              <li>Controlled grip tasks</li>
+              <li>Supervised, brief sessions</li>
+            </ul>
+          </div>
+          <div class="gseam"><div class="gnode">↯</div></div>
+          <div class="gcol life">
+            <div class="gtag"><span class="d"></span>After the lab</div>
+            <h4>The routine decides</h4>
+            <p>The device meets weight, comfort, social context, and the ordinary randomness of a day.</p>
+            <ul class="glist">
+              <li>No sensory feedback</li>
+              <li>Comfort &amp; weight over hours</li>
+              <li>Random day-to-day occurrences</li>
+            </ul>
+          </div>
+        </div>
+        <div class="figure-caption"><b>FIG.01</b> The same device, two verdicts — and only one of them determines whether it's still worn in six months.</div>
+      </div>
+    </section>
+
+    <!-- 02 PROCESS -->
+    <section class="section" id="process">
+      <div class="section-header">
+        <span class="section-label">The Research</span>
+        <span class="section-divider"></span>
+        <span class="section-num">02</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">Studying the arm where it actually lives</h2>
+      <p class="intro-lead">Research here would center on how well the Hero Arm supports <em>daily life across diverse users and environments</em> — and, crucially, would account for the random occurrences of day-to-day life.</p>
+
+      <div class="mini-label mt40">The process</div>
+      <div class="methods">
+        <div class="method">
+          <div class="m-ico">01</div>
+          <div><div class="m-name">Contextual inquiry</div><div class="m-desc">Observation during routine tasks, not staged ones.</div></div>
+        </div>
+        <div class="method">
+          <div class="m-ico">02</div>
+          <div><div class="m-name">Semi-structured interviews</div><div class="m-desc">With both users and prosthetists.</div></div>
+        </div>
+        <div class="method">
+          <div class="m-ico">03</div>
+          <div><div class="m-name">Persona development</div><div class="m-desc">Across age groups and amputation types.</div></div>
+        </div>
+        <div class="method">
+          <div class="m-ico">04</div>
+          <div><div class="m-name">Journey mapping</div><div class="m-desc">From diagnosis through long-term adoption.</div></div>
+        </div>
+        <div class="method">
+          <div class="m-ico">05</div>
+          <div><div class="m-name">Usability testing</div><div class="m-desc">Grounded in real settings, not clinical demonstrations.</div></div>
+        </div>
+        <div class="method">
+          <div class="m-ico">06</div>
+          <div><div class="m-name">Room for randomness</div><div class="m-desc">Accounting for the unscripted events of an ordinary day.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 RATIONALE -->
+    <section class="section" id="rationale">
+      <div class="section-header">
+        <span class="section-label">Rationale</span>
+        <span class="section-divider"></span>
+        <span class="section-num">03</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">Why this device, for this question</h2>
+      <div class="prose" style="max-width:66ch">
+        <p>Prosthetic success depends on <strong>real-world fit, not just technical capability</strong>. A device can pass every lab benchmark and still fail if it is uncomfortable, socially awkward, too heavy, or poorly matched to a user's actual routines.</p>
+        <p>The Hero Arm is especially useful for design research because it combines <strong>function, pediatric access, and cost accessibility</strong> into one product — making trade-off decisions visible in ways that purely functional devices do not.</p>
+      </div>
+
+      <div class="mini-label mt40">Three pressures in one product</div>
+      <div class="chips">
+        <span class="chip">🦾 <b>Function</b></span>
+        <span class="chip">🧒 <b>Pediatric access</b></span>
+        <span class="chip">💸 <b>Cost accessibility</b></span>
+      </div>
+    </section>
+
+    <!-- 04 RISKS -->
+    <section class="section" id="risks">
+      <div class="section-header">
+        <span class="section-label">Risks &amp; Challenges</span>
+        <span class="section-divider"></span>
+        <span class="section-num">04</span>
+      </div>
+      <p class="intro-lead">Five ways an evaluation like this can mislead — or run into limits that design alone cannot fix.</p>
+
+      <div class="cards-grid mt40">
+        <div class="card">
+          <span class="card-accent-bar bar-lime"></span>
+          <div class="card-label lime">Challenge 01</div>
+          <h4 class="card-title">Aesthetic bias over utility</h4>
+          <p class="card-desc">The superhero framing attracts media but may obscure how the device performs in less glamorous daily tasks.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-peri"></span>
+          <div class="card-label peri">Challenge 02</div>
+          <h4 class="card-title">Population flattening</h4>
+          <p class="card-desc">Users differ by age, cause of limb difference, occupation, and cultural attitude toward visible disability.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-amber"></span>
+          <div class="card-label amber">Challenge 03</div>
+          <h4 class="card-title">Sensory ceilings</h4>
+          <p class="card-desc">No commercially available myoelectric system currently includes meaningful touch or position-sensing feedback.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-lime"></span>
+          <div class="card-label lime">Challenge 04</div>
+          <h4 class="card-title">Insurance complexity</h4>
+          <p class="card-desc">Coverage varies by state, insurer, and documentation — making equitable access a structural problem that better design alone cannot solve.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-peri"></span>
+          <div class="card-label peri">Challenge 05</div>
+          <h4 class="card-title">Lab-to-life transfer</h4>
+          <p class="card-desc">Strong performance in grip tasks during clinical trials does not predict whether someone will still be wearing the device six months later.</p>
+        </div>
+        <div class="card" style="background:linear-gradient(180deg, rgba(232,160,106,0.06), var(--bg2))">
+          <div class="card-label">The throughline</div>
+          <p class="card-desc">Some of these are research risks. Others — insurance, sensory ceilings — are limits on what any redesign can reach. Naming which is which is part of the evaluation.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 ALIGNMENT -->
+    <section class="section" id="alignment">
+      <div class="section-header">
+        <span class="section-label">Alignment with Design Statement</span>
+        <span class="section-divider"></span>
+        <span class="section-num">05</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:24px">Where the Hero Arm meets my method — and where it doesn't</h2>
+
+      <div class="cards-grid">
+        <div class="card">
+          <span class="card-accent-bar bar-lime"></span>
+          <div class="card-label lime">Early &amp; continuous user involvement</div>
+          <p class="card-desc">The 2025 Hero PRO and Hero RGD were shaped by feedback from roughly 1,000 existing users over four years — reflecting the principle that decisions should be validated by the people living with them.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-peri"></span>
+          <div class="card-label peri">Contextual inquiry</div>
+          <p class="card-desc">Studying how the arm performs within the web of daily systems, not in isolation, aligns directly with how I ground my own work in real environments and behaviors.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-lime"></span>
+          <div class="card-label lime">Iterative prototyping</div>
+          <p class="card-desc">The Hero Arm's material progression mirrors a commitment to designs that evolve through evidence.</p>
+          <div class="evo" style="margin-top:16px;padding:16px 14px;">
+            <div class="evo-step"><div class="evo-mat">PLA</div><div class="evo-note">early frames</div></div>
+            <div class="evo-arrow">→</div>
+            <div class="evo-step"><div class="evo-mat">NYLON 12</div><div class="evo-note">tougher parts</div></div>
+            <div class="evo-arrow">→</div>
+            <div class="evo-step"><div class="evo-mat">WIRELESS</div><div class="evo-note">full systems</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-amber"></span>
+          <div class="card-label amber">Bridging disciplines</div>
+          <p class="card-desc">Trial Days and community fittings are a form of participatory design.</p>
+          <div class="tension"><span><span class="ml">The gap</span>But they still happen on the company's terms rather than the user's — which is exactly the gap my work aims to close.</span></div>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-amber"></span>
+          <div class="card-label amber">Minimizing exclusion</div>
+          <p class="card-desc">The Hero Arm is cheaper than most competitors.</p>
+          <div class="tension"><span><span class="ml">The gap</span>But it still navigates insurance systems, geographic availability, and age restrictions — all of which exclude people in ways technical improvement alone cannot resolve.</span></div>
+        </div>
+        <div class="card" style="background:linear-gradient(180deg, rgba(207,224,79,0.05), var(--bg2))">
+          <div class="card-label">The verdict</div>
+          <p class="card-desc">The Hero Arm gets more right than most. The remaining failures are the ones that live outside the lab — and outside the product.</p>
+        </div>
+      </div>
+
+      <div class="page-nav mt48">
+        <div class="closing">A device doesn't succeed when it works. It succeeds when it's <em>still being worn</em>.</div>
+        <div class="foot-credit">
+          <b>WHAT HAPPENS AFTER THE LAB</b> — EVALUATING THE DESIGN OF THE OPEN BIONICS HERO ARM<br>
+          DESIGN EVALUATION · WEARABLE AUGMENTATION<br>
+          CHRISTOPHER JONES<br>
+          SUBJECT REFERENCE: <a href="https://openbionics.com/hero-arm/" target="_blank" rel="noopener">openbionics.com/hero-arm</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  var labels = {overview:'Overview',context:'Context',process:'The Research',rationale:'Rationale',risks:'Risks & Challenges',alignment:'Alignment'};
+  var links = {};
+  document.querySelectorAll('.nav-link').forEach(function(a){ links[a.getAttribute('data-target')] = a; });
+  var mobile = document.getElementById('mobilePhase');
+  var current = null;
+
+  function navKey(id){ return id === 'hmw' ? 'overview' : id; }
+
+  function setActive(id){
+    var key = navKey(id);
+    if(key === current) return; current = key;
+    Object.keys(links).forEach(function(k){ links[k].classList.toggle('active', k === key); });
+    if(mobile) mobile.textContent = labels[key] || '';
+  }
+
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ setActive(e.target.id); } });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    ['overview','hmw','context','process','rationale','risks','alignment'].forEach(function(id){
+      var el = document.getElementById(id); if(el) obs.observe(el);
+    });
+  }
+  setActive('overview');
+})();
+</script>
+</body>
+</html>

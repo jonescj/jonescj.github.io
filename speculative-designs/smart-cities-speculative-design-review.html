@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="../supporting-images/fav.png">
+<title>Designing Social Infrastructure for Smart-Cities — Emerging Issues Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0a0c11;
+  --bg2:       #10131a;
+  --bg3:       #161a23;
+  --surface:   #1c212c;
+  --border:    #262b36;
+  --border2:   #363d4c;
+  --text:      #e9ecf2;
+  --text2:     #979eae;
+  --text3:     #5b6272;
+  --accent:    #6fb3e8;   /* civic blue — the digital layer */
+  --accent2:   #7ed6a8;   /* green — social life */
+  --accent3:   #e8a86f;   /* amber — friction */
+
+  --v-success:  #6fd6a0;
+  --v-caution:  #e8b96f;
+  --v-edge:     #c79ae8;
+  --v-rejected: #e87f76;
+  --v-emerging: #6fc4e8;
+
+  --mono:      'DM Mono', monospace;
+  --serif:     'DM Serif Display', serif;
+  --sans:      'DM Sans', sans-serif;
+  --nav-w:     250px;
+  --max-w:     900px;
+}
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-size: 16px; line-height: 1.6;
+  min-height: 100vh; overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+.layout { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--nav-w); min-height: 100vh; position: fixed; top: 0; left: 0;
+  display: flex; flex-direction: column; padding: 40px 0 28px;
+  border-right: 1px solid var(--border); background: var(--bg); z-index: 100;
+  overflow-y: auto;
+}
+.sidebar-back { padding: 0 28px 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.brand-lockup { display:flex; align-items:center; gap:11px; margin-bottom: 16px; }
+.brand-mark { flex:none; }
+.brand-name { font-family: var(--serif); font-size: 1.05rem; color: var(--text); line-height: 1.2; display: block; }
+.brand-title { font-family: var(--mono); font-size: 0.58rem; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; }
+.back-link { font-family: var(--mono); font-size: 0.68rem; color: var(--text2); text-decoration: none; letter-spacing: 0.06em; display: inline-flex; align-items: center; gap: 8px; transition: gap 0.15s, color 0.15s; }
+.back-link:hover { color: var(--accent); gap: 11px; }
+.back-link-here { font-family: var(--mono); font-size: 0.64rem; text-decoration: none; letter-spacing: 0.05em; display: block; color: var(--text3); margin-top: 8px; transition: color 0.15s; }
+.back-link-here:hover { color: var(--accent); }
+.nav-list { list-style: none; flex: 1; padding: 0 14px; }
+.nav-item { margin-bottom: 1px; }
+.nav-link {
+  display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px;
+  text-decoration: none; font-family: var(--sans); font-size: 0.82rem; color: var(--text2);
+  transition: all 0.15s ease; width: 100%;
+}
+.nav-link:hover { color: var(--text); background: var(--surface); }
+.nav-link.active { color: var(--text); background: var(--surface); font-weight: 500; }
+.nav-link.active .nav-dot { background: var(--accent); box-shadow: 0 0 0 3px rgba(111,179,232,0.15); }
+.nav-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border2); flex-shrink: 0; transition: all 0.15s; }
+.nav-index { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); margin-left: auto; }
+/* case sub-nav */
+.nav-sub { list-style:none; margin: 2px 0 2px 22px; padding-left: 10px; border-left: 1px solid var(--border); }
+.nav-sub a { display:flex; align-items:center; gap:8px; padding: 5px 8px; border-radius:5px; text-decoration:none; font-size:0.75rem; color: var(--text3); transition: all .15s; }
+.nav-sub a:hover { color: var(--text2); background: var(--bg2); }
+.nav-sub a.active { color: var(--text); }
+.nav-sub .sd { width:5px; height:5px; border-radius:50%; flex:none; }
+
+.sidebar-footer { padding: 20px 28px 0; border-top: 1px solid var(--border); display: flex; gap: 12px; }
+.social-link { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); text-decoration: none; letter-spacing: 0.08em; transition: color 0.15s; }
+.social-link:hover { color: var(--accent); }
+
+/* ── Main ── */
+.main { margin-left: var(--nav-w); flex: 1; padding: 0 64px 120px; max-width: calc(var(--max-w) + 128px); }
+
+/* ── Sections ── */
+.section { padding-top: 68px; padding-bottom: 52px; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: none; }
+.section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px; }
+.section-label { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; white-space:nowrap; }
+.section-divider { flex: 1; height: 1px; background: var(--border); }
+.section-num { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); }
+
+/* ── Breadcrumb ── */
+.breadcrumb { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 22px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.breadcrumb a { color: var(--text2); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .sep { color: var(--border2); }
+.breadcrumb .current { color: var(--text); }
+
+/* ── Hero ── */
+.detail-hero { padding-top: 56px; padding-bottom: 8px; }
+.hero-eyebrow { font-family: var(--mono); font-size: 0.72rem; color: var(--accent2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.hero-eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--accent2); }
+.hero-grid { display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 44px; align-items:center; }
+.detail-title { font-family: var(--serif); font-size: clamp(2.2rem, 4.2vw, 3.35rem); line-height: 1.1; color: var(--text); margin-bottom: 18px; letter-spacing: -0.01em; }
+.detail-title em { font-style: italic; color: var(--accent); }
+.detail-subtitle { font-size: 1.05rem; color: var(--text2); font-weight: 300; margin-bottom: 28px; line-height: 1.7; }
+.hero-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { font-family: var(--mono); font-size: 0.7rem; padding: 4px 10px; border-radius: 3px; letter-spacing: 0.05em; }
+.tag-blue { background: rgba(111,179,232,0.08); color: var(--accent);  border: 1px solid rgba(111,179,232,0.22); }
+.tag-green{ background: rgba(126,214,168,0.08); color: var(--accent2); border: 1px solid rgba(126,214,168,0.22); }
+.tag-amber{ background: rgba(232,168,111,0.08); color: var(--accent3); border: 1px solid rgba(232,168,111,0.22); }
+
+/* hero art */
+.signal-stage { position: relative; }
+@keyframes pulse { 0%,100%{ opacity:.3; r:3 } 50%{ opacity:1; r:4.5 } }
+@keyframes flow { to { stroke-dashoffset: -60; } }
+.pnode { animation: pulse 4s ease-in-out infinite; }
+.pnode.p2{animation-delay:.8s}.pnode.p3{animation-delay:1.6s}.pnode.p4{animation-delay:2.4s}.pnode.p5{animation-delay:3.2s}
+.dataline { stroke-dasharray: 5 7; animation: flow 3s linear infinite; }
+@media (prefers-reduced-motion: reduce){ .pnode,.dataline{ animation:none } }
+.stage-cap { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; text-align:center; margin-top: 12px; }
+
+/* ── Meta bar ── */
+.meta-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 40px; }
+.meta-cell { background: var(--bg2); padding: 20px 22px; }
+.meta-key { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.meta-val { font-size: 0.86rem; color: var(--text); line-height: 1.45; }
+
+/* ── Prose ── */
+.prose p { font-size: 0.97rem; color: var(--text2); font-weight: 300; line-height: 1.85; margin-bottom: 20px; }
+.prose p:last-child { margin-bottom: 0; }
+strong { font-weight: 500; color: var(--text); }
+.intro-lead { font-size: 1.08rem; color: var(--text2); font-weight: 300; line-height: 1.75; max-width: 64ch; }
+.intro-lead em { font-style: italic; color: var(--text); }
+
+/* ── Callout ── */
+.callout { border-left: 2px solid var(--accent); background: linear-gradient(90deg, rgba(111,179,232,0.05), transparent); padding: 22px 26px; border-radius: 0 6px 6px 0; margin: 28px 0; }
+.callout .k { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; }
+.callout-text { font-family: var(--serif); font-size: 1.2rem; line-height: 1.45; color: var(--text); font-style: italic; }
+.callout.green { border-left-color: var(--accent2); background: linear-gradient(90deg, rgba(126,214,168,0.05), transparent); }
+.callout.green .k { color: var(--accent2); }
+.callout.amber { border-left-color: var(--accent3); background: linear-gradient(90deg, rgba(232,168,111,0.05), transparent); }
+.callout.amber .k { color: var(--accent3); }
+
+.mt8{margin-top:8px}.mt20{margin-top:20px}.mt28{margin-top:28px}.mt40{margin-top:40px}.mt48{margin-top:48px}.mt64{margin-top:64px}
+.subhead { font-family: var(--serif); font-size: 1.9rem; color: var(--text); margin-bottom: 16px; line-height:1.2; }
+.mini-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 16px; }
+
+/* ── Definition pair (what / how) ── */
+.defpair { display:grid; grid-template-columns: 1fr 1fr; gap:1px; background: var(--border); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.defcard { background: var(--bg2); padding: 28px; }
+.defcard .dtag { font-family: var(--mono); font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.defcard .dtag .d { width:7px;height:7px;border-radius:50%; }
+.defcard.what .dtag { color: var(--accent2); } .defcard.what .dtag .d { background: var(--accent2); }
+.defcard.how .dtag { color: var(--accent); } .defcard.how .dtag .d { background: var(--accent); }
+.defcard h4 { font-family: var(--serif); font-size:1.25rem; color:var(--text); margin-bottom:10px; }
+.defcard p { font-size:0.88rem; color:var(--text2); font-weight:300; line-height:1.7; margin-bottom:12px; }
+.defcard .inother { font-size:0.84rem; color:var(--text2); font-weight:300; line-height:1.6; padding-top:12px; border-top:1px solid var(--border); font-style:italic; }
+.defcard .inother b { font-style:normal; color: var(--text); }
+
+/* ── Cards grid ── */
+.cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.cards-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.card { background: var(--bg2); padding: 24px; transition: background 0.15s; position: relative; }
+.card:hover { background: var(--bg3); }
+.card-accent-bar { position: absolute; top: 0; left: 0; width: 3px; height: 100%; }
+.card-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+.card-title { font-family: var(--serif); font-size: 1.12rem; color: var(--text); margin-bottom: 8px; line-height: 1.25; }
+.card-desc { font-size: 0.86rem; color: var(--text2); line-height: 1.65; font-weight: 300; }
+
+/* ── Who questions ── */
+.who-block { border:1px solid var(--border); border-radius:8px; background: linear-gradient(180deg, rgba(232,168,111,0.05), var(--bg2)); padding: 34px 32px; }
+.who-q { font-family: var(--serif); font-size: 1.6rem; color: var(--text); margin-bottom: 22px; line-height:1.25; }
+.who-list { list-style:none; display:grid; gap:10px; }
+.who-list li { display:flex; align-items:baseline; gap:12px; font-size:0.95rem; color:var(--text2); font-weight:300; padding: 10px 0; border-bottom:1px solid var(--border); }
+.who-list li:last-child { border-bottom:none; }
+.who-list .w { font-family: var(--mono); font-size:0.72rem; color: var(--accent3); letter-spacing:0.08em; flex:none; }
+.who-list b { color: var(--text); font-weight:500; }
+
+/* ── CASE STUDIES ── */
+.case-index { display:grid; grid-template-columns: repeat(5,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom: 8px; }
+.ci { background: var(--bg2); padding: 16px 14px; text-decoration:none; display:block; transition: background .15s; }
+.ci:hover { background: var(--bg3); }
+.ci-verdict { font-family: var(--mono); font-size:0.56rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px; }
+.ci-city { font-size:0.86rem; color:var(--text); font-weight:500; line-height:1.3; }
+.ci-place { font-family: var(--mono); font-size:0.6rem; color:var(--text3); margin-top:3px; }
+
+.case { border:1px solid var(--border); border-radius:10px; overflow:hidden; background: var(--bg2); margin-top: 28px; }
+.case-head { padding: 26px 28px 24px; border-bottom:1px solid var(--border); position:relative; }
+.case-head::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
+.case-badge { display:inline-flex; align-items:center; gap:7px; font-family:var(--mono); font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; padding:4px 10px; border-radius:100px; margin-bottom:14px; }
+.case-badge .cd { width:6px;height:6px;border-radius:50%; }
+.case-title { font-family: var(--serif); font-size:1.55rem; color:var(--text); margin-bottom:4px; line-height:1.2; }
+.case-loc { font-family:var(--mono); font-size:0.66rem; color:var(--text3); letter-spacing:0.06em; margin-bottom:14px; }
+.case-sum { font-size:0.9rem; color:var(--text2); font-weight:300; line-height:1.7; max-width: 72ch; }
+
+.wwhc { display:grid; grid-template-columns: repeat(2,1fr); gap:1px; background: var(--border); }
+.ww { background: var(--bg2); padding: 22px 26px; }
+.ww:hover { background: var(--bg3); }
+.ww-k { font-family: var(--mono); font-size:0.6rem; letter-spacing:0.14em; color:var(--text3); margin-bottom:9px; }
+.ww p { font-size:0.85rem; color:var(--text2); font-weight:300; line-height:1.65; }
+.ww.concl { grid-column: 1 / -1; background: var(--bg3); }
+.ww.concl .ww-k { color: var(--accent); }
+.ww.concl p { color: var(--text); font-weight:400; }
+
+.ro { display:grid; grid-template-columns: 1fr 1fr; gap:1px; background:var(--border); border-top:1px solid var(--border); }
+.ro-col { background: var(--bg2); padding: 22px 26px; }
+.ro-k { font-family:var(--mono); font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:7px; }
+.ro-k .d { width:6px;height:6px;border-radius:50%; }
+.ro-col.risk .ro-k { color: var(--v-rejected); } .ro-col.risk .ro-k .d { background: var(--v-rejected); }
+.ro-col.opp .ro-k { color: var(--v-success); } .ro-col.opp .ro-k .d { background: var(--v-success); }
+.ro-col p { font-size:0.85rem; color:var(--text2); font-weight:300; line-height:1.65; }
+
+/* ── Patterns used vs needed ── */
+.pat { display:grid; grid-template-columns: 1fr 46px 1fr; border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--bg2); }
+.pcol { padding: 26px 28px; }
+.pcol.used { background: linear-gradient(180deg, rgba(232,127,118,0.05), transparent 70%); }
+.pcol.need { background: linear-gradient(180deg, rgba(126,214,168,0.05), transparent 70%); }
+.pk { font-family:var(--mono); font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.pk .d{width:7px;height:7px;border-radius:50%}
+.pcol.used .pk { color: var(--v-rejected); } .pcol.used .pk .d { background: var(--v-rejected); }
+.pcol.need .pk { color: var(--v-success); } .pcol.need .pk .d { background: var(--v-success); }
+.psub { font-size:0.8rem; color:var(--text3); font-weight:300; margin-bottom:16px; }
+.plist { list-style:none; display:flex; flex-direction:column; gap:9px; }
+.plist li { font-size:0.88rem; color:var(--text2); font-weight:300; padding:9px 12px; border-radius:6px; background: var(--bg3); border:1px solid var(--border); }
+.pcol.need .plist li { color: var(--text); }
+.pseam { position:relative; }
+.pseam::before { content:''; position:absolute; left:50%; top:24px; bottom:24px; width:1px; transform:translateX(-50%); background: linear-gradient(180deg, transparent, var(--border2) 25%, var(--border2) 75%, transparent); }
+.pseam .pnode2 { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:32px; height:32px; border-radius:50%; background:var(--bg3); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:0.7rem; color: var(--accent); }
+
+/* ── Techniques ── */
+.tech-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; }
+.tech { border:1px solid var(--border); background:var(--bg2); border-radius:8px; padding:16px 18px; display:flex; align-items:center; gap:11px; transition: all .15s; }
+.tech:hover { border-color: var(--border2); background: var(--bg3); }
+.tech .tn { width:6px; height:6px; border-radius:50%; background: var(--accent); flex:none; }
+.tech span { font-size:0.85rem; color:var(--text); font-weight:300; }
+.tech.wide { grid-column: 1 / -1; justify-content:center; border-color: rgba(111,179,232,0.35); background: linear-gradient(90deg, rgba(111,179,232,0.06), transparent); }
+
+/* ── Discussion questions ── */
+.qs { display:flex; flex-direction:column; gap:12px; }
+.q { border:1px solid var(--border); border-radius:8px; background:var(--bg2); padding:24px 26px; display:flex; gap:18px; align-items:flex-start; transition: all .15s; }
+.q:hover { border-color: var(--border2); background: var(--bg3); }
+.q-n { font-family: var(--serif); font-size:1.5rem; color: var(--accent); line-height:1; flex:none; width:38px; }
+.q-t { font-family: var(--serif); font-size:1.12rem; color:var(--text); line-height:1.45; font-style:italic; }
+
+/* ── Footer ── */
+.page-nav { display: grid; gap: 16px; margin-top: 8px; }
+.closing { font-family: var(--serif); font-size: clamp(1.6rem,3vw,2.3rem); line-height: 1.28; color: var(--text); max-width: 25ch; }
+.closing em { font-style: italic; color: var(--accent); }
+.foot-credit { font-family: var(--mono); font-size: 0.66rem; color: var(--text3); line-height: 2; margin-top: 24px; }
+.foot-credit b { color: var(--text2); }
+
+/* ── Mobile topbar ── */
+.topbar { display:none; position: fixed; top:0; left:0; right:0; z-index: 120; background: rgba(10,12,17,.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 12px 20px; align-items:center; justify-content: space-between; }
+.topbar .tb-brand { display:flex; align-items:center; gap:9px; font-family: var(--serif); font-size: 0.98rem; color: var(--text); text-decoration:none; }
+.topbar .tb-phase { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+
+@media (max-width: 900px) {
+  :root { --nav-w: 0px; }
+  .sidebar { display: none; }
+  .topbar { display: flex; }
+  .main { margin-left: 0; padding: 56px 20px 80px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+  .cards-grid, .cards-grid.cols-3 { grid-template-columns: 1fr; }
+  .meta-bar { grid-template-columns: 1fr 1fr; }
+  .defpair { grid-template-columns: 1fr; }
+  .case-index { grid-template-columns: 1fr 1fr; }
+  .wwhc { grid-template-columns: 1fr; }
+  .ro { grid-template-columns: 1fr; }
+  .pat { grid-template-columns: 1fr; }
+  .pseam { height: 44px; }
+  .pseam::before { left:20px; right:20px; top:50%; bottom:auto; width:auto; height:1px; transform:translateY(-50%); background: linear-gradient(90deg, transparent, var(--border2) 25%, var(--border2) 75%, transparent); }
+  .tech-grid { grid-template-columns: 1fr; }
+}
+
+.brand-link { text-decoration: none; }
+
+a:focus-visible, .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+.skip { position:absolute; left:-999px; top:0; background:var(--accent); color:#0a0c11; padding:10px 16px; z-index:200; font-family:var(--mono); font-size:0.72rem; }
+.skip:focus { left:0; }
+</style>
+</head>
+<body>
+<a href="#overview" class="skip">Skip to content</a>
+
+<div class="topbar">
+  <a href="#overview" class="tb-brand">
+    <svg width="20" height="20" viewBox="0 0 26 26" aria-hidden="true"><rect x="3" y="12" width="6" height="11" rx="1" fill="var(--accent2)"/><rect x="10" y="6" width="6" height="17" rx="1" fill="var(--accent)"/><rect x="17" y="9" width="6" height="14" rx="1" fill="var(--accent3)"/><circle cx="6" cy="7" r="1.8" fill="var(--accent)"/><circle cx="20" cy="4.5" r="1.8" fill="var(--accent2)"/></svg>
+    Smart-Cities
+  </a>
+  <span class="tb-phase" id="mobilePhase">Overview</span>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-back">
+      <div class="brand-lockup">
+        <svg class="brand-mark" width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="2" y="12" width="6" height="12" rx="1" fill="var(--accent2)"/><rect x="10" y="5" width="6" height="19" rx="1" fill="var(--accent)"/><rect x="18" y="9" width="6" height="15" rx="1" fill="var(--accent3)"/><circle cx="5" cy="7" r="2" fill="var(--accent)"/><circle cx="21" cy="4" r="2" fill="var(--accent2)"/></svg>
+        <span>
+        <a href="../index.html" class="brand-link">
+          <span class="brand-name">C.J. Jones</span>
+        </a>
+          <span class="brand-title">CS · UX · MTH · ACS</span>
+        </span>
+      </div>
+      <a class="back-link" href="../index.html">← All projects</a>
+      <a class="back-link-here" href="smart-cities-speculative-design.html">↳ Social Infrastructure for Smart-Cities</a>
+    </div>
+
+    <ul class="nav-list">
+      <li class="nav-item"><a class="nav-link" href="#overview" data-target="overview"><span class="nav-dot"></span>Overview<span class="nav-index">00</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#foundations" data-target="foundations"><span class="nav-dot"></span>Foundations<span class="nav-index">01</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#framing" data-target="framing"><span class="nav-dot"></span>The Digital Turn<span class="nav-index">02</span></a></li>
+      <li class="nav-item">
+        <a class="nav-link" href="#cases" data-target="cases"><span class="nav-dot"></span>The Cases<span class="nav-index">03</span></a>
+        <ul class="nav-sub">
+          <li><a href="#case-barcelona" data-sub="case-barcelona"><span class="sd" style="background:var(--v-success)"></span>Barcelona</a></li>
+          <li><a href="#case-songdo" data-sub="case-songdo"><span class="sd" style="background:var(--v-caution)"></span>Songdo</a></li>
+          <li><a href="#case-singapore" data-sub="case-singapore"><span class="sd" style="background:var(--v-edge)"></span>Singapore</a></li>
+          <li><a href="#case-toronto" data-sub="case-toronto"><span class="sd" style="background:var(--v-rejected)"></span>Toronto</a></li>
+          <li><a href="#case-helsinki" data-sub="case-helsinki"><span class="sd" style="background:var(--v-emerging)"></span>Helsinki</a></li>
+        </ul>
+      </li>
+      <li class="nav-item"><a class="nav-link" href="#patterns" data-target="patterns"><span class="nav-dot"></span>Design Trends<span class="nav-index">04</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#techniques" data-target="techniques"><span class="nav-dot"></span>Techniques<span class="nav-index">05</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#discussion" data-target="discussion"><span class="nav-dot"></span>Discussion<span class="nav-index">06</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a class="social-link" href="mailto:sirhcse@gmail.com">EMAIL</a>
+      <a class="social-link" target="_blank" href="https://www.linkedin.com/in/sirhcse/">LINKEDIN</a>
+      <a class="social-link" target="_blank" href="https://forms.gle/ohrq7YSMyn58azLk9">ISSUES?</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="detail-hero section" id="overview">
+      <div class="breadcrumb">
+        <a href="#overview">Emerging Issues Review</a>
+        <span class="sep">/</span>
+        <span class="current">Designing Social Infrastructure for Smart-Cities</span>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <div class="hero-eyebrow">HCDE 525 · Emerging Issues</div>
+          <h1 class="detail-title">Designing Social Infrastructure for <em>Smart-Cities</em></h1>
+          <p class="detail-subtitle">Five cities, five verdicts. Through interviews and field research across five cities, I studied what happens to the shared 'third places' that make social connection likely when they become digital.</p>
+          <div class="hero-tags">
+            <span class="tag tag-blue">Emerging Issues Review</span>
+            <span class="tag tag-green">Social Infrastructure</span>
+            <span class="tag tag-amber">Data Governance</span>
+          </div>
+        </div>
+        <div class="signal-stage" aria-hidden="true">
+          <svg viewBox="0 0 360 340" width="100%" role="img">
+            <rect x="0" y="0" width="360" height="340" rx="10" fill="var(--bg2)" stroke="var(--border)"/>
+            <!-- street grid -->
+            <g stroke="var(--border)" stroke-width="1">
+              <line x1="30" y1="90" x2="330" y2="90"/><line x1="30" y1="160" x2="330" y2="160"/>
+              <line x1="30" y1="230" x2="330" y2="230"/><line x1="30" y1="290" x2="330" y2="290"/>
+              <line x1="90" y1="40" x2="90" y2="310"/><line x1="165" y1="40" x2="165" y2="310"/>
+              <line x1="240" y1="40" x2="240" y2="310"/><line x1="300" y1="40" x2="300" y2="310"/>
+            </g>
+            <!-- city blocks (physical social infrastructure) -->
+            <rect x="100" y="100" width="52" height="48" rx="3" fill="rgba(126,214,168,0.16)" stroke="var(--accent2)" stroke-width="1"/>
+            <rect x="176" y="170" width="52" height="48" rx="3" fill="rgba(126,214,168,0.10)" stroke="var(--accent2)" stroke-width="1"/>
+            <rect x="252" y="100" width="38" height="48" rx="3" fill="rgba(232,168,111,0.10)" stroke="var(--accent3)" stroke-width="1"/>
+            <rect x="100" y="240" width="52" height="40" rx="3" fill="rgba(232,168,111,0.08)" stroke="var(--accent3)" stroke-width="1"/>
+            <!-- data layer: flowing links between nodes -->
+            <g class="dataline" stroke="var(--accent)" stroke-width="1.5" fill="none" opacity="0.8">
+              <path d="M126 124 L202 194 L271 124"/>
+              <path d="M126 260 L202 194"/>
+              <path d="M271 124 L300 230"/>
+            </g>
+            <!-- sensor / people nodes -->
+            <circle class="pnode"    cx="126" cy="124" r="4" fill="var(--accent)"/>
+            <circle class="pnode p2" cx="202" cy="194" r="4" fill="var(--accent)"/>
+            <circle class="pnode p3" cx="271" cy="124" r="4" fill="var(--accent)"/>
+            <circle class="pnode p4" cx="126" cy="260" r="4" fill="var(--accent)"/>
+            <circle class="pnode p5" cx="300" cy="230" r="4" fill="var(--accent)"/>
+            <!-- the un-sensed: people outside the data -->
+            <circle cx="60" cy="200" r="3.5" fill="none" stroke="var(--text3)" stroke-width="1.4"/>
+            <circle cx="330" cy="290" r="3.5" fill="none" stroke="var(--text3)" stroke-width="1.4"/>
+            <circle cx="70" cy="60"  r="3.5" fill="none" stroke="var(--text3)" stroke-width="1.4"/>
+            <text x="30" y="326" fill="var(--text3)" font-family="var(--mono)" font-size="9" letter-spacing="0.08em">● SENSED</text>
+            <text x="120" y="326" fill="var(--text3)" font-family="var(--mono)" font-size="9" letter-spacing="0.08em">○ NOT IN THE DATA</text>
+          </svg>
+          <div class="stage-cap">Fig.00 — the city as a network of shared spaces, and the people the sensors miss</div>
+        </div>
+      </div>
+      <div class="meta-bar">
+        <div class="meta-cell"><div class="meta-key">Author</div><div class="meta-val">Christopher Jones</div></div>
+        <div class="meta-cell"><div class="meta-key">Course</div><div class="meta-val">HCDE 525: Emerging Issues in HCDE</div></div>
+        <div class="meta-cell"><div class="meta-key">Format</div><div class="meta-val">Emerging issues presentation</div></div>
+        <div class="meta-cell"><div class="meta-key">Cases</div><div class="meta-val">5 cities across 4 continents</div></div>
+      </div>
+    </section>
+
+    <!-- 01 FOUNDATIONS -->
+    <section class="section" id="foundations">
+      <div class="section-header">
+        <span class="section-label">Foundations</span>
+        <span class="section-divider"></span>
+        <span class="section-num">01</span>
+      </div>
+      <h2 class="subhead">From "the what" to "the how"</h2>
+      <p class="intro-lead">Social infrastructure is usually defined by its <em>places</em>. The more useful definition defines it by whether connection actually happens there.</p>
+
+      <div class="defpair mt40">
+        <div class="defcard what">
+          <div class="dtag"><span class="d"></span>The common definition</div>
+          <h4>What is social infrastructure?</h4>
+          <p>The physical places, organizations, and spaces — schools, hospitals, parks, libraries — that foster social connection, community cohesion, and quality of life.</p>
+          <div class="inother">In other words, the network of shared social experiences within a given location <b>(i.e. the "what")</b>.</div>
+        </div>
+        <div class="defcard how">
+          <div class="dtag"><span class="d"></span>Reframing · NYU perspective</div>
+          <h4>Not a collection — a system</h4>
+          <p>Social infrastructure is not just a collection of shared places, but an actively designed system whose quality determines whether meaningful social connection and community resilience actually emerge.</p>
+          <div class="inother">In other words, the network of shared spaces that make social connection more likely to occur <b>(i.e. the "how")</b>.</div>
+        </div>
+      </div>
+
+      <div class="mini-label mt48">Challenges and constraints</div>
+      <div class="cards-grid">
+        <div class="card"><span class="card-accent-bar" style="background:var(--accent2)"></span><div class="card-label">Constraint 01</div><h4 class="card-title">Coordination &amp; funding</h4><p class="card-desc">Fragmented governance and limited resources make cohesive and sustained design difficult to achieve.</p></div>
+        <div class="card"><span class="card-accent-bar" style="background:var(--accent)"></span><div class="card-label">Constraint 02</div><h4 class="card-title">Land use tradeoffs</h4><p class="card-desc">Competing demands for space restrict how effectively social infrastructure can be placed and integrated.</p></div>
+        <div class="card"><span class="card-accent-bar" style="background:var(--accent3)"></span><div class="card-label">Constraint 03</div><h4 class="card-title">Legacy constraints</h4><p class="card-desc">Existing urban layouts and infrastructure limit how easily social systems can be reorganized or improved.</p></div>
+        <div class="card"><span class="card-accent-bar" style="background:var(--accent2)"></span><div class="card-label">Constraint 04</div><h4 class="card-title">Equity considerations</h4><p class="card-desc">Design decisions can unintentionally improve access for some groups while disadvantaging others.</p></div>
+        <div class="card" style="grid-column:1/-1"><span class="card-accent-bar" style="background:var(--accent3)"></span><div class="card-label">Constraint 05 · the new one</div><h4 class="card-title">Data governance</h4><p class="card-desc">Smart-city systems add new questions about privacy, surveillance, consent, and accountability.</p></div>
+      </div>
+    </section>
+
+    <!-- 02 FRAMING -->
+    <section class="section" id="framing">
+      <div class="section-header">
+        <span class="section-label">The Digital Turn</span>
+        <span class="section-divider"></span>
+        <span class="section-num">02</span>
+      </div>
+
+      <div class="who-block">
+        <h2 class="who-q">So… what changes when social infrastructure becomes digital?</h2>
+        <ul class="who-list">
+          <li><span class="w">WHO</span><span>…is <b>represented</b> in the data?</span></li>
+          <li><span class="w">WHO</span><span>…gets to <b>participate</b> in design decisions?</span></li>
+          <li><span class="w">WHO</span><span>…can <b>opt out</b>?</span></li>
+          <li><span class="w">WHO</span><span>…<b>benefits</b> from optimization?</span></li>
+          <li><span class="w">WHO</span><span>…is <b>harmed</b> when the system fails?</span></li>
+        </ul>
+      </div>
+
+      <h3 class="subhead mt48" style="font-size:1.5rem">Smart-city systems design <span style="color:var(--text3);font-family:var(--mono);font-size:0.8rem;letter-spacing:0.06em">(UCD PERSPECTIVE)</span></h3>
+      <div class="prose" style="max-width:66ch">
+        <p>Smart-city systems design uses technologies such as <strong>sensors, automation, digital twins, connected services, and other data platforms</strong> to manage or improve city life.</p>
+      </div>
+      <div class="callout">
+        <div class="k">The lens for every case that follows</div>
+        <p class="callout-text">For this perspective, we will investigate access, trust, and responsiveness to the lived experience — all as part of the system they operate within.</p>
+      </div>
+    </section>
+
+    <!-- 03 CASES -->
+    <section class="section" id="cases">
+      <div class="section-header">
+        <span class="section-label">The Cases</span>
+        <span class="section-divider"></span>
+        <span class="section-num">03</span>
+      </div>
+      <p class="intro-lead" style="margin-bottom:28px">Five cities, examined through the same lens: who was in the room, what was built, how people were involved — and what it cost when they weren't.</p>
+
+      <div class="case-index">
+        <a class="ci" href="#case-barcelona"><div class="ci-verdict" style="color:var(--v-success)">Success</div><div class="ci-city">Superblocks</div><div class="ci-place">Barcelona</div></a>
+        <a class="ci" href="#case-songdo"><div class="ci-verdict" style="color:var(--v-caution)">Cautionary</div><div class="ci-city">Songdo IBD</div><div class="ci-place">South Korea</div></a>
+        <a class="ci" href="#case-singapore"><div class="ci-verdict" style="color:var(--v-edge)">Edge Case</div><div class="ci-city">Smart Nation</div><div class="ci-place">Singapore</div></a>
+        <a class="ci" href="#case-toronto"><div class="ci-verdict" style="color:var(--v-rejected)">Rejected</div><div class="ci-city">Quayside</div><div class="ci-place">Toronto</div></a>
+        <a class="ci" href="#case-helsinki"><div class="ci-verdict" style="color:var(--v-emerging)">Emerging</div><div class="ci-city">Helsinki 3D</div><div class="ci-place">Finland</div></a>
+      </div>
+
+      <!-- BARCELONA -->
+      <article class="case" id="case-barcelona">
+        <div class="case-head" style="--v:var(--v-success)">
+          <span class="card-accent-bar" style="background:var(--v-success)"></span>
+          <span class="case-badge" style="background:rgba(111,214,160,0.1);color:var(--v-success)"><span class="cd" style="background:var(--v-success)"></span>Success Case</span>
+          <h3 class="case-title">Barcelona Superblocks</h3>
+          <div class="case-loc">Barcelona, Spain</div>
+          <p class="case-sum">Using smart-city tools and street redesign to reclaim urban space for pedestrians, local activity, and neighborhood interaction. It showcases a social infrastructure designed around lived experience, allowing streets to become places for social life, not just movement.</p>
+        </div>
+        <div class="wwhc">
+          <div class="ww"><div class="ww-k">WHO</div><p>Neighborhood residents, pedestrians, children, older adults, cyclists, disabled people, local businesses, and anyone using streets as public space rather than just traffic space.</p></div>
+          <div class="ww"><div class="ww-k">WHAT</div><p>It sought to reduce through-traffic and reclaim street space for walking, greenery, recreation, and neighborhood interaction.</p></div>
+          <div class="ww"><div class="ww-k">HOW</div><p>The model emphasizes public participation, dialogue, and shared responsibility. Residents are involved in identifying problems, discussing proposals, and shaping implementation.</p></div>
+          <div class="ww"><div class="ww-k">WHY IT MATTERS</div><p>Streets are the most abundant public space a city already owns — the question is only what they're allowed to be used for.</p></div>
+          <div class="ww concl"><div class="ww-k">CONCLUSION</div><p>This aligns with contextual inquiry and participatory design because it starts from how people actually use streets, not only from traffic models.</p></div>
+        </div>
+        <div class="ro">
+          <div class="ro-col risk"><div class="ro-k"><span class="d"></span>Risks</div><p>The main risks are gentrification, displacement, business disruption, accessibility conflicts, emergency-access issues, and backlash from people who feel the redesign was imposed on them.</p></div>
+          <div class="ro-col opp"><div class="ro-k"><span class="d"></span>Opportunities</div><p>They could measure impacts on different groups, protect against displacement, improve accessibility, support multilingual communication, test emergency access, and create feedback channels for residents to request adjustments.</p></div>
+        </div>
+      </article>
+
+      <!-- SONGDO -->
+      <article class="case" id="case-songdo">
+        <div class="case-head">
+          <span class="card-accent-bar" style="background:var(--v-caution)"></span>
+          <span class="case-badge" style="background:rgba(232,185,111,0.1);color:var(--v-caution)"><span class="cd" style="background:var(--v-caution)"></span>Cautionary Case</span>
+          <h3 class="case-title">Songdo IBD</h3>
+          <div class="case-loc">Songdo, South Korea</div>
+          <p class="case-sum">Built with advanced sensors, automation, and connected infrastructure, but criticized for struggling to generate the organic social and cultural life that makes cities feel lived-in. It shows the danger of technology-first urbanism: a city can be efficient, green, and connected while still feeling socially thin or exclusionary.</p>
+        </div>
+        <div class="wwhc">
+          <div class="ww"><div class="ww-k">WHO</div><p>The intended users were international businesses, knowledge workers, professionals, expatriates, universities, investors, city managers, and residents imagined as part of a high-tech global city.</p></div>
+          <div class="ww"><div class="ww-k">WHAT</div><p>It sought to solve many problems at once, largely centered around sustainability — automated waste systems, centralized building controls, green buildings, water recycling, walkability, and public transit.</p></div>
+          <div class="ww"><div class="ww-k">HOW</div><p>It was mostly shaped by government, developers, and technology firms. Residents appear to have had a weaker role than institutional and investor stakeholders.</p></div>
+          <div class="ww"><div class="ww-k">THE TELL</div><p>The users were <em>imagined</em> before they were studied — a research bias baked in before the first sensor was installed.</p></div>
+          <div class="ww concl"><div class="ww-k">CONCLUSION</div><p>Institutional stakeholders appear to have been prioritized over research involving everyday residents. Ultimately, they introduced bias into the research phase too early, in favor of "better" users.</p></div>
+        </div>
+        <div class="ro">
+          <div class="ro-col risk"><div class="ro-k"><span class="d"></span>Risks</div><p>The main risks were designing for an idealized user rather than real, diverse residents. Additionally, the city may have prioritized control, efficiency, and image over flexibility, social life, affordability, and everyday needs.</p></div>
+          <div class="ro-col opp"><div class="ro-k"><span class="d"></span>Opportunities</div><p>They could have begun with ethnographic research into daily life — mixed-income housing, integration with surrounding communities, participatory governance, adaptable public spaces, resident feedback loops, and attention to informal social life.</p></div>
+        </div>
+      </article>
+
+      <!-- SINGAPORE -->
+      <article class="case" id="case-singapore">
+        <div class="case-head">
+          <span class="card-accent-bar" style="background:var(--v-edge)"></span>
+          <span class="case-badge" style="background:rgba(199,154,232,0.1);color:var(--v-edge)"><span class="cd" style="background:var(--v-edge)"></span>Edge Case</span>
+          <h3 class="case-title">Smart Nation / TraceTogether</h3>
+          <div class="case-loc">Singapore</div>
+          <p class="case-sum">A national initiative integrating digital identity, public services, and urban data systems to make daily life more connected, efficient, and governable. It shows both sides of public digital infrastructure: adoption often depends on trust and state capacity — but trust can be damaged when data-use boundaries are unclear.</p>
+        </div>
+        <div class="wwhc">
+          <div class="ww"><div class="ww-k">WHO</div><p>Residents, visitors, public-health officials, contact tracers, businesses checking people into venues, older adults, children, and people without smartphones.</p></div>
+          <div class="ww"><div class="ww-k">WHAT</div><p>Initially created for COVID-19 contact tracing — identifying close contacts faster and more accurately than manual recall, via Bluetooth signaling. It was later repurposed for criminal investigation without user acknowledgment.</p></div>
+          <div class="ww"><div class="ww-k">HOW</div><p>The system incorporated feedback through social media, interviews, engagement programs, and accessibility measures for people who had difficulty using smartphones.</p></div>
+          <div class="ww"><div class="ww-k">THE BREACH</div><p>Police were legally able to access the data for criminal investigations <em>in secret</em> — the mission crept, and the public found out afterward.</p></div>
+          <div class="ww concl"><div class="ww-k">CONCLUSION</div><p>This is a service design problem because the experience depended on devices, businesses, public spaces, institutions, and trust. While cases like this can be common, even this singular instance damaged trust.</p></div>
+        </div>
+        <div class="ro">
+          <div class="ro-col risk"><div class="ro-k"><span class="d"></span>Risks</div><p>Privacy concerns, mission creep, mandatory participation, uneven digital literacy, and loss of trust when data use expanded beyond what users expected. The biggest issue was police being legally able to access the data for criminal investigations in secret.</p></div>
+          <div class="ro-col opp"><div class="ro-k"><span class="d"></span>Opportunities</div><p>It should have included clearer consent, narrower data-use limits from launch, independent oversight, public auditability, plain-language privacy explanations, deletion or opt-out options where possible, and equivalent non-digital access.</p></div>
+        </div>
+      </article>
+
+      <!-- TORONTO -->
+      <article class="case" id="case-toronto">
+        <div class="case-head">
+          <span class="card-accent-bar" style="background:var(--v-rejected)"></span>
+          <span class="case-badge" style="background:rgba(232,127,118,0.1);color:var(--v-rejected)"><span class="cd" style="background:var(--v-rejected)"></span>Rejected Case</span>
+          <h3 class="case-title">Sidewalk Toronto / Quayside</h3>
+          <div class="case-loc">Toronto, Canada</div>
+          <p class="case-sum">A data-driven neighborhood proposed around sensors, adaptive infrastructure, and urban data systems — which collapsed after public concerns about privacy, trust, and data governance. It shows that even advanced urban technology can fail if people do not trust who controls it, who benefits, and what happens to their data.</p>
+        </div>
+        <div class="wwhc">
+          <div class="ww"><div class="ww-k">WHO</div><p>Future residents, pedestrians, cyclists, workers, visitors, city agencies, developers, technologists, and local businesses.</p></div>
+          <div class="ww"><div class="ww-k">WHAT</div><p>It aimed to create a technology-enabled waterfront district using sustainability features, mobility improvements, modular buildings, digital services, and data-driven urban management.</p></div>
+          <div class="ww"><div class="ww-k">HOW</div><p>There was significant public engagement, including conversations with more than 21,000 local residents during development of the initial plan. While they began with a privacy commissioner to include privacy-by-design, they ultimately parted ways in favor of privacy-by-suggestion.</p></div>
+          <div class="ww"><div class="ww-k">THE DISTINCTION</div><p>21,000 conversations still weren't co-design. Volume of engagement is not the same as power over the outcome.</p></div>
+          <div class="ww concl"><div class="ww-k">CONCLUSION</div><p>Engagement is not the same as participatory co-design, and privacy-by-design is often the only way to gain user trust. People need real influence over problem framing, technical commitments, and governance.</p></div>
+        </div>
+        <div class="ro">
+          <div class="ro-col risk"><div class="ro-k"><span class="d"></span>Risks</div><p>Privacy, surveillance, unclear data governance, privatization of public infrastructure, weak accountability, and public distrust. It also affected people nearby who may never have explicitly opted into data collection.</p></div>
+          <div class="ro-col opp"><div class="ro-k"><span class="d"></span>Opportunities</div><p>Privacy and governance should have been designed from the beginning. It needed clear data limits, independent oversight, community power over surveillance technologies, and genuine co-design before major technical commitments were made.</p></div>
+        </div>
+      </article>
+
+      <!-- HELSINKI -->
+      <article class="case" id="case-helsinki">
+        <div class="case-head">
+          <span class="card-accent-bar" style="background:var(--v-emerging)"></span>
+          <span class="case-badge" style="background:rgba(111,196,232,0.1);color:var(--v-emerging)"><span class="cd" style="background:var(--v-emerging)"></span>Emerging Case</span>
+          <h3 class="case-title">Helsinki 3D</h3>
+          <div class="case-loc">Helsinki, Finland</div>
+          <p class="case-sum">Using open data, digital twins, and participatory planning to make urban services more transparent, adaptive, and citizen-centered. It is a strong planning interface — but its value depends on whether it is usable by residents, not only by professionals.</p>
+        </div>
+        <div class="wwhc">
+          <div class="ww"><div class="ww-k">WHO · DIRECT</div><p>Planners, architects, engineers, researchers, developers, analysts, and public agencies.</p></div>
+          <div class="ww"><div class="ww-k">WHO · BROADER</div><p>Residents, community groups, businesses, and educators trying to understand how it affects them.</p></div>
+          <div class="ww"><div class="ww-k">WHAT</div><p>It sought to create digital city models that help people test, visualize, and plan changes in the built environment.</p></div>
+          <div class="ww"><div class="ww-k">HOW</div><p>The public has been invited to virtually explore city models, which can make planning more visible and easier to understand.</p></div>
+          <div class="ww concl"><div class="ww-k">CONCLUSION</div><p>This shifts planning from abstract documents to interactive representations — but only if the interface is usable by non-experts.</p></div>
+        </div>
+        <div class="ro">
+          <div class="ro-col risk"><div class="ro-k"><span class="d"></span>Risks</div><p>Expert bias, technical complexity, unequal access, over-reliance on simulation, and performative participation.</p></div>
+          <div class="ro-col opp"><div class="ro-k"><span class="d"></span>Opportunities</div><p>They should include plain-language scenarios, accessible interfaces, mobile-friendly tools, multilingual explanations, neighborhood-level impact views, and direct ways for residents to comment on proposed changes.</p></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 04 PATTERNS -->
+    <section class="section" id="patterns">
+      <div class="section-header">
+        <span class="section-label">Design Trends</span>
+        <span class="section-divider"></span>
+        <span class="section-num">04</span>
+      </div>
+      <h2 class="subhead">Design trends across cases</h2>
+      <p class="intro-lead" style="margin-bottom:32px">Read side by side, the five cases fall into the same habits — and point to the same missing ones.</p>
+
+      <div class="pat">
+        <div class="pcol used">
+          <div class="pk"><span class="d"></span>Design patterns used</div>
+          <div class="psub">These cases relied on:</div>
+          <ul class="plist">
+            <li>Top-down planning</li>
+            <li>Efficiency-first systems</li>
+            <li>Data-driven management</li>
+            <li>Idealized user assumptions</li>
+            <li>Weak consent models</li>
+          </ul>
+        </div>
+        <div class="pseam"><div class="pnode2">→</div></div>
+        <div class="pcol need">
+          <div class="pk"><span class="d"></span>Design patterns needed</div>
+          <div class="psub">Useful additions to them are:</div>
+          <ul class="plist">
+            <li>Privacy by default</li>
+            <li>Meaningful alternatives</li>
+            <li>Visible accountability</li>
+            <li>Accessibility (early)</li>
+            <li>Feedback loops (post)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 TECHNIQUES -->
+    <section class="section" id="techniques">
+      <div class="section-header">
+        <span class="section-label">Techniques</span>
+        <span class="section-divider"></span>
+        <span class="section-num">05</span>
+      </div>
+      <h2 class="subhead">Techniques to get there</h2>
+      <p class="intro-lead" style="margin-bottom:32px">The methods that would have surfaced what each of these cities missed.</p>
+
+      <div class="tech-grid">
+        <div class="tech"><span class="tn"></span><span>Contextual inquiry</span></div>
+        <div class="tech"><span class="tn"></span><span>Ethnographic research</span></div>
+        <div class="tech"><span class="tn"></span><span>Stakeholder mapping</span></div>
+        <div class="tech"><span class="tn"></span><span>Journey mapping</span></div>
+        <div class="tech"><span class="tn"></span><span>Service blueprinting</span></div>
+        <div class="tech"><span class="tn"></span><span>Participatory design</span></div>
+        <div class="tech"><span class="tn"></span><span>Accessibility testing</span></div>
+        <div class="tech"><span class="tn"></span><span>Edge-case testing</span></div>
+        <div class="tech wide"><span class="tn"></span><span>Usability testing — with non-experts</span></div>
+      </div>
+    </section>
+
+    <!-- 06 DISCUSSION -->
+    <section class="section" id="discussion">
+      <div class="section-header">
+        <span class="section-label">Discussion</span>
+        <span class="section-divider"></span>
+        <span class="section-num">06</span>
+      </div>
+      <h2 class="subhead">Discussion questions</h2>
+      <p class="intro-lead" style="margin-bottom:32px">Four questions the five cases leave open.</p>
+
+      <div class="qs">
+        <div class="q"><div class="q-n">01</div><div class="q-t">When does smart-city infrastructure stop being a public service and start becoming surveillance infrastructure?</div></div>
+        <div class="q"><div class="q-n">02</div><div class="q-t">Who should have authority over urban data — governments, private firms, residents, or independent public bodies?</div></div>
+        <div class="q"><div class="q-n">03</div><div class="q-t">How can designers include people who are affected by smart-city systems but who do not directly use them?</div></div>
+        <div class="q"><div class="q-n">04</div><div class="q-t">Should cities prioritize efficient digital systems if those systems weaken trust, informality, or community control?</div></div>
+      </div>
+
+      <div class="page-nav mt64">
+        <div class="closing">Engagement is not co-design. People need real influence over <em>problem framing</em>, not just the plan.</div>
+        <div class="foot-credit">
+          <b>DESIGNING SOCIAL INFRASTRUCTURE FOR SMART-CITIES</b><br>
+          HCDE 525: EMERGING ISSUES IN HUMAN CENTERED DESIGN &amp; ENGINEERING<br>
+          EMERGING ISSUES PRESENTATION · CHRISTOPHER JONES<br>
+          IMAGE SOURCES AS CITED IN THE ORIGINAL DECK
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  var labels = {overview:'Overview',foundations:'Foundations',framing:'The Digital Turn',cases:'The Cases',patterns:'Design Trends',techniques:'Techniques',discussion:'Discussion'};
+  var links = {}, subs = {};
+  document.querySelectorAll('.nav-link').forEach(function(a){ links[a.getAttribute('data-target')] = a; });
+  document.querySelectorAll('.nav-sub a').forEach(function(a){ subs[a.getAttribute('data-sub')] = a; });
+  var mobile = document.getElementById('mobilePhase');
+  var current = null;
+
+  function setActive(id){
+    if(id === current) return; current = id;
+    Object.keys(links).forEach(function(k){ links[k].classList.toggle('active', k === id); });
+    if(mobile) mobile.textContent = labels[id] || '';
+  }
+  function setSub(id){
+    Object.keys(subs).forEach(function(k){ subs[k].classList.toggle('active', k === id); });
+  }
+
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ setActive(e.target.id); } });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    Object.keys(labels).forEach(function(id){
+      var el = document.getElementById(id); if(el) obs.observe(el);
+    });
+
+    // sub-nav for individual cases
+    var cobs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ setActive('cases'); setSub(e.target.id); } });
+    }, { rootMargin: '-30% 0px -55% 0px', threshold: 0 });
+    ['case-barcelona','case-songdo','case-singapore','case-toronto','case-helsinki'].forEach(function(id){
+      var el = document.getElementById(id); if(el) cobs.observe(el);
+    });
+  }
+  setActive('overview');
+})();
+</script>
+</body>
+</html>

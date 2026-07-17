@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="../supporting-images/fav.png">
+<title>How do I pee in this cup? — Clean-Catch UTI Usability Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0c0c0e;
+  --bg2:       #111114;
+  --bg3:       #18181d;
+  --surface:   #1e1e25;
+  --border:    #2a2a35;
+  --border2:   #3a3a48;
+  --text:      #e8e8f0;
+  --text2:     #9898b0;
+  --text3:     #5a5a72;
+  --accent:    #7ee0c0;   /* mint — the clean signal */
+  --accent2:   #7ab8f0;   /* blue — sample / fluid */
+  --accent3:   #f0a87a;   /* amber — caution / error */
+  --mono:      'DM Mono', monospace;
+  --serif:     'DM Serif Display', serif;
+  --sans:      'DM Sans', sans-serif;
+  --nav-w:     240px;
+  --max-w:     880px;
+}
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+.layout { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--nav-w); min-height: 100vh;
+  position: fixed; top: 0; left: 0;
+  display: flex; flex-direction: column;
+  padding: 40px 0 28px;
+  border-right: 1px solid var(--border);
+  background: var(--bg); z-index: 100;
+}
+.sidebar-back { padding: 0 28px 28px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+.back-link { font-family: var(--mono); font-size: 0.68rem; color: var(--text2); text-decoration: none; letter-spacing: 0.06em; display: inline-flex; align-items: center; gap: 8px; transition: gap 0.15s, color 0.15s; }
+.back-link:hover { color: var(--accent); gap: 11px; }
+.back-link-here { font-family: var(--mono); font-size: 0.68rem; text-decoration: none; letter-spacing: 0.06em; display: inline-flex; align-items: center; transition: gap 0.15s, color 0.15s; margin-left: 15px; color: var(--text3); }
+.back-link-here:hover { color: var(--accent); gap: 11px; }
+.brand-name { font-family: var(--serif); font-size: 1.05rem; color: var(--text); line-height: 1.3; display: block; margin-bottom: 6px; }
+.brand-title { font-family: var(--mono); font-size: 0.66rem; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; }
+.nav-list { list-style: none; flex: 1; padding: 0 14px; }
+.nav-item { margin-bottom: 1px; }
+.nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: 6px; text-decoration: none;
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 400; color: var(--text2);
+  transition: all 0.15s ease; cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-link:hover { color: var(--text); background: var(--surface); }
+.nav-link.active { color: var(--text); background: var(--surface); font-weight: 500; }
+.nav-link.active .nav-dot { background: var(--accent); box-shadow: 0 0 0 3px rgba(126,224,192,0.15); }
+.nav-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border2); flex-shrink: 0; transition: all 0.15s; }
+.nav-index { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); margin-left: auto; }
+
+.sidebar-footer { padding: 24px 28px 0; border-top: 1px solid var(--border); display: flex; gap: 12px; flex-wrap: wrap; }
+.social-link { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); text-decoration: none; letter-spacing: 0.08em; transition: color 0.15s; }
+.social-link:hover { color: var(--accent); }
+
+/* ── Main ── */
+.main { margin-left: var(--nav-w); flex: 1; padding: 0 64px 120px; max-width: calc(var(--max-w) + 128px); }
+
+/* ── Sections ── */
+.section { padding-top: 68px; padding-bottom: 52px; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: none; }
+.section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px; }
+.section-label { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; white-space:nowrap; }
+.section-divider { flex: 1; height: 1px; background: var(--border); }
+.section-num { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); }
+
+/* ── Figure ── */
+.figure { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--bg2); }
+.figure-body { padding: 26px; background:
+  repeating-linear-gradient(45deg, transparent, transparent 16px, rgba(255,255,255,0.010) 16px, rgba(255,255,255,0.010) 32px); }
+.figure-caption { font-family: var(--mono); font-size: 0.64rem; color: var(--text3); padding: 12px 18px; border-top: 1px solid var(--border); letter-spacing: 0.03em; display:flex; gap:8px; }
+.figure-caption b { color: var(--accent); font-weight: 500; }
+
+/* ── Figure image (responsive fit) ── */
+.figure-img-fit {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Breadcrumb ── */
+.breadcrumb { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 22px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.breadcrumb a { color: var(--text2); text-decoration: none; transition: color 0.15s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .sep { color: var(--border2); }
+.breadcrumb .current { color: var(--text); }
+
+/* ── Hero ── */
+.detail-hero { padding-top: 56px; padding-bottom: 8px; }
+.hero-eyebrow { font-family: var(--mono); font-size: 0.72rem; color: var(--accent2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.hero-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent2); }
+.hero-grid { display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 44px; align-items:center; }
+.detail-title { font-family: var(--serif); font-size: clamp(2.4rem, 4.6vw, 3.7rem); line-height: 1.08; color: var(--text); margin-bottom: 18px; letter-spacing: -0.01em; }
+.detail-title em { font-style: italic; color: var(--accent); }
+.detail-subtitle { font-family: var(--sans); font-size: 1.08rem; color: var(--text2); font-weight: 300; margin-bottom: 28px; line-height: 1.7; }
+.hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.tag { font-family: var(--mono); font-size: 0.7rem; padding: 4px 10px; border-radius: 3px; letter-spacing: 0.05em; }
+.tag-math { background: rgba(126,224,192,0.08); color: var(--accent);  border: 1px solid rgba(126,224,192,0.2); }
+.tag-cs   { background: rgba(122,184,240,0.08); color: var(--accent2); border: 1px solid rgba(122,184,240,0.2); }
+.tag-ux   { background: rgba(240,168,122,0.08); color: var(--accent3); border: 1px solid rgba(240,168,122,0.2); }
+
+/* signal art */
+.signal-stage { position: relative; }
+@keyframes ping { 0%{transform:scale(.34);opacity:.85} 70%{opacity:0} 100%{transform:scale(1.9);opacity:0} }
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+.ring { transform-origin: center; animation: ping 5.4s cubic-bezier(.2,.6,.3,1) infinite; }
+.ring.r2 { animation-delay: 1.8s; } .ring.r3 { animation-delay: 3.6s; }
+.dropglyph { animation: bob 3.4s ease-in-out infinite; transform-origin: center; }
+@media (prefers-reduced-motion: reduce){ .ring, .dropglyph { animation: none; } }
+.stage-cap { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; text-align:center; margin-top: 12px; }
+
+/* ── Meta bar ── */
+.meta-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 40px; }
+.meta-cell { background: var(--bg2); padding: 20px 22px; }
+.meta-key { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.meta-val { font-size: 0.86rem; color: var(--text); line-height: 1.45; }
+
+/* ── Prose ── */
+.prose p { font-size: 0.95rem; color: var(--text2); font-weight: 300; line-height: 1.85; margin-bottom: 20px; }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong, strong { font-weight: 500; color: var(--text); }
+.prose em { color: var(--text); font-style: italic; }
+.intro-lead { font-size: 1.05rem; color: var(--text2); font-weight: 300; line-height: 1.75; max-width: 62ch; }
+
+/* ── Callout ── */
+.callout { border-left: 2px solid var(--accent); background: linear-gradient(90deg, rgba(126,224,192,0.05), transparent); padding: 22px 26px; border-radius: 0 6px 6px 0; margin: 28px 0; }
+.callout .k { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; }
+.callout-text { font-family: var(--serif); font-size: 1.24rem; line-height: 1.42; color: var(--text); font-style: italic; }
+.callout.blue { border-left-color: var(--accent2); background: linear-gradient(90deg, rgba(122,184,240,0.05), transparent); }
+.callout.blue .k { color: var(--accent2); }
+.callout.amber { border-left-color: var(--accent3); background: linear-gradient(90deg, rgba(240,168,122,0.05), transparent); }
+.callout.amber .k { color: var(--accent3); }
+
+/* pull quote */
+.pull { border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding: 30px 0; margin: 40px 0; }
+.pull-text { font-family: var(--serif); font-style: italic; font-size: 1.5rem; line-height: 1.35; color: var(--text); max-width: 30ch; }
+.pull-cite { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 14px; }
+
+/* quote block (smaller, participant voice) */
+.quote-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.quote { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 22px 24px; }
+.quote p { font-family: var(--serif); font-style: italic; font-size: 1.02rem; line-height: 1.45; color: var(--text); margin-bottom: 12px; }
+.quote .who { font-family: var(--mono); font-size: 0.62rem; color: var(--accent2); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* ── Grids ── */
+.split-grid { display: grid; gap: 40px; align-items: start; }
+.split-2 { grid-template-columns: 1fr 1fr; }
+.split-bias { grid-template-columns: 1.3fr 0.7fr; }
+.mt8{margin-top:8px}.mt20{margin-top:20px}.mt28{margin-top:28px}.mt40{margin-top:40px}.mt48{margin-top:48px}
+.subhead { font-family: var(--serif); font-size: 1.5rem; color: var(--text); margin-bottom: 12px; line-height:1.2; }
+.mini-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 16px; }
+
+/* ── Aside list ── */
+.aside-block { padding: 22px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; }
+.aside-block-title { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px; }
+.aside-list { list-style: none; }
+.aside-list li { font-size: 0.85rem; color: var(--text2); padding: 9px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 9px; line-height: 1.5; font-weight:300; }
+.aside-list li:last-child { border-bottom: none; }
+.aside-list li::before { content: '→'; font-family: var(--mono); font-size: 0.66rem; color: var(--accent); margin-top: 3px; }
+.aside-list.check li::before { content: '✓'; color: var(--accent); }
+.aside-list.plus li::before { content: '+'; color: var(--accent2); }
+
+/* ── Cards grid ── */
+.cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.cards-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.card { background: var(--bg2); padding: 26px; transition: background 0.15s; position: relative; }
+.card:hover { background: var(--bg3); }
+.card-accent-bar { position: absolute; top: 0; left: 0; width: 3px; height: 100%; }
+.bar-lime{background:var(--accent)} .bar-blue{background:var(--accent2)} .bar-amber{background:var(--accent3)}
+.card-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+.card-label.lime{color:var(--accent)} .card-label.blue{color:var(--accent2)} .card-label.amber{color:var(--accent3)}
+.card-title { font-family: var(--serif); font-size: 1.18rem; color: var(--text); margin-bottom: 10px; line-height: 1.25; }
+.card-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.65; font-weight: 300; }
+.card-n { font-family: var(--serif); font-size: 1.8rem; color: var(--accent); line-height:1; float:left; margin: 2px 14px 0 0; }
+.card.star { background: linear-gradient(180deg, rgba(126,224,192,0.05), var(--bg2)); }
+
+/* ── Timeline ── */
+.timeline { position: relative; margin-left: 6px; }
+.timeline::before { content: ''; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 1px; background: var(--border); }
+.step { position: relative; padding: 0 0 28px 34px; }
+.step:last-child { padding-bottom: 0; }
+.step::before { content: ''; position: absolute; left: 1px; top: 4px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--border2); }
+.step.done::before { border-color: var(--accent); background: var(--accent); }
+.step-num { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.1em; margin-bottom: 5px; text-transform:uppercase; }
+.step-title { font-family: var(--serif); font-size: 1.12rem; color: var(--text); margin-bottom: 6px; }
+.step-desc { font-size: 0.87rem; color: var(--text2); font-weight: 300; line-height: 1.65; max-width: 62ch; }
+
+/* ── Process flow (horizontal) ── */
+.flow { display:flex; flex-wrap:wrap; gap:8px; align-items:stretch; }
+.flow-step { flex:1 1 130px; background: var(--bg2); border:1px solid var(--border); border-radius:8px; padding:16px 16px; position:relative; }
+.flow-step .fs-n { font-family: var(--mono); font-size:0.6rem; color: var(--accent); letter-spacing:0.1em; margin-bottom:8px; }
+.flow-step .fs-t { font-size:0.82rem; color: var(--text); line-height:1.35; font-weight:400; }
+
+/* ── Experiment / task cards ── */
+.exp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.exp-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 22px; transition: border-color 0.2s; }
+.exp-card:hover { border-color: var(--border2); }
+.exp-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.exp-status { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 3px; text-transform:uppercase; }
+.status-active { background: rgba(126,224,192,0.1); color: var(--accent); }
+.status-complete { background: rgba(122,184,240,0.1); color: var(--accent2); }
+.status-draft { background: rgba(240,168,122,0.1); color: var(--accent3); }
+.exp-idx { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); }
+.exp-title { font-family: var(--serif); font-size: 1.05rem; color: var(--text); margin-bottom: 6px; }
+.exp-desc { font-size: 0.82rem; color: var(--text2); font-weight: 300; line-height: 1.6; }
+
+/* ── Stats ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.stat { background: var(--bg2); padding: 24px 26px; }
+.stat-num { font-family: var(--serif); font-size: 2rem; line-height: 1; margin-bottom: 8px; color: var(--text); }
+.stat-num.accent { color: var(--accent); } .stat-num.accent2 { color: var(--accent2); } .stat-num.accent3 { color: var(--accent3); }
+.stat-label { font-family: var(--mono); font-size: 0.64rem; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; line-height:1.4; }
+
+/* ── Finding stat pills ── */
+.finding-head { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+.finding-badge { font-family: var(--serif); font-size:1.3rem; width:46px; height:46px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex:none; }
+.fb-lime { background: rgba(126,224,192,0.1); color: var(--accent); border:1px solid rgba(126,224,192,0.25); }
+.fb-amber { background: rgba(240,168,122,0.1); color: var(--accent3); border:1px solid rgba(240,168,122,0.25); }
+.fb-blue { background: rgba(122,184,240,0.1); color: var(--accent2); border:1px solid rgba(122,184,240,0.25); }
+.finding-kicker { font-family: var(--mono); font-size:0.6rem; color: var(--text3); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:4px; }
+.finding-name { font-family: var(--serif); font-size:1.35rem; color: var(--text); line-height:1.15; }
+
+.datastat { border:1px solid var(--border); background: var(--bg2); border-radius:8px; padding:18px 20px; display:flex; gap:16px; align-items:baseline; }
+.datastat .n { font-family: var(--serif); font-size:1.6rem; line-height:1; flex:none; }
+.datastat .n.lime{color:var(--accent)} .datastat .n.amber{color:var(--accent3)} .datastat .n.blue{color:var(--accent2)}
+.datastat .t { font-size:0.86rem; color: var(--text2); font-weight:300; line-height:1.5; }
+
+/* ── Chips / pills ── */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--mono); font-size: 0.72rem; border: 1px solid var(--border2); background: var(--bg2); border-radius: 100px; padding: 6px 14px; color: var(--text2); }
+.chip b { color: var(--text); }
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { font-family: var(--mono); font-size: 0.66rem; padding: 3px 9px; border-radius: 3px; background: var(--surface); color: var(--text2); letter-spacing: 0.04em; }
+
+/* ── Buttons ── */
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.btn { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 11px 20px; border-radius: 4px; cursor: pointer; border: none; text-decoration: none; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 7px; }
+.btn-primary { background: var(--accent); color: #0c0c0e; font-weight: 500; }
+.btn-primary:hover { background: #96ecd2; transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+.btn-ghost:hover { color: var(--text); border-color: var(--text3); background: var(--surface); }
+
+/* ── Page nav ── */
+.page-nav { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 8px; }
+.closing { font-family: var(--serif); font-size: clamp(1.6rem,3vw,2.4rem); line-height: 1.2; color: var(--text); max-width: 20ch; }
+.closing em { font-style: italic; color: var(--accent); }
+.foot-credit { font-family: var(--mono); font-size: 0.66rem; color: var(--text3); line-height: 2; margin-top: 24px; }
+.foot-credit b { color: var(--text2); }
+
+/* ── Sources ── */
+.sources { list-style:none; counter-reset: src; display:grid; gap:2px; }
+.sources li { font-family: var(--mono); font-size:0.7rem; color: var(--text3); line-height:1.6; padding:8px 0; border-bottom:1px solid var(--border); display:flex; gap:12px; }
+.sources li:last-child { border-bottom:none; }
+.sources li .sn { color: var(--accent); flex:none; }
+
+/* ── Mobile topbar ── */
+.topbar { display:none; position: fixed; top:0; left:0; right:0; z-index: 120; background: rgba(12,12,14,.88); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 12px 20px; align-items:center; justify-content: space-between; }
+.topbar .tb-brand { display:flex; align-items:center; gap:9px; font-family: var(--serif); font-size: 1rem; color: var(--text); text-decoration:none; }
+.topbar .tb-phase { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+  :root { --nav-w: 0px; }
+  .sidebar { display: none; }
+  .topbar { display: flex; }
+  .main { margin-left: 0; padding: 56px 22px 80px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+  .split-2, .split-bias { grid-template-columns: 1fr; }
+  .cards-grid, .cards-grid.cols-3 { grid-template-columns: 1fr; }
+  .meta-bar { grid-template-columns: 1fr 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .exp-grid { grid-template-columns: 1fr; }
+  .quote-grid { grid-template-columns: 1fr; }
+}
+
+/* focus */
+a:focus-visible, .btn:focus-visible, .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+.skip { position:absolute; left:-999px; top:0; background:var(--accent); color:#0c0c0e; padding:10px 16px; z-index:200; font-family:var(--mono); font-size:0.72rem; }
+.skip:focus { left:0; }
+
+.brand-link { text-decoration: none; }
+</style>
+</head>
+<body>
+<a href="#overview" class="skip">Skip to content</a>
+
+<!-- MOBILE TOPBAR -->
+<div class="topbar">
+  <a href="#overview" class="tb-brand">
+    <svg width="20" height="20" viewBox="0 0 26 26" aria-hidden="true"><path d="M6 8 h14 l-1.4 13 a2 2 0 0 1 -2 1.8 h-7.2 a2 2 0 0 1 -2 -1.8 z" fill="none" stroke="var(--accent)" stroke-width="1.8"/><line x1="9" y1="13" x2="17" y2="13" stroke="var(--accent)" stroke-width="1.8"/></svg>
+    Clean-Catch Study
+  </a>
+  <span class="tb-phase" id="mobilePhase">Overview</span>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-back">
+        <a href="../index.html" class="brand-link">
+          <span class="brand-name">C.J. Jones</span>
+        </a>
+      <span class="brand-title">CS · UX · MTH · ACS</span>
+      <a class="back-link" href="../index.html">← All projects</a>
+      <a class="back-link-here" href="clean-catch-uti-case-study.html">↳ Clean Catch Study</a>
+    </div>
+
+    <ul class="nav-list">
+      <li class="nav-item"><a class="nav-link" href="#overview" data-target="overview"><span class="nav-dot"></span>Overview<span class="nav-index">00</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#background" data-target="background"><span class="nav-dot"></span>Background &amp; Context<span class="nav-index">01</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#methodology" data-target="methodology"><span class="nav-dot"></span>Methodology<span class="nav-index">02</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#findings" data-target="findings"><span class="nav-dot"></span>Preliminary Findings<span class="nav-index">03</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#recommendations" data-target="recommendations"><span class="nav-dot"></span>Recommendations<span class="nav-index">04</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#reflections" data-target="reflections"><span class="nav-dot"></span>Reflections<span class="nav-index">05</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a class="social-link" href="mailto:sirhcse@gmail.com">EMAIL</a>
+      <a class="social-link" target="_blank" href="https://www.linkedin.com/in/sirhcse/">LINKEDIN</a>
+      <a class="social-link" target="_blank" href="https://forms.gle/ohrq7YSMyn58azLk9">ISSUES?</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO / OVERVIEW -->
+    <section class="detail-hero section" id="overview" style="border-bottom:1px solid var(--border)">
+      <div class="breadcrumb">
+        <a href="#overview">Formative Usability Study</a>
+        <span class="sep">/</span>
+        <span class="current">Clean-Catch UTI Collection</span>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <div class="hero-eyebrow">HCDE · UW Medicine · 2024</div>
+          <h1 class="detail-title">How do I pee in <em>this cup?</em></h1>
+          <p class="detail-subtitle">Understanding the usability of clean-catch directions and procedure alongside UW's School of Medicine for better urinary tract infection outcomes — with attention to contamination risk and uncertainty.</p>
+          <div class="hero-tags">
+            <span class="tag tag-math">Usability Study</span>
+            <span class="tag tag-cs">Healthcare UX</span>
+            <span class="tag tag-ux">Clean-Catch Protocol</span>
+          </div>
+        </div>
+        <div class="signal-stage" aria-hidden="true">
+          <svg viewBox="0 0 360 360" width="100%" role="img">
+            <circle cx="180" cy="180" r="176" fill="var(--bg2)" stroke="var(--border)"/>
+            <!-- guide arcs -->
+            <path d="M40 128 Q120 118 200 124 T322 120" fill="none" stroke="var(--border)" stroke-width="1.2"/>
+            <!-- falling droplet -->
+            <g class="dropglyph">
+              <path d="M180 66 C 172 82, 166 92, 166 100 a14 14 0 0 0 28 0 c 0 -8 -6 -18 -14 -34 z" fill="var(--accent2)"/>
+              <ellipse cx="175" cy="96" rx="4" ry="6" fill="rgba(255,255,255,0.35)"/>
+            </g>
+            <!-- midstream band on the stream -->
+            <line x1="180" y1="118" x2="180" y2="150" stroke="var(--border2)" stroke-width="3" stroke-linecap="round"/>
+            <line x1="180" y1="124" x2="180" y2="144" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
+            <!-- cup -->
+            <path d="M120 158 L240 158 L224 286 a6 6 0 0 1 -6 5 L146 291 a6 6 0 0 1 -6 -5 Z" fill="var(--bg3)" stroke="var(--text2)" stroke-width="2.4"/>
+            <!-- rim -->
+            <ellipse cx="180" cy="158" rx="60" ry="10" fill="var(--bg3)" stroke="var(--text2)" stroke-width="2.4"/>
+            <!-- liquid -->
+            <path d="M150 224 L210 224 L204 284 a5 5 0 0 1 -5 4 L156 288 a5 5 0 0 1 -5 -4 Z" fill="rgba(122,184,240,0.28)"/>
+            <ellipse cx="180" cy="224" rx="30" ry="6" fill="rgba(122,184,240,0.5)"/>
+            <!-- ripple rings on liquid surface -->
+            <g stroke="var(--accent)" fill="none" stroke-width="1.5">
+              <ellipse class="ring" cx="180" cy="224" rx="30" ry="6" opacity=".85"/>
+              <ellipse class="ring r2" cx="180" cy="224" rx="30" ry="6" opacity=".85"/>
+              <ellipse class="ring r3" cx="180" cy="224" rx="30" ry="6" opacity=".85"/>
+            </g>
+            <!-- midstream tick label mark -->
+            <circle cx="262" cy="134" r="3" fill="var(--accent)"/>
+            <path d="M258 128 h20" stroke="var(--accent)" stroke-width="1" opacity=".5"/>
+          </svg>
+          <div class="stage-cap">Fig.00 — collecting the midstream portion</div>
+        </div>
+      </div>
+      <div class="meta-bar">
+        <div class="meta-cell"><div class="meta-key">Program</div><div class="meta-val">HCDE × UW Medicine<br><span style="color:var(--text3)">2024</span></div></div>
+        <div class="meta-cell"><div class="meta-key">Team</div><div class="meta-val">Anh Hua, Christopher Jones, Julia Brooks, Zhuolin Li</div></div>
+        <div class="meta-cell"><div class="meta-key">Type</div><div class="meta-val">Formative usability study, at-home protocol</div></div>
+        <div class="meta-cell"><div class="meta-key">Focus</div><div class="meta-val">Clean-catch urine collection &amp; contamination risk</div></div>
+      </div>
+    </section>
+
+    <!-- TL;DR -->
+    <section class="section" id="tldr" style="padding-top:56px">
+      <div class="section-header">
+        <span class="section-label">TL;DR</span>
+        <span class="section-divider"></span>
+        <span class="section-num">at a glance</span>
+      </div>
+
+      <figure class="figure">
+        <img class="figure-img-fit" src="../supporting-images/hdipitc_0001.png" />
+        <figcaption class="figure-caption"><b>FIG.01</b>Final workflow updates to improve guidance.</figcaption>
+      </figure>
+      <br/>
+      
+      <div class="cards-grid cols-3">
+        <div class="card"><span class="card-accent-bar bar-lime"></span><div class="card-label lime">Problem</div><p class="card-desc">Inappropriate antibiotic prescribing for UTIs is a primary driver of antimicrobial resistance. Reducing it depends on an uncontaminated urine sample — yet users are largely left to figure collection out on their own.</p></div>
+        <div class="card"><span class="card-accent-bar bar-blue"></span><div class="card-label blue">Research goal</div><p class="card-desc">Identify where and why users struggle to prepare for and collect an at-home clean-catch sample, with particular attention to breakdowns that increase contamination risk and uncertainty.</p></div>
+        <div class="card"><span class="card-accent-bar bar-amber"></span><div class="card-label amber">Approach</div><p class="card-desc">A formative, remote usability test in participants' own bathrooms — think-aloud, interviews, a full scenario simulation, and probing of realistic error scenarios.</p></div>
+      </div>
+      <div class="stats-row mt28">
+        <div class="stat"><div class="stat-num accent">5</div><div class="stat-label">Participants</div></div>
+        <div class="stat"><div class="stat-num accent2">4</div><div class="stat-label">Methods used</div></div>
+        <div class="stat"><div class="stat-num accent3">4</div><div class="stat-label">Error scenarios probed</div></div>
+        <div class="stat"><div class="stat-num">3</div><div class="stat-label">Preliminary findings</div></div>
+      </div>
+    </section>
+
+    <!-- 01 BACKGROUND -->
+    <section class="section" id="background">
+      <div class="section-header">
+        <span class="section-label">Background &amp; Context</span>
+        <span class="section-divider"></span>
+        <span class="section-num">01</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">Why the "clean" in clean-catch matters</h2>
+      <p class="intro-lead">Culture-driven diagnosis is the gold standard of care for UTIs. But when samples are contaminated or patients can't access a facility, providers may default to empiric treatment — feeding the very resistance the culture is meant to prevent.</p>
+
+      <div class="stats-row mt40">
+        <div class="stat"><div class="stat-num accent">50%</div><div class="stat-label">Lifetime prevalence of ≥1 symptomatic UTI in women · ref 4</div></div>
+        <div class="stat"><div class="stat-num accent2">26%</div><div class="stat-label">Demonstrate a recurrence within 6 months · ref 5</div></div>
+        <div class="stat"><div class="stat-num accent3">30–50%</div><div class="stat-label">Estimated contamination rate of collected samples · ref 6,7</div></div>
+        <div class="stat"><div class="stat-num">Gold</div><div class="stat-label">Culture remains the standard of diagnosis · ref 3</div></div>
+      </div>
+
+      <div class="split-grid split-bias mt40">
+        <div class="prose">
+          <p>A group of urologists from UW Medicine will be piloting a home-testing program aimed at improving access to urine cultures and at trialing alternative urine-collection devices. To help inform the at-home testing protocol, our usability test focused on the <strong>clean-catch instructions</strong> — and specifically where users felt least confident in their ability to produce a "clean" sample.</p>
+          <p>Inappropriate prescribing for UTIs is among the primary drivers of antimicrobial resistance, one of the most pressing public-health threats of the 21st century. A critical factor in reducing unnecessary prescribing is obtaining an uncontaminated sample — yet whether at home or in a clinic, users are largely left to figure it out on their own.</p>
+        </div>
+        <div class="aside-block">
+          <div class="aside-block-title">Primary research questions</div>
+          <ul class="aside-list">
+            <li>How do users' interpretations of at-home collection instructions shape their actions during preparation and collection?</li>
+            <li>Where do usability and behavioral breakdowns occur that increase contamination risk?</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout blue mt40">
+        <div class="k">The core tension</div>
+        <p class="callout-text">Every contaminated sample is a decision point where a provider may treat on symptoms alone — and every empiric prescription is a small push toward resistance.</p>
+      </div>
+    </section>
+
+    <!-- 02 METHODOLOGY -->
+    <section class="section" id="methodology">
+      <div class="section-header">
+        <span class="section-label">Methodology</span>
+        <span class="section-divider"></span>
+        <span class="section-num">02</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">Testing in the place it actually happens</h2>
+      <p class="intro-lead">We ran remote, 60-minute sessions in participants' own bathrooms to maximize naturalistic conditions — no biological sample was collected, and the camera stayed off during the simulation for privacy while the moderator waited on call.</p>
+
+      <div class="mini-label mt40">Participants</div>
+      <div class="split-grid split-2">
+        <div class="aside-block">
+          <div class="aside-block-title">Target</div>
+          <ul class="aside-list check">
+            <li>Female anatomy, age 18+</li>
+            <li>Greater Seattle area</li>
+            <li>Prior UTI experience</li>
+            <li>Comfortable discussing UTI topics</li>
+          </ul>
+        </div>
+        <div class="aside-block">
+          <div class="aside-block-title">Actual · n = 5</div>
+          <ul class="aside-list plus">
+            <li>Age range 18–48</li>
+            <li>2 with 1 prior UTI · 3 with 2–3 prior UTIs</li>
+            <li>4 English-speaking, 1 Vietnamese-speaking</li>
+            <li>Recruited from personal network</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="split-grid split-2 mt28">
+        <div class="aside-block">
+          <div class="aside-block-title">Sample collection kit</div>
+          <ul class="aside-list">
+            <li>3 antiseptic towelettes</li>
+            <li>1 collection cup</li>
+            <li>1 instruction sheet (English &amp; Vietnamese)</li>
+          </ul>
+        </div>
+        <div class="aside-block">
+          <div class="aside-block-title">Test environment</div>
+          <ul class="aside-list">
+            <li>Remote via Zoom — 60-minute sessions</li>
+            <li>Participants' home bathroom, naturalistic conditions</li>
+            <li>Camera off during simulation; moderator on call</li>
+            <li>One moderator, 1–3 note-takers (off camera)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mini-label mt48">Methods Used</div>
+      <div class="cards-grid">
+        <div class="card"><div class="card-label lime">Method 01</div><h4 class="card-title">Think-aloud protocol</h4><p class="card-desc">Participants verbalized their thoughts during all tasks, giving direct insight into interpretation and confusion in real time.</p></div>
+        <div class="card"><div class="card-label blue">Method 02</div><h4 class="card-title">Semi-structured interviews</h4><p class="card-desc">Open-ended questions before and after the simulation surfaced mental models, expectations, and perceived challenges.</p></div>
+        <div class="card"><div class="card-label amber">Method 03</div><h4 class="card-title">Scenario-based task simulation</h4><p class="card-desc">Participants used the provided kit to simulate the full collection process at home — no biological sample collected.</p></div>
+        <div class="card"><div class="card-label lime">Method 04</div><h4 class="card-title">Error scenario probing</h4><p class="card-desc">Four realistic error scenarios assessed how well participants recognized mistakes and what recovery strategies they reached for.</p></div>
+      </div>
+
+      <div class="mini-label mt48">The Process</div>
+      <div class="flow">
+        <div class="flow-step"><div class="fs-n">01</div><div class="fs-t">Pre-test questions</div></div>
+        <div class="flow-step"><div class="fs-n">02</div><div class="fs-t">Initial instruction review</div></div>
+        <div class="flow-step"><div class="fs-n">03</div><div class="fs-t">Collection simulation</div></div>
+        <div class="flow-step"><div class="fs-n">04</div><div class="fs-t">Post-simulation walkthrough</div></div>
+        <div class="flow-step"><div class="fs-n">05</div><div class="fs-t">Error handling &amp; recovery</div></div>
+        <div class="flow-step"><div class="fs-n">06</div><div class="fs-t">Post-test questions</div></div>
+      </div>
+    </section>
+
+    <!-- 03 FINDINGS -->
+    <section class="section" id="findings">
+      <div class="section-header">
+        <span class="section-label">Preliminary Findings</span>
+        <span class="section-divider"></span>
+        <span class="section-num">03</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">Where confidence and correctness diverge</h2>
+      <p class="intro-lead">Across five sessions, three patterns emerged — and in each, participants' felt confidence rarely matched the moments that most increase contamination risk.</p>
+
+      <!-- Finding 01 -->
+      <div class="finding-head mt48">
+        <div class="finding-badge fb-lime">🔬</div>
+        <div>
+          <div class="finding-kicker">Finding 01</div>
+          <div class="finding-name">Understanding of urine culture &amp; contamination</div>
+        </div>
+      </div>
+      <p class="prose" style="max-width:64ch;margin-bottom:20px">Even after reviewing the instructions, participants did not have a clear understanding of what contamination is or how this test differed from any other urine collection.</p>
+      <div class="split-grid split-2">
+        <div class="datastat"><span class="n lime">5/5</span><span class="t">were unsure how UTI testing differed from other urine tests.</span></div>
+        <div class="datastat"><span class="n lime">3/5</span><span class="t">felt hand-washing was the most important step — at odds with research pointing to genital flora as the largest contamination source.</span></div>
+      </div>
+      <p class="prose" style="max-width:64ch;margin-top:20px">Users may not understand the purpose of "midstream" collection, which is meant to void contamination from the urethra.</p>
+      <div class="quote-grid mt28">
+        <div class="quote"><p>"Not that I could not tell you… to my knowledge, it's all the same."</p><span class="who">— P1</span></div>
+        <div class="quote"><p>"I guess I am uneducated as to why something like the bacteria from surrounding skin would be an issue for a urine collection like this."</p><span class="who">— P4</span></div>
+      </div>
+
+      <!-- Finding 02 -->
+      <div class="finding-head mt48">
+        <div class="finding-badge fb-amber">⚠️</div>
+        <div>
+          <div class="finding-kicker">Finding 02</div>
+          <div class="finding-name">Error recovery</div>
+        </div>
+      </div>
+      <p class="prose" style="max-width:64ch;margin-bottom:20px">Responses varied widely — from "panic" to "readjust and keep going" — when participants were asked what they would do in a potentially contaminating scenario.</p>
+      <div class="split-grid split-2">
+        <div class="datastat"><span class="n amber">4/5</span><span class="t">felt it was not clear what to do next after making a mistake — yet 4/5 were also highly confident a small mistake wouldn't affect the sample. A dangerous combination.</span></div>
+        <div class="datastat"><span class="n amber">3/5</span><span class="t">didn't interpret the cup touching skin between their legs as a contamination risk.</span></div>
+      </div>
+      <div class="quote-grid mt28">
+        <div class="quote"><p>"Instructions didn't say that that was a problem… they just said don't touch the inside of the cup. So I don't think I would have had the thought that that would have been a problem."</p><span class="who">— P4</span></div>
+        <div class="quote"><p>"The urge as a female [is] to want to hold the cup up to directly touch your skin so that you're not accidentally urinating on yourself."</p><span class="who">— P1</span></div>
+      </div>
+
+      <!-- Finding 03 -->
+      <div class="finding-head mt48">
+        <div class="finding-badge fb-blue">📋</div>
+        <div>
+          <div class="finding-kicker">Finding 03</div>
+          <div class="finding-name">Lack of instruction &amp; communication</div>
+        </div>
+      </div>
+      <p class="prose" style="max-width:64ch;margin-bottom:20px">The testing process is often not supported by clear, consistent, or accessible communication. Participants reported receiving only verbal instructions in past experiences — or none at all.</p>
+      <div class="cards-grid">
+        <div class="card"><span class="card-accent-bar bar-blue"></span><div class="card-label blue">3/5 participants</div><p class="card-desc">Reported only receiving verbal instructions in past experiences. Some providers skip testing and prescribe medication based on symptoms alone.</p></div>
+        <div class="card"><span class="card-accent-bar bar-amber"></span><div class="card-label amber">Accessibility</div><p class="card-desc">Language barriers and unfamiliar medical terms (e.g. "labia") limit accessibility. Step 3 — holding the labia — was identified by 3/5 as the most difficult step.</p></div>
+      </div>
+      <p class="prose" style="max-width:64ch;margin-top:20px">Physical challenges compounded the confusion: aiming, cup size, splashing, overflow, and multi-tasking were all cited as friction points.</p>
+      <div class="quote-grid mt28">
+        <div class="quote"><p>"I was just given an antibiotic and told to come back in a few days."</p><span class="who">— P4</span></div>
+        <div class="quote"><p>"Is this far enough, did I clean enough, is this all good? Would be where the confusion and adjustment would come in."</p><span class="who">— P1</span></div>
+      </div>
+    </section>
+
+    <!-- 04 RECOMMENDATIONS -->
+    <section class="section" id="recommendations">
+      <div class="section-header">
+        <span class="section-label">Recommendations</span>
+        <span class="section-divider"></span>
+        <span class="section-num">04</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">Designing for a confident, clean catch</h2>
+      <p class="intro-lead">The friction clusters into four recurring failure points. Each points to a concrete change in the instructions, the kit, or both.</p>
+
+      <div class="mini-label mt40">Key user friction points</div>
+      <div class="cards-grid">
+        <div class="card"><span class="card-accent-bar bar-lime"></span><div class="card-label lime">Contamination clarity</div><p class="card-desc" style="font-style:italic;color:var(--text)">"I guess I am uneducated as to why something like the bacteria from surrounding skin would be an issue…"</p><p class="card-desc" style="margin-top:8px;font-family:var(--mono);font-size:0.62rem;color:var(--text3)">— P4</p></div>
+        <div class="card"><span class="card-accent-bar bar-blue"></span><div class="card-label blue">Midstream confusion</div><p class="card-desc" style="font-style:italic;color:var(--text)">"I'm not sure what part to collect: the initial part, the end, or the middle."</p><p class="card-desc" style="margin-top:8px;font-family:var(--mono);font-size:0.62rem;color:var(--text3)">— P2</p></div>
+        <div class="card"><span class="card-accent-bar bar-amber"></span><div class="card-label amber">No error-recovery guidance</div><p class="card-desc" style="font-style:italic;color:var(--text)">"There's no instruction here on what happens if something goes wrong."</p><p class="card-desc" style="margin-top:8px;font-family:var(--mono);font-size:0.62rem;color:var(--text3)">— P4</p></div>
+        <div class="card"><span class="card-accent-bar bar-lime"></span><div class="card-label lime">Physical difficulty</div><p class="card-desc" style="font-style:italic;color:var(--text)">"Peeing in the cup is hard. It's hard to aim because of the size and it's easy to spill."</p><p class="card-desc" style="margin-top:8px;font-family:var(--mono);font-size:0.62rem;color:var(--text3)">— P5</p></div>
+      </div>
+
+      <div class="split-grid split-2 mt48">
+        <div>
+          <div class="mini-label">Instructions</div>
+          <div class="timeline">
+            <div class="step done"><div class="step-num">Rec 01</div><div class="step-title">Sequence &amp; highlight</div><div class="step-desc">Clear step sequencing, highlighted critical steps, visual diagrams, and an appropriate level of detail.</div></div>
+            <div class="step done"><div class="step-num">Rec 02</div><div class="step-title">Troubleshooting path</div><div class="step-desc">Provide error-handling guidance and a place to seek help in the event of any mistakes.</div></div>
+            <div class="step done"><div class="step-num">Rec 03</div><div class="step-title">Define the vocabulary</div><div class="step-desc">Explain "midstream urine collection," "perineal flora," and "labia" clearly.</div></div>
+            <div class="step done"><div class="step-num">Rec 04</div><div class="step-title">Explain contamination</div><div class="step-desc">What it means, why it matters, and what the consequences and scenarios are.</div></div>
+            <div class="step done"><div class="step-num">Rec 05</div><div class="step-title">Explain what happens next</div><div class="step-desc">Storage, delivery, and what to expect after the collection.</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="mini-label">Materials &amp; components</div>
+          <div class="aside-block">
+            <ul class="aside-list">
+              <li>Consider material ergonomics across body sizes and physical abilities.</li>
+              <li>Improve cup usability for aiming and handling.</li>
+              <li>Use visual language that specifies sample volume and expectations.</li>
+              <li>Make cup packaging easy to open.</li>
+              <li>Consider collection aids that remove the need to hold the cup.</li>
+              <li>Include extra containers for mistakes, gloves for hygiene, and additional wipes (3× preferred).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout mt48">
+        <div class="k">"If you could change anything about the UTI testing process, what would it be?"</div>
+        <p class="callout-text">"If there were something I could just sit on and pee normally without having to hold a cup, that would be the most useful." — P5</p>
+      </div>
+      <div class="quote-grid mt20">
+        <div class="quote"><p>"Change the cup design — as a female it's hard to know where to aim to get the sample into the cup."</p><span class="who">— P3</span></div>
+        <div class="quote"><p>"Add an FAQ or instructions for what to do if something goes wrong during the collection."</p><span class="who">— P2</span></div>
+      </div>
+    </section>
+
+    <!-- 05 REFLECTIONS -->
+    <section class="section" id="reflections">
+      <div class="section-header">
+        <span class="section-label">Reflections</span>
+        <span class="section-divider"></span>
+        <span class="section-num">05</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:24px">What we'd carry into the next study</h2>
+
+      <div class="cards-grid cols-3 mt8">
+        <div class="card"><span class="card-accent-bar bar-lime"></span><div class="card-label lime">Reflection 01</div><h4 class="card-title">Recruitment strategy</h4><p class="card-desc">Recruiting from people you know can be a good option for usability tests on sensitive topics — participant comfort is essential to obtaining candid responses.</p></div>
+        <div class="card"><span class="card-accent-bar bar-blue"></span><div class="card-label blue">Reflection 02</div><h4 class="card-title">Screening design</h4><p class="card-desc">Keep the screening survey simple and clear; collect only meaningful information and avoid survey fatigue before the study even begins.</p></div>
+        <div class="card"><span class="card-accent-bar bar-amber"></span><div class="card-label amber">Reflection 03</div><h4 class="card-title">Moderation tone</h4><p class="card-desc">Remember you're talking to people. Keep the moderation prompt friendly, warm, and short — clinical detachment can inhibit authentic sharing.</p></div>
+      </div>
+
+      <div class="callout blue mt40">
+        <div class="k">Study ethos</div>
+        <p class="callout-text">The most confident participant and the most contaminated sample can be the same person — so the design has to close the gap between feeling done and being clean.</p>
+      </div>
+
+      <div class="mini-label mt48">Sources</div>
+      <ul class="sources">
+        <li><span class="sn">01</span> WHO, 2023.</li>
+        <li><span class="sn">02</span> Flores-Mireles et al., <em>Nature Reviews Microbiology</em>, 2015.</li>
+        <li><span class="sn">03</span> Sabih, A., &amp; Leslie, S. W. (2023). Complicated urinary tract infections. In <em>StatPearls</em>. StatPearls Publishing.</li>
+        <li><span class="sn">04</span> Al-Badr, A., &amp; Al-Shaikh, G. (2013). Recurrent Urinary Tract Infections Management in Women: A review. <em>Sultan Qaboos University Medical Journal</em>, 13(3), 359–367.</li>
+        <li><span class="sn">05</span> Kim, A., et al. (2021). What is the Cause of Recurrent Urinary Tract Infection? <em>International Neurourology Journal</em>, 25(3), 192–201.</li>
+        <li><span class="sn">06</span> Lifshitz, E., &amp; Kramer, L. (2000). Outpatient urine culture: does collection technique matter? <em>Archives of Internal Medicine</em>, 160(16), 2537–2540.</li>
+        <li><span class="sn">07</span> ScienceDirect, S0020748922001547.</li>
+      </ul>
+
+      <div class="page-nav mt48">
+        <div class="closing">Closing the gap between <em>feeling done</em> and <em>being clean</em>.</div>
+        <div class="foot-credit">
+          <b>HOW DO I PEE IN THIS CUP?</b> — CLEAN-CATCH UTI USABILITY STUDY<br>
+          HCDE · UW MEDICINE · 2024<br>
+          ANH HUA · CHRISTOPHER JONES · JULIA BROOKS · ZHUOLIN LI
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  var sections = ['overview','background','methodology','findings','recommendations','reflections'];
+  var labels = {overview:'Overview',background:'Background & Context',methodology:'Methodology',findings:'Findings',recommendations:'Recommendations',reflections:'Reflections'};
+  var links = {};
+  document.querySelectorAll('.nav-link').forEach(function(a){ links[a.getAttribute('data-target')] = a; });
+  var mobile = document.getElementById('mobilePhase');
+  var current = null;
+
+  function navKey(id){ return id === 'tldr' ? 'overview' : id; }
+
+  function setActive(id){
+    var key = navKey(id);
+    if(key === current) return; current = key;
+    Object.keys(links).forEach(function(k){ links[k].classList.toggle('active', k === key); });
+    if(mobile) mobile.textContent = labels[key] || '';
+  }
+
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ setActive(e.target.id); } });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    ['overview','tldr'].concat(sections.slice(1)).forEach(function(id){
+      var el = document.getElementById(id); if(el) obs.observe(el);
+    });
+  }
+  setActive('overview');
+})();
+</script>
+</body>
+</html>

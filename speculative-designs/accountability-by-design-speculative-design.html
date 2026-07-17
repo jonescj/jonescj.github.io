@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="../supporting-images/fav.png">
+<title>Accountability by Design — Speculative Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0c0c0e;
+  --bg2:       #111114;
+  --bg3:       #18181d;
+  --surface:   #1e1e25;
+  --border:    #2a2a35;
+  --border2:   #3a3a48;
+  --text:      #e8e8f0;
+  --text2:     #9898b0;
+  --text3:     #5a5a72;
+  --accent:    #efa15c;   /* amber — boundary contact / alert */
+  --accent2:   #6ec9d0;   /* cyan  — audit trail / notification */
+  --accent3:   #cf87e8;   /* violet — escalation / higher-risk zone */
+  --mono:      'DM Mono', monospace;
+  --serif:     'DM Serif Display', serif;
+  --sans:      'DM Sans', sans-serif;
+  --nav-w:     240px;
+  --max-w:     880px;
+}
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+.layout { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--nav-w); min-height: 100vh;
+  position: fixed; top: 0; left: 0;
+  display: flex; flex-direction: column;
+  padding: 40px 0 28px;
+  border-right: 1px solid var(--border);
+  background: var(--bg); z-index: 100;
+}
+.sidebar-back { padding: 0 28px 28px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+.brand-lockup { display:flex; align-items:center; gap:11px; margin-bottom: 16px; }
+.brand-mark { flex:none; }
+.brand-name { font-family: var(--serif); font-size: 1.05rem; color: var(--text); line-height: 1.2; display: block; }
+.brand-title { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; }
+.back-link { font-family: var(--mono); font-size: 0.68rem; color: var(--text2); text-decoration: none; letter-spacing: 0.06em; display: inline-flex; align-items: center; gap: 8px; transition: gap 0.15s, color 0.15s; }
+.back-link:hover { color: var(--accent); gap: 11px; }
+.back-link-here { font-family: var(--mono); font-size: 0.66rem; text-decoration: none; letter-spacing: 0.05em; display: block; color: var(--text3); margin-top: 8px; transition: color 0.15s; }
+.back-link-here:hover { color: var(--accent); }
+.nav-list { list-style: none; flex: 1; padding: 0 14px; }
+.nav-item { margin-bottom: 1px; }
+.nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: 6px; text-decoration: none;
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 400; color: var(--text2);
+  transition: all 0.15s ease; cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-link:hover { color: var(--text); background: var(--surface); }
+.nav-link.active { color: var(--text); background: var(--surface); font-weight: 500; }
+.nav-link.active .nav-dot { background: var(--accent); box-shadow: 0 0 0 3px rgba(239,161,92,0.15); }
+.nav-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border2); flex-shrink: 0; transition: all 0.15s; }
+.nav-index { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); margin-left: auto; }
+
+.sidebar-footer { padding: 24px 28px 0; border-top: 1px solid var(--border); display: flex; gap: 12px; }
+.social-link { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); text-decoration: none; letter-spacing: 0.08em; transition: color 0.15s; }
+.social-link:hover { color: var(--accent); }
+
+/* ── Main ── */
+.main { margin-left: var(--nav-w); flex: 1; padding: 0 64px 120px; max-width: calc(var(--max-w) + 128px); }
+
+/* ── Sections ── */
+.section { padding-top: 68px; padding-bottom: 52px; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: none; }
+.section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px; }
+.section-label { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; white-space:nowrap; }
+.section-divider { flex: 1; height: 1px; background: var(--border); }
+.section-num { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); }
+
+/* ── Breadcrumb ── */
+.breadcrumb { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 22px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.breadcrumb a { color: var(--text2); text-decoration: none; transition: color 0.15s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .sep { color: var(--border2); }
+.breadcrumb .current { color: var(--text); }
+
+/* ── Hero ── */
+.detail-hero { padding-top: 56px; padding-bottom: 8px; }
+.hero-eyebrow { font-family: var(--mono); font-size: 0.72rem; color: var(--accent2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.hero-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent2); }
+.hero-grid { display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 44px; align-items:center; }
+.detail-title { font-family: var(--serif); font-size: clamp(2.4rem, 4.6vw, 3.7rem); line-height: 1.08; color: var(--text); margin-bottom: 18px; letter-spacing: -0.01em; }
+.detail-title em { font-style: italic; color: var(--accent); }
+.detail-subtitle { font-family: var(--sans); font-size: 1.05rem; color: var(--text2); font-weight: 300; margin-bottom: 28px; line-height: 1.7; }
+.hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.tag { font-family: var(--mono); font-size: 0.7rem; padding: 4px 10px; border-radius: 3px; letter-spacing: 0.05em; }
+.tag-amber { background: rgba(239,161,92,0.08); color: var(--accent);  border: 1px solid rgba(239,161,92,0.22); }
+.tag-cyan  { background: rgba(110,201,208,0.08); color: var(--accent2); border: 1px solid rgba(110,201,208,0.22); }
+.tag-violet{ background: rgba(207,135,232,0.08); color: var(--accent3); border: 1px solid rgba(207,135,232,0.22); }
+
+/* signal / zone art */
+.signal-stage { position: relative; }
+@keyframes ping { 0%{transform:scale(.30);opacity:.9} 70%{opacity:0} 100%{transform:scale(1.9);opacity:0} }
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+@keyframes flare { 0%,100%{opacity:.25} 50%{opacity:1} }
+.ring { transform-origin: center; animation: ping 5.4s cubic-bezier(.2,.6,.3,1) infinite; }
+.ring.r2 { animation-delay: 1.8s; } .ring.r3 { animation-delay: 3.6s; }
+.agentglyph { animation: bob 4.4s ease-in-out infinite; transform-origin: center; }
+.contact-flare { animation: flare 2.6s ease-in-out infinite; transform-origin:center; }
+@media (prefers-reduced-motion: reduce){ .ring, .agentglyph, .contact-flare { animation: none; } }
+.stage-cap { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; text-align:center; margin-top: 12px; }
+
+/* ── Meta bar ── */
+.meta-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 40px; }
+.meta-cell { background: var(--bg2); padding: 20px 22px; }
+.meta-key { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.meta-val { font-size: 0.86rem; color: var(--text); line-height: 1.45; }
+
+/* ── Prose ── */
+.prose p { font-size: 0.97rem; color: var(--text2); font-weight: 300; line-height: 1.85; margin-bottom: 20px; }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong, strong { font-weight: 500; color: var(--text); }
+.prose em { color: var(--text); font-style: italic; }
+.intro-lead { font-size: 1.08rem; color: var(--text2); font-weight: 300; line-height: 1.75; max-width: 64ch; }
+.intro-lead em { font-style: italic; color: var(--text); }
+
+/* ── Callout ── */
+.callout { border-left: 2px solid var(--accent); background: linear-gradient(90deg, rgba(239,161,92,0.05), transparent); padding: 22px 26px; border-radius: 0 6px 6px 0; margin: 28px 0; }
+.callout .k { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; }
+.callout-text { font-family: var(--serif); font-size: 1.24rem; line-height: 1.42; color: var(--text); font-style: italic; }
+.callout.cyan { border-left-color: var(--accent2); background: linear-gradient(90deg, rgba(110,201,208,0.05), transparent); }
+.callout.cyan .k { color: var(--accent2); }
+.callout.violet { border-left-color: var(--accent3); background: linear-gradient(90deg, rgba(207,135,232,0.05), transparent); }
+.callout.violet .k { color: var(--accent3); }
+
+/* ── Grids ── */
+.split-grid { display: grid; gap: 40px; align-items: start; }
+.split-2 { grid-template-columns: 1fr 1fr; }
+.split-bias { grid-template-columns: 1.15fr 0.85fr; }
+.mt8{margin-top:8px}.mt20{margin-top:20px}.mt28{margin-top:28px}.mt40{margin-top:40px}.mt48{margin-top:48px}
+.subhead { font-family: var(--serif); font-size: 1.5rem; color: var(--text); margin-bottom: 12px; line-height:1.2; }
+.mini-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 16px; }
+
+/* ── Cards grid ── */
+.cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.cards-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.card { background: var(--bg2); padding: 26px; transition: background 0.15s; position: relative; }
+.card:hover { background: var(--bg3); }
+.card-accent-bar { position: absolute; top: 0; left: 0; width: 3px; height: 100%; }
+.bar-amber{background:var(--accent)} .bar-cyan{background:var(--accent2)} .bar-violet{background:var(--accent3)}
+.card-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+.card-label.amber{color:var(--accent)} .card-label.cyan{color:var(--accent2)} .card-label.violet{color:var(--accent3)}
+.card-title { font-family: var(--serif); font-size: 1.18rem; color: var(--text); margin-bottom: 10px; line-height: 1.25; }
+.card-desc { font-size: 0.87rem; color: var(--text2); line-height: 1.65; font-weight: 300; }
+.card-desc strong { color: var(--text); font-weight: 500; }
+.card-n { font-family: var(--serif); font-size: 1.8rem; color: var(--accent); line-height:1; float:left; margin: 2px 14px 0 0; }
+
+/* mitigation cards */
+.card .mit { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 0.83rem; color: var(--text2); font-weight:300; line-height:1.6; display:flex; gap:9px; }
+.card .mit::before { content: '→'; font-family: var(--mono); font-size: 0.72rem; color: var(--accent); margin-top: 2px; }
+.card .mit .ml { font-family: var(--mono); font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color: var(--text3); display:block; margin-bottom: 3px; }
+
+/* ── Stats ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.stat { background: var(--bg2); padding: 24px 26px; }
+.stat-num { font-family: var(--serif); font-size: 1.85rem; line-height: 1; margin-bottom: 8px; color: var(--text); }
+.stat-num.accent { color: var(--accent); } .stat-num.accent2 { color: var(--accent2); } .stat-num.accent3 { color: var(--accent3); }
+.stat-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; line-height:1.4; }
+
+/* ── Incident cards ── */
+.exp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.exp-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 22px; transition: border-color 0.2s; }
+.exp-card:hover { border-color: var(--border2); }
+.exp-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.exp-status { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 3px; text-transform:uppercase; background: rgba(239,161,92,0.1); color: var(--accent); }
+.exp-idx { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); }
+.exp-title { font-family: var(--serif); font-size: 1.05rem; color: var(--text); margin-bottom: 6px; }
+.exp-desc { font-size: 0.83rem; color: var(--text2); font-weight: 300; line-height: 1.6; }
+
+/* ── Before/after ── */
+.ba { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: stretch; }
+.ba .box { border: 1px solid var(--border); border-radius: 8px; padding: 24px; background: var(--bg2); }
+.ba .box.after { border-color: rgba(239,161,92,0.4); background: linear-gradient(180deg, rgba(239,161,92,0.04), var(--bg2)); }
+.ba .lab { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 14px; }
+.ba .box.after .lab { color: var(--accent); }
+.ba .box p { font-size: 0.9rem; color: var(--text2); font-weight:300; line-height:1.6; }
+.ba .box.after p { color: var(--text); }
+.ba-list { list-style:none; }
+.ba-list li { font-size: 0.88rem; color: var(--text2); font-weight:300; line-height:1.5; padding: 8px 0; border-bottom: 1px solid var(--border); display:flex; gap:9px; }
+.ba-list li:last-child { border-bottom:none; }
+.ba-list li::before { content: '·'; color: var(--text3); }
+.ba .arrow { font-family: var(--mono); color: var(--accent); font-size: 1.3rem; align-self:center; }
+
+/* ── Chips ── */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--mono); font-size: 0.72rem; border: 1px solid var(--border2); background: var(--bg2); border-radius: 100px; padding: 6px 14px; color: var(--text2); }
+.chip b { color: var(--text); }
+
+/* ── Zone diagram ── */
+.zone-fig { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--bg2); }
+.zone-body { padding: 30px; display:flex; gap: 32px; align-items:center; }
+.zone-legend { list-style:none; flex:1; }
+.zone-legend li { display:flex; gap:12px; align-items:flex-start; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.zone-legend li:last-child { border-bottom:none; }
+.zone-swatch { width: 11px; height:11px; border-radius:3px; flex:none; margin-top:5px; }
+.zone-name { font-family: var(--mono); font-size:0.64rem; letter-spacing:0.08em; text-transform:uppercase; color: var(--text); display:block; margin-bottom:3px; }
+.zone-desc { font-size:0.82rem; color: var(--text2); font-weight:300; line-height:1.5; }
+.figure-caption { font-family: var(--mono); font-size: 0.64rem; color: var(--text3); padding: 12px 18px; border-top: 1px solid var(--border); letter-spacing: 0.03em; display:flex; gap:8px; }
+.figure-caption b { color: var(--accent); font-weight: 500; }
+
+/* ── Buttons ── */
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.btn { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 11px 20px; border-radius: 4px; cursor: pointer; border: none; text-decoration: none; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 7px; }
+.btn-primary { background: var(--accent); color: #0c0c0e; font-weight: 500; }
+.btn-primary:hover { background: #f6b477; transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+.btn-ghost:hover { color: var(--text); border-color: var(--text3); background: var(--surface); }
+
+/* ── Page nav / footer ── */
+.page-nav { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 8px; }
+.closing { font-family: var(--serif); font-size: clamp(1.6rem,3vw,2.3rem); line-height: 1.25; color: var(--text); max-width: 22ch; }
+.closing em { font-style: italic; color: var(--accent); }
+.foot-credit { font-family: var(--mono); font-size: 0.66rem; color: var(--text3); line-height: 2; margin-top: 24px; }
+.foot-credit b { color: var(--text2); }
+
+/* ── Mobile topbar ── */
+.topbar { display:none; position: fixed; top:0; left:0; right:0; z-index: 120; background: rgba(12,12,14,.88); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 12px 20px; align-items:center; justify-content: space-between; }
+.topbar .tb-brand { display:flex; align-items:center; gap:9px; font-family: var(--serif); font-size: 1rem; color: var(--text); text-decoration:none; }
+.topbar .tb-phase { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+  :root { --nav-w: 0px; }
+  .sidebar { display: none; }
+  .topbar { display: flex; }
+  .main { margin-left: 0; padding: 56px 22px 80px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+  .split-2, .split-bias { grid-template-columns: 1fr; }
+  .cards-grid, .cards-grid.cols-3 { grid-template-columns: 1fr; }
+  .meta-bar { grid-template-columns: 1fr 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .exp-grid { grid-template-columns: 1fr; }
+  .zone-body { flex-direction: column; }
+  .ba { grid-template-columns: 1fr; }
+  .ba .arrow { transform: rotate(90deg); text-align:center; }
+}
+
+/* focus */
+a:focus-visible, .btn:focus-visible, .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+.skip { position:absolute; left:-999px; top:0; background:var(--accent); color:#0c0c0e; padding:10px 16px; z-index:200; font-family:var(--mono); font-size:0.72rem; }
+.skip:focus { left:0; }
+
+.brand-link { text-decoration: none; }
+</style>
+</head>
+<body>
+<a href="#overview" class="skip">Skip to content</a>
+
+<!-- MOBILE TOPBAR -->
+<div class="topbar">
+  <a href="#overview" class="tb-brand">
+    <svg width="20" height="20" viewBox="0 0 26 26" aria-hidden="true"><rect x="4" y="14" width="18" height="4" rx="1" fill="var(--accent)"/><rect x="7" y="8" width="12" height="4" rx="1" fill="var(--accent2)"/><rect x="10" y="3" width="6" height="4" rx="1" fill="var(--accent3)"/></svg>
+    Accountability by Design
+  </a>
+  <span class="tb-phase" id="mobilePhase">Overview</span>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-back">
+      <div class="brand-lockup">
+        <svg class="brand-mark" width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="3" y="15" width="20" height="4.5" rx="1" fill="var(--accent)"/><rect x="6" y="8.5" width="14" height="4.5" rx="1" fill="var(--accent2)"/><rect x="9.5" y="2" width="7" height="4.5" rx="1" fill="var(--accent3)"/></svg>
+        <span>
+        <a href="../index.html" class="brand-link">
+          <span class="brand-name">C.J. Jones</span>
+        </a>
+          <span class="brand-title">CS · UX · MTH · ACS</span>
+        </span>
+      </div>
+      <a class="back-link" href="../index.html">← All projects</a>
+      <a class="back-link-here" href="accountability-by-design.html">↳ Accountability by Design</a>
+    </div>
+
+    <ul class="nav-list">
+      <li class="nav-item"><a class="nav-link" href="#overview" data-target="overview"><span class="nav-dot"></span>Overview<span class="nav-index">00</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#context" data-target="context"><span class="nav-dot"></span>Why Now<span class="nav-index">01</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#approach" data-target="approach"><span class="nav-dot"></span>The Approach<span class="nav-index">02</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#rationale" data-target="rationale"><span class="nav-dot"></span>Rationale<span class="nav-index">03</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#risks" data-target="risks"><span class="nav-dot"></span>Risks &amp; Challenges<span class="nav-index">04</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#alignment" data-target="alignment"><span class="nav-dot"></span>Alignment<span class="nav-index">05</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a class="social-link" href="mailto:sirhcse@gmail.com">EMAIL</a>
+      <a class="social-link" target="_blank" href="https://www.linkedin.com/in/sirhcse/">LINKEDIN</a>
+      <a class="social-link" target="_blank" href="https://forms.gle/ohrq7YSMyn58azLk9">ISSUES?</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO / OVERVIEW -->
+    <section class="detail-hero section" id="overview" style="border-bottom:1px solid var(--border)">
+      <div class="breadcrumb">
+        <a href="#overview">Speculative Design</a>
+        <span class="sep">/</span>
+        <span class="current">Accountability by Design</span>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <div class="hero-eyebrow">Agentic AI · Governance</div>
+          <h1 class="detail-title">Accountability <em>by Design</em></h1>
+          <p class="detail-subtitle">Rethinking how AI agents earn and lose trust — by building harm prevention into how an agent operates, instead of bolting it on after something goes wrong.</p>
+          <div class="hero-tags">
+            <span class="tag tag-amber">Speculative Design</span>
+            <span class="tag tag-cyan">AI Governance</span>
+            <span class="tag tag-violet">Trust &amp; Safety</span>
+          </div>
+        </div>
+        <div class="signal-stage" aria-hidden="true">
+          <svg viewBox="0 0 360 360" width="100%" role="img">
+            <circle cx="180" cy="180" r="176" fill="var(--bg2)" stroke="var(--border)"/>
+            <!-- tiered harm zones -->
+            <circle cx="180" cy="180" r="132" fill="none" stroke="var(--border)" stroke-width="1.2"/>
+            <circle cx="180" cy="180" r="132" fill="none" stroke="var(--accent3)" stroke-width="1.4" stroke-dasharray="2 8" opacity="0.55"/>
+            <circle cx="180" cy="180" r="96" fill="none" stroke="var(--accent2)" stroke-width="1.4" stroke-dasharray="2 7" opacity="0.6"/>
+            <circle cx="180" cy="180" r="60" fill="none" stroke="var(--border2)" stroke-width="1.2"/>
+            <!-- scanning pulse from agent -->
+            <g stroke="var(--accent)" fill="none" stroke-width="1.5">
+              <circle class="ring" cx="180" cy="180" r="50" opacity=".9"/>
+              <circle class="ring r2" cx="180" cy="180" r="50" opacity=".9"/>
+              <circle class="ring r3" cx="180" cy="180" r="50" opacity=".9"/>
+            </g>
+            <!-- boundary-contact flare where a path meets zone 2 -->
+            <g class="contact-flare">
+              <circle cx="276" cy="180" r="6" fill="var(--accent2)"/>
+              <circle cx="276" cy="180" r="12" fill="none" stroke="var(--accent2)" stroke-width="1.2"/>
+            </g>
+            <!-- agent path -->
+            <path d="M180 180 L228 150 L252 176 L276 180" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="228" cy="150" r="3" fill="var(--text3)"/>
+            <circle cx="252" cy="176" r="3" fill="var(--text3)"/>
+            <!-- agent node -->
+            <g class="agentglyph">
+              <path d="M180 164 l14 8 l0 16 l-14 8 l-14 -8 l0 -16 z" fill="var(--accent)"/>
+              <circle cx="180" cy="180" r="4.5" fill="var(--bg)"/>
+            </g>
+          </svg>
+          <div class="stage-cap">Fig.00 — an agent path meeting a harm-zone boundary</div>
+        </div>
+      </div>
+      <div class="meta-bar">
+        <div class="meta-cell"><div class="meta-key">Author</div><div class="meta-val">Christopher Jones</div></div>
+        <div class="meta-cell"><div class="meta-key">Type</div><div class="meta-val">Speculative design proposal</div></div>
+        <div class="meta-cell"><div class="meta-key">Framework</div><div class="meta-val">Tiered Accountability Architecture (TAA)</div></div>
+        <div class="meta-cell"><div class="meta-key">Focus</div><div class="meta-val">Agent accountability &amp; harm prevention</div></div>
+      </div>
+    </section>
+
+    <!-- HMW -->
+    <section class="section" id="hmw" style="padding-top:56px">
+      <div class="section-header">
+        <span class="section-label">How Might We</span>
+        <span class="section-divider"></span>
+        <span class="section-num">the question</span>
+      </div>
+      <div class="callout">
+        <div class="k">HMW</div>
+        <p class="callout-text">How might we design agentic AI systems so that accountability and harm prevention are built into how the agent operates, not added after the fact?</p>
+      </div>
+    </section>
+
+    <!-- 01 CONTEXT / WHY NOW -->
+    <section class="section" id="context">
+      <div class="section-header">
+        <span class="section-label">Why Now</span>
+        <span class="section-divider"></span>
+        <span class="section-num">01</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">Context and process</h2>
+      <p class="intro-lead">Agentic AI systems are being deployed faster than governance frameworks can respond. Real incidents make the consequences visible.</p>
+
+      <div class="mini-label mt40">Three incidents, one pattern</div>
+      <div class="exp-grid">
+        <div class="exp-card">
+          <div class="exp-card-header"><span class="exp-status">Unauthorized</span><span class="exp-idx">01</span></div>
+          <h3 class="exp-title">AWS internal agent</h3>
+          <p class="exp-desc">Deleted and rebuilt production infrastructure without authorization.</p>
+        </div>
+        <div class="exp-card">
+          <div class="exp-card-header"><span class="exp-status">Runaway loop</span><span class="exp-idx">02</span></div>
+          <h3 class="exp-title">$47,000 API loop</h3>
+          <p class="exp-desc">Ran for 264 hours before a human noticed it was happening.</p>
+        </div>
+        <div class="exp-card">
+          <div class="exp-card-header"><span class="exp-status">Liability</span><span class="exp-idx">03</span></div>
+          <h3 class="exp-title">Air Canada chatbot</h3>
+          <p class="exp-desc">Invented a policy that exposed the company to legal liability.</p>
+        </div>
+      </div>
+
+      <div class="stats-row mt28">
+        <div class="stat"><div class="stat-num accent">$47K</div><div class="stat-label">Runaway API spend</div></div>
+        <div class="stat"><div class="stat-num accent2">264</div><div class="stat-label">Hours before a human noticed</div></div>
+        <div class="stat"><div class="stat-num accent3">1</div><div class="stat-label">Invented airline policy</div></div>
+        <div class="stat"><div class="stat-num">0</div><div class="stat-label">Built accountability in</div></div>
+      </div>
+
+      <div class="callout violet mt40">
+        <div class="k">The common thread</div>
+        <p class="callout-text">In each case, the failure was an architecture that treated accountability as optional, not a feature.</p>
+      </div>
+    </section>
+
+    <!-- 02 APPROACH -->
+    <section class="section" id="approach">
+      <div class="section-header">
+        <span class="section-label">The Approach</span>
+        <span class="section-divider"></span>
+        <span class="section-num">02</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">A Tiered Accountability Architecture</h2>
+      <div class="prose" style="max-width:64ch">
+        <p>Here, we propose a <strong>Tiered Accountability Architecture (TAA)</strong>, a harm-zoned permission system built into an agent's operating layer. Entering a higher-risk zone means <strong>pre-consenting to a higher level of oversight</strong>. This is an attempt to evaluate accountability less as reaction but an ingrained condition of access.</p>
+      </div>
+
+      <div class="mini-label mt40">What boundary contact triggers</div>
+      <div class="cards-grid">
+        <div class="card"><span class="card-accent-bar bar-amber"></span><div class="card-label amber">Mechanism 01</div><h4 class="card-title">Rotating cryptographic barriers</h4><p class="card-desc">Contact with a boundary raises a barrier that rotates, so access can't be quietly reused or replayed.</p></div>
+        <div class="card"><span class="card-accent-bar bar-cyan"></span><div class="card-label cyan">Mechanism 02</div><h4 class="card-title">Real-time owner notifications</h4><p class="card-desc">The agent's owner is told as it happens — not after a report is compiled.</p></div>
+        <div class="card"><span class="card-accent-bar bar-violet"></span><div class="card-label violet">Mechanism 03</div><h4 class="card-title">Tiered escalation</h4><p class="card-desc">Contact escalates to the appropriate stakeholders for the zone the agent has entered.</p></div>
+        <div class="card"><span class="card-accent-bar bar-amber"></span><div class="card-label amber">Mechanism 04</div><h4 class="card-title">Visual audit trail</h4><p class="card-desc">Every path the agent has taken is rendered as a trail anyone can read and act on.</p></div>
+      </div>
+
+      <div class="zone-fig mt40">
+        <div class="zone-body">
+          <svg viewBox="0 0 200 200" width="188" height="188" aria-hidden="true" style="flex:none">
+            <circle cx="100" cy="100" r="94" fill="none" stroke="var(--accent3)" stroke-width="1.6" stroke-dasharray="2 7"/>
+            <circle cx="100" cy="100" r="68" fill="none" stroke="var(--accent2)" stroke-width="1.6" stroke-dasharray="2 6"/>
+            <circle cx="100" cy="100" r="42" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="2 5"/>
+            <circle cx="100" cy="100" r="18" fill="var(--bg3)" stroke="var(--border2)" stroke-width="1.4"/>
+            <path d="M100 100 l26 -6 l18 20 l24 4" fill="none" stroke="var(--text2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="100" cy="100" r="3.5" fill="var(--text)"/>
+            <circle cx="168" cy="118" r="4.5" fill="var(--accent3)"/>
+          </svg>
+          <ul class="zone-legend">
+            <li><span class="zone-swatch" style="background:var(--border2)"></span><span><span class="zone-name">Core · operating layer</span><span class="zone-desc">Where the agent runs. Accountability is a property of this layer, not a wrapper around it.</span></span></li>
+            <li><span class="zone-swatch" style="background:var(--accent)"></span><span><span class="zone-name">Zone 1 · low risk</span><span class="zone-desc">Entry is visible to users in real time, so monitoring is never a surprise.</span></span></li>
+            <li><span class="zone-swatch" style="background:var(--accent2)"></span><span><span class="zone-name">Zone 2 · elevated</span><span class="zone-desc">Boundary contact triggers rotating barriers and real-time owner notification.</span></span></li>
+            <li><span class="zone-swatch" style="background:var(--accent3)"></span><span><span class="zone-name">Zone 3 · high risk</span><span class="zone-desc">Access requires pre-consent to escalation, routed to the appropriate stakeholders.</span></span></li>
+          </ul>
+        </div>
+        <div class="figure-caption"><b>FIG.02</b> Harm zones and the agent path that crosses them — the basis of tiered, pre-consented oversight.</div>
+      </div>
+    </section>
+
+    <!-- 03 RATIONALE -->
+    <section class="section" id="rationale">
+      <div class="section-header">
+        <span class="section-label">Rationale</span>
+        <span class="section-divider"></span>
+        <span class="section-num">03</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">From outside monitoring to structural accountability</h2>
+      <p class="intro-lead">Current solutions monitor agents from the outside. None of them are designed for the two people who feel the consequences: the <em>agent owner</em> and the <em>affected user</em>.</p>
+
+      <div class="ba mt40">
+        <div class="box">
+          <div class="lab">Today · monitored from outside</div>
+          <ul class="ba-list">
+            <li>Sandboxes contain damage after the fact.</li>
+            <li>Observability tools log decisions.</li>
+            <li>Alerts notify developers.</li>
+          </ul>
+          <p style="margin-top:14px;font-style:italic">None of these are designed for the agent owner or the affected user.</p>
+        </div>
+        <div class="arrow">→</div>
+        <div class="box after">
+          <div class="lab">Proposed · accountability by design</div>
+          <p>The proposed solution reframes the problem so that accountability becomes a <strong style="color:var(--accent)">structural property of how the agent runs</strong> — not a report generated after something goes wrong.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 RISKS -->
+    <section class="section" id="risks">
+      <div class="section-header">
+        <span class="section-label">Risks &amp; Challenges</span>
+        <span class="section-divider"></span>
+        <span class="section-num">04</span>
+      </div>
+      <p class="intro-lead">Building accountability into the operating layer introduces its own failure modes. Each is paired with a mitigation.</p>
+
+      <div class="cards-grid mt40">
+        <div class="card">
+          <div class="card-label amber">Challenge 01</div>
+          <h4 class="card-title">Consent fatigue</h4>
+          <div class="mit"><span><span class="ml">Mitigation</span>Alert on patterns of contact, not every individual touch.</span></div>
+        </div>
+        <div class="card">
+          <div class="card-label cyan">Challenge 02</div>
+          <h4 class="card-title">Defining harm</h4>
+          <div class="mit"><span><span class="ml">Mitigation</span>Mitigate through participatory zone definition with diverse stakeholders.</span></div>
+        </div>
+        <div class="card">
+          <div class="card-label violet">Challenge 03</div>
+          <h4 class="card-title">False positive deletion</h4>
+          <div class="mit"><span><span class="ml">Mitigation</span>A mandatory appeal window should precede any permanent deletion.</span></div>
+        </div>
+        <div class="card">
+          <div class="card-label amber">Challenge 04</div>
+          <h4 class="card-title">Chilling effect</h4>
+          <div class="mit"><span><span class="ml">Mitigation</span>Zone 1 entry should be visible to users in real time so monitoring is never a surprise.</span></div>
+        </div>
+        <div class="card">
+          <div class="card-label cyan">Challenge 05</div>
+          <h4 class="card-title">Key management UX</h4>
+          <div class="mit"><span><span class="ml">Mitigation</span>Abstract cryptography entirely into plain-language controls non-engineers can use.</span></div>
+        </div>
+        <div class="card" style="background:linear-gradient(180deg, rgba(239,161,92,0.05), var(--bg2))">
+          <div class="card-label">Principle</div>
+          <p class="card-desc">Every mitigation keeps the same goal in view: oversight that a non-expert can actually understand, trust, and act on.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 ALIGNMENT -->
+    <section class="section" id="alignment">
+      <div class="section-header">
+        <span class="section-label">Alignment with Design Statement</span>
+        <span class="section-divider"></span>
+        <span class="section-num">05</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:24px">How the proposal holds to its principles</h2>
+
+      <div class="cards-grid cols-3">
+        <div class="card"><span class="card-accent-bar bar-amber"></span><div class="card-label amber">Bridging disciplines</div><p class="card-desc">The visual audit trail translates cryptographic governance into something a business owner or advocate can act on without engineering knowledge.</p></div>
+        <div class="card"><span class="card-accent-bar bar-cyan"></span><div class="card-label cyan">Adaptability over rigidity</div><p class="card-desc">Harm zones and escalation chains are reconfigurable as contexts change, not locked in at deployment.</p></div>
+        <div class="card"><span class="card-accent-bar bar-violet"></span><div class="card-label violet">Trust through reliability</div><p class="card-desc">Consistent, predictable boundary enforcement builds long-term trust with non-expert users.</p></div>
+        <div class="card"><span class="card-accent-bar bar-amber"></span><div class="card-label amber">Minimizing exclusion</div><p class="card-desc">Plain-language controls ensure non-technical owners can govern systems acting on their behalf.</p></div>
+        <div class="card"><span class="card-accent-bar bar-cyan"></span><div class="card-label cyan">Contextual inquiry</div><p class="card-desc">Harm zones are co-developed with users through contextual inquiry grounded in real environments and behaviors.</p></div>
+        <div class="card"><span class="card-accent-bar bar-violet"></span><div class="card-label violet">Iterative prototyping</div><p class="card-desc">The permission UX is validated through Wizard of Oz prototyping before any technical build begins.</p></div>
+      </div>
+
+      <div class="page-nav mt48">
+        <div class="closing">Accountability as an ingrained <em>condition of access</em> — not a report written after the damage.</div>
+        <div class="foot-credit">
+          <b>ACCOUNTABILITY BY DESIGN</b> — RETHINKING HOW AI AGENTS EARN AND LOSE TRUST<br>
+          SPECULATIVE DESIGN · TIERED ACCOUNTABILITY ARCHITECTURE<br>
+          CHRISTOPHER JONES
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  var labels = {overview:'Overview',context:'Why Now',approach:'The Approach',rationale:'Rationale',risks:'Risks & Challenges',alignment:'Alignment'};
+  var links = {};
+  document.querySelectorAll('.nav-link').forEach(function(a){ links[a.getAttribute('data-target')] = a; });
+  var mobile = document.getElementById('mobilePhase');
+  var current = null;
+
+  // treat #hmw as part of overview for nav purposes
+  function navKey(id){ return id === 'hmw' ? 'overview' : id; }
+
+  function setActive(id){
+    var key = navKey(id);
+    if(key === current) return; current = key;
+    Object.keys(links).forEach(function(k){ links[k].classList.toggle('active', k === key); });
+    if(mobile) mobile.textContent = labels[key] || '';
+  }
+
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ setActive(e.target.id); } });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    ['overview','hmw','context','approach','rationale','risks','alignment'].forEach(function(id){
+      var el = document.getElementById(id); if(el) obs.observe(el);
+    });
+  }
+  setActive('overview');
+})();
+</script>
+</body>
+</html>

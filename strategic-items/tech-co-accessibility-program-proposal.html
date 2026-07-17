@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="../supporting-images/fav.png">
+<title>Access by Design | Tech Co. Accessibility Program Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:#0c0c0e;
+  --bg2:#111114;
+  --bg3:#18181d;
+  --surface:#1e1e25;
+  --border:#2a2a35;
+  --border2:#3a3a48;
+  --text:#e8e8f0;
+  --text2:#9898b0;
+  --text3:#5a5a72;
+  --accent:#7fdcbe;   /* mint — the program, the standard */
+  --accent2:#8bb8ff;  /* blue — product teams, delivery */
+  --accent3:#f0bd72;  /* gold — risk, cost, exceptions */
+  --danger:#f08a86;   /* coral — the fragmented current state */
+  --serif:'DM Serif Display', serif;
+  --sans:'DM Sans', sans-serif;
+  --mono:'DM Mono', monospace;
+  --nav-w:240px;
+  --max-w:900px;
+}
+html { scroll-behavior:smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } * { animation:none !important; transition:none !important; } }
+body { background:var(--bg); color:var(--text); font-family:var(--sans); font-size:16px; line-height:1.65; min-height:100vh; }
+a { color:inherit; }
+.skip { position:absolute; left:-999px; top:0; z-index:500; background:var(--accent); color:#0c0c0e; padding:10px 16px; font-family:var(--mono); font-size:.76rem; }
+.skip:focus { left:0; }
+.layout { display:flex; min-height:100vh; }
+.sidebar { width:var(--nav-w); min-height:100vh; position:fixed; inset:0 auto 0 0; display:flex; flex-direction:column; padding:36px 0 24px; border-right:1px solid var(--border); background:var(--bg); z-index:100; }
+.sidebar-head { padding:0 26px 26px; border-bottom:1px solid var(--border); margin-bottom:24px; }
+.brand { font-family:var(--serif); font-size:1.02rem; display:block; margin-bottom:4px; line-height:1.2; }
+.brand-sub { color:var(--accent); font-family:var(--mono); font-size:.58rem; text-transform:uppercase; letter-spacing:.1em; white-space:nowrap; }
+.nav-list { list-style:none; padding:0 13px; flex:1; }
+.nav-link { display:flex; align-items:center; gap:10px; width:100%; padding:8px 12px; border-radius:6px; color:var(--text2); text-decoration:none; font-size:.82rem; }
+.nav-link:hover, .nav-link.active { background:var(--surface); color:var(--text); }
+.nav-dot { width:5px; height:5px; border-radius:50%; background:var(--border2); flex:none; }
+.nav-link.active .nav-dot { background:var(--accent); box-shadow:0 0 0 3px rgba(127,220,190,.15); }
+.nav-index { margin-left:auto; font-family:var(--mono); font-size:.62rem; color:var(--text3); }
+
+.main { margin-left:var(--nav-w); padding:0 64px 110px; max-width:calc(var(--max-w) + 128px); width:100%; }
+.topbar { display:none; }
+.section { padding:66px 0 52px; border-bottom:1px solid var(--border); }
+.section:last-child { border-bottom:0; }
+.section-header { display:flex; align-items:baseline; gap:14px; margin-bottom:30px; }
+.section-label { font-family:var(--mono); color:var(--accent); font-size:.68rem; text-transform:uppercase; letter-spacing:.15em; white-space:nowrap; }
+.section-divider { height:1px; background:var(--border); flex:1; }
+.section-num { font-family:var(--mono); color:var(--text3); font-size:.68rem; }
+.hero { padding-top:54px; }
+.eyebrow { display:flex; align-items:center; gap:10px; color:var(--accent2); font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; margin-bottom:18px; }
+.eyebrow::before { content:''; width:24px; height:1px; background:var(--accent2); }
+.hero-grid { display:grid; grid-template-columns:1.08fr .92fr; gap:44px; align-items:center; }
+h1 { font-family:var(--serif); font-size:clamp(2.6rem,5vw,4rem); line-height:1.08; letter-spacing:-.01em; margin-bottom:18px; }
+h1 em { color:var(--accent); font-style:italic; }
+.hero-sub { color:var(--text2); font-size:1.08rem; font-weight:300; line-height:1.75; max-width:61ch; }
+.tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:24px; }
+.tag { font-family:var(--mono); font-size:.68rem; padding:4px 10px; border-radius:3px; letter-spacing:.04em; border:1px solid; }
+.tag.a { color:var(--accent); background:rgba(127,220,190,.08); border-color:rgba(127,220,190,.22); }
+.tag.b { color:var(--accent2); background:rgba(139,184,255,.07); border-color:rgba(139,184,255,.24); }
+.tag.c { color:var(--accent3); background:rgba(243,189,114,.07); border-color:rgba(243,189,114,.24); }
+.hero-art { border:1px solid var(--border); border-radius:10px; background:var(--bg2); padding:18px; }
+.hero-art svg { width:100%; height:auto; display:block; }
+.figure-cap { margin-top:10px; text-align:center; color:var(--text3); font-family:var(--mono); font-size:.6rem; text-transform:uppercase; letter-spacing:.1em; }
+.meta { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; margin-top:38px; background:var(--border); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.meta-cell { background:var(--bg2); padding:18px 20px; }
+.meta-k { font-family:var(--mono); font-size:.59rem; text-transform:uppercase; letter-spacing:.11em; color:var(--text3); margin-bottom:7px; }
+.meta-v { font-size:.84rem; color:var(--text); line-height:1.45; }
+.note { margin-top:24px; padding:16px 18px; border:1px solid var(--border); border-radius:7px; background:var(--bg2); color:var(--text2); font-size:.82rem; }
+.subhead { font-family:var(--serif); font-size:1.8rem; line-height:1.18; margin-bottom:16px; }
+.lead { font-size:1.04rem; color:var(--text2); font-weight:300; line-height:1.78; max-width:66ch; }
+.prose { max-width:68ch; }
+.prose p { color:var(--text2); font-size:.94rem; font-weight:300; line-height:1.85; margin-bottom:18px; }
+.prose strong { color:var(--text); font-weight:500; }
+.callout { margin:28px 0; padding:22px 25px; border-left:2px solid var(--accent); border-radius:0 6px 6px 0; background:linear-gradient(90deg,rgba(127,220,190,.05),transparent); }
+.callout.blue { border-left-color:var(--accent2); background:linear-gradient(90deg,rgba(139,184,255,.06),transparent); }
+.callout.gold { border-left-color:var(--accent3); background:linear-gradient(90deg,rgba(243,189,114,.06),transparent); }
+.callout.red { border-left-color:var(--danger); background:linear-gradient(90deg,rgba(240,138,134,.06),transparent); }
+.callout-k { color:var(--accent); font-family:var(--mono); font-size:.61rem; text-transform:uppercase; letter-spacing:.15em; margin-bottom:10px; }
+.callout.blue .callout-k { color:var(--accent2); }
+.callout.gold .callout-k { color:var(--accent3); }
+.callout.red .callout-k { color:var(--danger); }
+.callout-text { font-family:var(--serif); font-size:1.2rem; line-height:1.45; font-style:italic; }
+.cards { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.cards.three { grid-template-columns:repeat(3,1fr); }
+.card { position:relative; background:var(--bg2); padding:24px; }
+.card-bar { position:absolute; inset:0 auto 0 0; width:3px; background:var(--accent); }
+.card-bar.blue { background:var(--accent2); }
+.card-bar.gold { background:var(--accent3); }
+.card-bar.red { background:var(--danger); }
+.card-label { font-family:var(--mono); color:var(--text3); font-size:.61rem; text-transform:uppercase; letter-spacing:.12em; margin-bottom:10px; }
+.card h3 { font-family:var(--serif); font-size:1.16rem; line-height:1.25; margin-bottom:9px; }
+.card p, .card li { color:var(--text2); font-size:.84rem; font-weight:300; line-height:1.65; }
+.card ul { padding-left:17px; }
+.mini { font-family:var(--mono); color:var(--text3); font-size:.62rem; text-transform:uppercase; letter-spacing:.13em; margin:42px 0 15px; }
+.split { display:grid; grid-template-columns:1fr 1fr; gap:34px; align-items:start; }
+.aside { border:1px solid var(--border); background:var(--bg2); border-radius:8px; padding:22px; }
+.aside h3 { font-family:var(--mono); font-size:.63rem; text-transform:uppercase; letter-spacing:.12em; color:var(--text3); margin-bottom:12px; }
+.aside ul { list-style:none; }
+.aside li { color:var(--text2); font-size:.84rem; line-height:1.55; padding:9px 0; border-bottom:1px solid var(--border); }
+.aside li:last-child { border-bottom:0; }
+.aside li::before { content:'→'; color:var(--accent); font-family:var(--mono); margin-right:8px; }
+.figure { border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--bg2); }
+.figure-body { padding:24px; }
+.figure-caption { padding:11px 16px; border-top:1px solid var(--border); color:var(--text3); font-family:var(--mono); font-size:.63rem; }
+.figure-caption b { color:var(--accent); }
+.system-map { display:grid; grid-template-columns:1fr auto 1.25fr auto 1fr; gap:14px; align-items:center; }
+.node { border:1px solid var(--border2); background:var(--bg3); border-radius:8px; padding:16px; min-height:122px; }
+.node h3 { font-family:var(--serif); font-size:1.04rem; margin-bottom:8px; }
+.node p { color:var(--text2); font-size:.78rem; line-height:1.55; }
+.arrow { color:var(--accent); font-family:var(--mono); font-size:1.15rem; }
+.feedback { grid-column:1 / -1; border-top:1px dashed var(--border2); margin-top:8px; padding-top:14px; color:var(--text2); font-size:.8rem; text-align:center; }
+.priorities { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; }
+.priority { border:1px solid var(--border); background:var(--bg2); border-radius:7px; padding:14px 12px; text-align:center; }
+.priority strong { display:block; font-family:var(--serif); font-size:1.28rem; color:var(--accent); margin-bottom:4px; }
+.priority span { font-family:var(--mono); font-size:.6rem; color:var(--text3); text-transform:uppercase; letter-spacing:.07em; line-height:1.4; }
+.table-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:8px; }
+table { width:100%; border-collapse:collapse; min-width:720px; background:var(--bg2); }
+caption { text-align:left; padding:14px 16px; font-family:var(--mono); color:var(--text3); font-size:.62rem; text-transform:uppercase; letter-spacing:.11em; border-bottom:1px solid var(--border); }
+th, td { padding:12px 13px; border-bottom:1px solid var(--border); border-right:1px solid var(--border); text-align:left; vertical-align:top; font-size:.78rem; }
+th:last-child, td:last-child { border-right:0; }
+tr:last-child td { border-bottom:0; }
+th { font-family:var(--mono); color:var(--text3); font-size:.6rem; text-transform:uppercase; letter-spacing:.08em; background:var(--bg3); }
+td { color:var(--text2); }
+td:first-child { color:var(--text); font-weight:500; }
+.ra { color:var(--accent); font-family:var(--mono); font-weight:700; }
+.ac { color:var(--accent2); font-family:var(--mono); font-weight:700; }
+.co { color:var(--accent3); font-family:var(--mono); font-weight:700; }
+.in { color:var(--text3); font-family:var(--mono); font-weight:700; }
+.roadmap { display:grid; grid-template-columns:repeat(24,1fr); gap:2px; min-width:840px; }
+.month { text-align:center; font-family:var(--mono); font-size:.54rem; color:var(--text3); padding-bottom:8px; }
+.phase { border:1px solid; border-radius:7px; padding:16px; min-height:138px; }
+.phase h3 { font-family:var(--serif); font-size:1rem; margin-bottom:6px; }
+.phase p { font-size:.75rem; color:var(--text2); line-height:1.5; }
+.p1 { grid-column:1 / 4; border-color:rgba(139,184,255,.45); background:rgba(139,184,255,.06); }
+.p2 { grid-column:4 / 7; border-color:rgba(127,220,190,.45); background:rgba(127,220,190,.05); }
+.p3 { grid-column:7 / 13; border-color:rgba(243,189,114,.45); background:rgba(243,189,114,.06); }
+.p4 { grid-column:13 / 19; border-color:rgba(139,184,255,.45); background:rgba(139,184,255,.06); }
+.p5 { grid-column:19 / 25; border-color:rgba(127,220,190,.45); background:rgba(127,220,190,.05); }
+.training { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.train-card { border:1px solid var(--border); border-radius:8px; background:var(--bg2); padding:20px; }
+.train-role { font-family:var(--mono); font-size:.61rem; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); margin-bottom:9px; }
+.train-card h3 { font-family:var(--serif); font-size:1.08rem; margin-bottom:8px; }
+.train-card p { color:var(--text2); font-size:.8rem; line-height:1.58; margin-bottom:7px; }
+.train-proof { color:var(--accent2) !important; font-family:var(--mono); font-size:.68rem !important; }
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.kpi { border:1px solid var(--border); background:var(--bg2); border-radius:8px; padding:18px; }
+.kpi .num { font-family:var(--serif); font-size:1.9rem; color:var(--accent); line-height:1; margin-bottom:8px; }
+.kpi .name { font-family:var(--mono); font-size:.62rem; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px; }
+.kpi p { color:var(--text2); font-size:.77rem; line-height:1.5; }
+.budget-total { display:flex; justify-content:space-between; align-items:end; gap:20px; padding:22px; border:1px solid rgba(127,220,190,.38); border-radius:8px; background:linear-gradient(180deg,rgba(127,220,190,.05),var(--bg2)); margin-top:14px; }
+.budget-total strong { font-family:var(--serif); font-size:2rem; color:var(--accent); }
+.risk-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.risk { border:1px solid var(--border); background:var(--bg2); border-radius:8px; padding:18px; }
+.risk h3 { font-family:var(--serif); font-size:1.04rem; margin-bottom:7px; }
+.risk p { color:var(--text2); font-size:.8rem; line-height:1.55; }
+.exclusions { border:1px solid var(--border); border-radius:8px; background:var(--bg2); padding:22px; }
+.exclusions li { color:var(--text2); margin:0 0 10px 20px; font-size:.86rem; line-height:1.6; }
+.exclusions strong { color:var(--text); }
+/* ── hero motion ── */
+@keyframes breathe { 0%,100%{ opacity:.72 } 50%{ opacity:1 } }
+@keyframes dashflow { to { stroke-dashoffset:-30; } }
+.pulse-ring { animation: breathe 6s ease-in-out infinite; transform-origin:center; }
+.flow { stroke-dasharray:4 5; animation: dashflow 3.2s linear infinite; }
+.flow.f2 { animation-delay:.8s } .flow.f3 { animation-delay:1.6s } .flow.f4 { animation-delay:2.4s }
+
+/* ── house chrome ── */
+.brand-lockup { display:flex; align-items:center; gap:11px; margin-bottom:14px; }
+.brand-mark { flex:none; }
+.back-link { font-family:var(--mono); font-size:.68rem; color:var(--text2); text-decoration:none; letter-spacing:.06em; display:inline-flex; align-items:center; gap:8px; transition:gap .15s, color .15s; }
+.back-link:hover { color:var(--accent); gap:11px; }
+.back-link-here { font-family: var(--mono); font-size: 0.68rem; text-decoration: none; letter-spacing: 0.06em; display: inline-flex; align-items: center; transition: gap 0.15s, color 0.15s; margin-left: 15px; }
+.back-link-here:hover { color: var(--accent); gap: 11px; }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 24px 28px 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+}
+.social-link { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); text-decoration: none; letter-spacing: 0.08em; transition: color 0.15s; }
+.social-link:hover { color: var(--accent); }
+
+.social-row { display:flex; gap:12px; }
+.social-link { font-family:var(--mono); font-size:.65rem; color:var(--text3); text-decoration:none; letter-spacing:.08em; transition:color .15s; }
+.social-link:hover { color:var(--accent); }
+.breadcrumb { font-family:var(--mono); font-size:.68rem; color:var(--text3); letter-spacing:.06em; margin-bottom:22px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.breadcrumb a { color:var(--text2); text-decoration:none; transition:color .15s; }
+.breadcrumb a:hover { color:var(--accent); }
+.breadcrumb .sep { color:var(--border2); }
+.breadcrumb .current { color:var(--text); }
+.topbar .tb-brand { display:flex; align-items:center; gap:9px; font-family:var(--serif); color:var(--text); text-decoration:none; }
+.closing { font-family:var(--serif); font-size:clamp(1.8rem,3vw,2.5rem); line-height:1.22; max-width:23ch; }
+.closing em { color:var(--accent); }
+@media (max-width:1000px) {
+  .sidebar { display:none; }
+  .topbar { display:flex; position:fixed; inset:0 0 auto; z-index:120; background:rgba(11,13,18,.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); padding:12px 18px; justify-content:space-between; }
+  .topbar b { font-family:var(--serif); }
+  .topbar span { font-family:var(--mono); font-size:.62rem; color:var(--accent); text-transform:uppercase; }
+  .main { margin-left:0; padding:56px 24px 80px; }
+}
+@media (max-width:760px) {
+  .hero-grid, .split { grid-template-columns:1fr; }
+  .meta { grid-template-columns:1fr 1fr; }
+  .cards, .cards.three, .training, .kpi-grid, .risk-grid { grid-template-columns:1fr; }
+  .system-map { grid-template-columns:1fr; }
+  .arrow { transform:rotate(90deg); text-align:center; }
+  .feedback { grid-column:1; }
+  .priorities { grid-template-columns:repeat(2,1fr); }
+  .hero-art { margin-top:8px; }
+}
+:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+.brand-link { text-decoration: none; }
+.brand-name {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  color: var(--text);
+  line-height: 1.3;
+  display: block;
+  margin-bottom: 6px;
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#summary">Skip to content</a>
+<div class="topbar">
+  <a class="tb-brand" href="#summary">
+    <svg width="20" height="20" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="10.5" fill="none" stroke="var(--accent)" stroke-width="1.6"/><circle cx="13" cy="13" r="4" fill="var(--accent)"/><circle cx="13" cy="13" r="7.2" fill="none" stroke="var(--accent2)" stroke-width="1.2" stroke-dasharray="2 3"/></svg>
+    Access by Design
+  </a>
+  <span id="mobilePhase">Summary</span>
+</div>
+<div class="layout">
+<aside class="sidebar" aria-label="Case study navigation">
+  <div class="sidebar-head">
+    <div class="brand-lockup">
+      <svg class="brand-mark" width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11.5" fill="none" stroke="var(--accent)" stroke-width="1.6"/><circle cx="13" cy="13" r="4.4" fill="var(--accent)"/><circle cx="13" cy="13" r="8" fill="none" stroke="var(--accent2)" stroke-width="1.2" stroke-dasharray="2 3"/></svg>
+      <span>
+        <a href="../index.html" class="brand-link">
+          <span class="brand-name">C.J. Jones</span>
+        </a>
+        <span class="brand-sub">CS · UX · MTH · ACS</span>
+      </span>
+    </div>
+    <a class="back-link" href="../index.html">← All projects</a>
+    <a class="back-link-here" href="tech-co-accessibility-program-proposal.html">↳ Access by Design</a>
+  </div>
+  <nav>
+    <ul class="nav-list">
+      <li><a class="nav-link" href="#summary" data-target="summary"><span class="nav-dot"></span>Executive summary<span class="nav-index">00</span></a></li>
+      <li><a class="nav-link" href="#problem" data-target="problem"><span class="nav-dot"></span>Problem &amp; assumptions<span class="nav-index">01</span></a></li>
+      <li><a class="nav-link" href="#strategy" data-target="strategy"><span class="nav-dot"></span>Program strategy<span class="nav-index">02</span></a></li>
+      <li><a class="nav-link" href="#governance" data-target="governance"><span class="nav-dot"></span>Governance model<span class="nav-index">03</span></a></li>
+      <li><a class="nav-link" href="#rollout" data-target="rollout"><span class="nav-dot"></span>Phased rollout<span class="nav-index">04</span></a></li>
+      <li><a class="nav-link" href="#measurement" data-target="measurement"><span class="nav-dot"></span>Measurement framework<span class="nav-index">05</span></a></li>
+      <li><a class="nav-link" href="#reflection" data-target="reflection"><span class="nav-dot"></span>Reflection<span class="nav-index">06</span></a></li>
+    </ul>
+  </nav>
+  
+  <div class="sidebar-footer">
+    <a class="social-link" href="mailto:sirhcse@gmail.com">EMAIL</a>
+    <a class="social-link" target="_blank" href="https://www.linkedin.com/in/sirhcse/">LINKEDIN</a>
+    <a class="social-link" target="_blank" href="https://forms.gle/ohrq7YSMyn58azLk9">ISSUES?</a>
+  </div>
+</aside>
+<main class="main">
+<section class="section hero" id="summary">
+  <div class="breadcrumb">
+    <a href="#summary">Program Strategy</a>
+    <span class="sep">/</span>
+    <span class="current">Access by Design</span>
+  </div>
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">Enterprise accessibility program · 24-month proposal</div>
+      <h1>Access by <em>Design</em></h1>
+      <p class="hero-sub">Designing an enterprise digital accessibility program for Tech Co., with clear ownership, phased investment, role-specific enablement, and evidence that accessibility is improving real customer journeys. — A proposal written for my UW Web & Digital Accessibility certificate.</p>
+      <div class="tags">
+        <span class="tag a">Program Strategy</span>
+        <span class="tag b">Service Design</span>
+        <span class="tag c">Governance</span>
+        <span class="tag a">Measurement</span>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 440 310">
+        <rect x="1" y="1" width="438" height="308" rx="10" fill="var(--bg2)" stroke="var(--border)"/>
+        <circle class="pulse-ring" cx="220" cy="155" r="72" fill="rgba(127,220,190,.07)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="220" y="150" text-anchor="middle" fill="var(--text)" font-family="var(--serif)" font-size="16">Accessible</text>
+        <text x="220" y="173" text-anchor="middle" fill="var(--accent)" font-family="var(--serif)" font-size="16">customer journeys</text>
+        <g fill="var(--bg3)" stroke-width="1.5">
+          <rect x="32" y="38" width="116" height="48" rx="7" stroke="var(--accent2)"/>
+          <rect x="292" y="38" width="116" height="48" rx="7" stroke="var(--accent3)"/>
+          <rect x="32" y="224" width="116" height="48" rx="7" stroke="var(--accent3)"/>
+          <rect x="292" y="224" width="116" height="48" rx="7" stroke="var(--accent2)"/>
+        </g>
+        <g fill="var(--text2)" font-family="var(--mono)" font-size="9.5" text-anchor="middle" letter-spacing="0.05em">
+          <text x="90" y="59">POLICY &amp;</text><text x="90" y="74">PRIORITIES</text>
+          <text x="350" y="59">PRODUCT LIFECYCLE</text><text x="350" y="74">CONTROLS</text>
+          <text x="90" y="245">TRAINING &amp;</text><text x="90" y="260">ENABLEMENT</text>
+          <text x="350" y="245">EVIDENCE &amp;</text><text x="350" y="260">FEEDBACK</text>
+        </g>
+        <g stroke="var(--border2)" stroke-width="1.5" fill="none">
+          <path class="flow f1" d="M148 62 C188 62 176 112 191 121"/>
+          <path class="flow f2" d="M292 62 C252 62 264 112 249 121"/>
+          <path class="flow f3" d="M148 248 C188 248 176 198 191 189"/>
+          <path class="flow f4" d="M292 248 C252 248 264 198 249 189"/>
+        </g>
+      </svg>
+      <div class="figure-cap">Fig.00 · accessibility as an operating system, not an audit project</div>
+    </div>
+  </div>
+  <div class="meta">
+    <div class="meta-cell"><div class="meta-k">Format</div><div class="meta-v">Speculative enterprise proposal</div></div>
+    <div class="meta-cell"><div class="meta-k">Horizon</div><div class="meta-v">24 months, pilot to operations</div></div>
+    <div class="meta-cell"><div class="meta-k">Core team</div><div class="meta-v">4.5 FTE plus embedded owners</div></div>
+    <div class="meta-cell"><div class="meta-k">Base estimate</div><div class="meta-v">$2.7M over 24 months</div></div>
+  </div>
+  <div class="note"><strong>Scope note:</strong> This case study consolidates three academic proposals into a selective program narrative. Tech Co. is treated as a global maker of Bluetooth-enabled hardware, companion mobile apps, web and cloud services, documentation, and customer support. Targets, costs, and staffing are illustrative rather than reported company commitments.</div>
+
+  <div class="section-header" style="margin-top:48px">
+    <span class="section-label">Executive summary</span><span class="section-divider"></span><span class="section-num">decision</span>
+  </div>
+  <div class="cards three">
+    <article class="card"><span class="card-bar red"></span><div class="card-label">Business problem</div><h3>Accessibility is fragmented</h3><p>Standards, training, testing, procurement, and remediation sit in separate functions. That creates inconsistent customer experiences, repeated defects, late rework, and unmeasured legal and commercial risk.</p></article>
+    <article class="card"><span class="card-bar"></span><div class="card-label">Proposal</div><h3>Build a reusable operating model</h3><p>Create a small central program that sets policy and evidence standards, while product teams retain responsibility for accessible design, delivery, and remediation.</p></article>
+    <article class="card"><span class="card-bar blue"></span><div class="card-label">Expected result</div><h3>Shift from retrofit to prevention</h3><p>Prioritize critical journeys, add accessibility controls to normal delivery workflows, and use customer evidence plus operational metrics to decide what scales.</p></article>
+  </div>
+  <div class="callout blue">
+    <div class="callout-k">Decision request</div>
+    <p class="callout-text">Approve a 24-month pilot-to-scale program, a 4.5 FTE central team, a $2.7M base budget, three pilot product journeys, and executive sponsorship with quarterly governance reviews.</p>
+  </div>
+</section>
+
+<section class="section" id="problem">
+  <div class="section-header"><span class="section-label">Business problem &amp; assumptions</span><span class="section-divider"></span><span class="section-num">01</span></div>
+  <h2 class="subhead">The issue is not a missing checklist. It is a missing operating model.</h2>
+  <div class="prose">
+    <p>The source proposals covered websites, mobile applications, Bluetooth hardware interfaces, cloud software, multimedia, PDFs, communication platforms, kiosks, and learning systems. Treating all of those surfaces as one remediation backlog would be technically broad but strategically weak.</p>
+    <p>This proposal instead assumes that Tech Co. needs a way to make accessibility decisions repeatedly: which journeys matter first, who owns the work, what evidence is required before release, when an exception is acceptable, and how leadership knows whether risk and user barriers are declining.</p>
+  </div>
+
+  <div class="mini">Explicit assumptions</div>
+  <div class="cards">
+    <article class="card"><span class="card-bar blue"></span><div class="card-label">Organization</div><h3>Global product ecosystem</h3><p>Tech Co. operates public websites, iOS and Android apps, cloud tools, Bluetooth-connected products, support content, and third-party platforms.</p></article>
+    <article class="card"><span class="card-bar gold"></span><div class="card-label">Current state</div><h3>No mature central function</h3><p>Accessibility expertise exists unevenly, but there is no common policy, inventory, severity model, release evidence standard, or enterprise dashboard.</p></article>
+    <article class="card"><span class="card-bar"></span><div class="card-label">Delivery model</div><h3>Teams keep product ownership</h3><p>The central program supplies standards, tools, coaching, audit methods, and escalation. Product teams own implementation and defects in their roadmaps.</p></article>
+    <article class="card"><span class="card-bar red"></span><div class="card-label">Budget boundary</div><h3>Legacy rebuilds are separate</h3><p>The base estimate funds the program and targeted remediation. It does not fund full replacement of inaccessible legacy platforms or major hardware redesigns.</p></article>
+  </div>
+
+  <div class="callout red">
+    <div class="callout-k">How might we</div>
+    <p class="callout-text">How might we make accessibility a measurable part of how Tech Co. prioritizes, designs, ships, procures, and supports digital experiences, without creating a centralized bottleneck?</p>
+  </div>
+
+  <div class="split">
+    <div>
+      <div class="mini" style="margin-top:0">Priority criteria</div>
+      <p class="lead">A weighted model prevents the loudest stakeholder or easiest fix from defining the roadmap.</p>
+    </div>
+    <div class="aside"><h3>Gate before scoring</h3><ul><li>Immediate safety or account-access barrier</li><li>Active legal or contractual obligation</li><li>Public commitment with an unmet deadline</li></ul></div>
+  </div>
+  <div class="priorities" aria-label="Priority scoring criteria">
+    <div class="priority"><strong>30</strong><span>User harm and task blocking</span></div>
+    <div class="priority"><strong>20</strong><span>Legal or customer obligation</span></div>
+    <div class="priority"><strong>15</strong><span>Reach and transaction volume</span></div>
+    <div class="priority"><strong>15</strong><span>Reuse across products</span></div>
+    <div class="priority"><strong>10</strong><span>Complaint and research evidence</span></div>
+    <div class="priority"><strong>10</strong><span>Feasibility in planning window</span></div>
+  </div>
+  <div class="callout gold"><div class="callout-k">Why this choice</div><p class="callout-text">Impact receives more weight than feasibility because an easy backlog can still ignore the journeys where people are actually blocked. Feasibility remains visible so the roadmap can combine urgent fixes with reusable platform work.</p></div>
+</section>
+
+<section class="section" id="strategy">
+  <div class="section-header"><span class="section-label">Program strategy</span><span class="section-divider"></span><span class="section-num">02</span></div>
+  <h2 class="subhead">A small center sets the system. Distributed teams deliver the outcome.</h2>
+  <p class="lead">The strategy has four connected layers: define expectations, prevent new barriers, remediate priority journeys, and learn from disabled users and operational evidence.</p>
+
+  <div class="mini">System map</div>
+  <figure class="figure">
+    <div class="figure-body">
+      <div class="system-map">
+        <div class="node"><h3>1. Direction</h3><p>Executive sponsor, policy, standards, funding, risk appetite, and priority rules.</p></div>
+        <div class="arrow">→</div>
+        <div class="node"><h3>2. Delivery system</h3><p>Design system patterns, accessible acceptance criteria, procurement controls, CI checks, manual QA, and remediation workflows.</p></div>
+        <div class="arrow">→</div>
+        <div class="node"><h3>3. Evidence</h3><p>Disabled-user task success, audit results, defect recurrence, support signals, vendor evidence, and maturity reviews.</p></div>
+        <div class="feedback">Evidence changes priorities, training, standards, tooling, and investment every six months.</div>
+      </div>
+    </div>
+    <figcaption class="figure-caption"><b>FIG.01</b> The program is a feedback system. Compliance standards set the floor, but customer evidence determines whether the experience works.</figcaption>
+  </figure>
+
+  <div class="mini">Program workstreams and deliverables</div>
+  <div class="cards">
+    <article class="card"><span class="card-bar blue"></span><div class="card-label">Workstream 01</div><h3>Policy and portfolio</h3><ul><li>Enterprise policy and exception process</li><li>Digital asset and critical-journey inventory</li><li>Priority scoring model</li><li>Quarterly steering review pack</li></ul></article>
+    <article class="card"><span class="card-bar"></span><div class="card-label">Workstream 02</div><h3>Accessible delivery</h3><ul><li>Design system patterns and content templates</li><li>Definition-of-done and release evidence</li><li>CI checks plus manual test protocols</li><li>Severity and remediation SLAs</li></ul></article>
+    <article class="card"><span class="card-bar gold"></span><div class="card-label">Workstream 03</div><h3>Capability and research</h3><ul><li>Role-specific training blueprint</li><li>Accessibility champions network</li><li>Paid disabled-user research panel</li><li>Just-in-time playbooks and office hours</li></ul></article>
+    <article class="card"><span class="card-bar red"></span><div class="card-label">Workstream 04</div><h3>Risk and evidence</h3><ul><li>Vendor and VPAT review workflow</li><li>Audit and support issue intake</li><li>KPI dashboard and maturity heatmap</li><li>Annual accessibility report</li></ul></article>
+  </div>
+
+  <div class="mini">Sample staffing and 24-month budget</div>
+  <div class="table-wrap">
+    <table>
+      <caption>Illustrative base case. Loaded labor rates include salary, benefits, and overhead.</caption>
+      <thead><tr><th>Resource</th><th>Capacity</th><th>24-month estimate</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>Accessibility Program Lead</td><td>1.0 FTE</td><td>$420,000</td><td>Roadmap, governance, budget, escalation, reporting</td></tr>
+        <tr><td>Senior Accessibility Engineer</td><td>1.0 FTE</td><td>$460,000</td><td>Technical standards, CI, design-system implementation, coaching</td></tr>
+        <tr><td>Inclusive Design and Research Lead</td><td>1.0 FTE</td><td>$410,000</td><td>Research panel, design reviews, content and interaction guidance</td></tr>
+        <tr><td>Accessibility QA and Automation Specialist</td><td>1.0 FTE</td><td>$370,000</td><td>Manual protocols, assistive-tech lab, severity calibration, test automation</td></tr>
+        <tr><td>Program Analyst</td><td>0.5 FTE</td><td>$190,000</td><td>Inventory, KPI data quality, portfolio operations</td></tr>
+        <tr><td>External audits and specialist counsel</td><td>Variable</td><td>$200,000</td><td>Independent validation and targeted expertise</td></tr>
+        <tr><td>Disabled-user panel and research operations</td><td>Variable</td><td>$120,000</td><td>Recruitment, access needs, participant compensation</td></tr>
+        <tr><td>Tooling, devices, and assistive-tech lab</td><td>Variable</td><td>$160,000</td><td>Testing tools, devices, integrations, environments</td></tr>
+        <tr><td>Training and certifications</td><td>Variable</td><td>$140,000</td><td>Role-based learning, labs, professional development</td></tr>
+        <tr><td>Contingency</td><td>Program reserve</td><td>$200,000</td><td>Legal changes, pilot expansion, critical remediation support</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="budget-total"><div><div class="card-label">Illustrative 24-month base case</div><p style="color:var(--text2);font-size:.84rem">Product teams absorb normal delivery and remediation capacity. Major platform replacement requires separate funding.</p></div><strong>$2.67M</strong></div>
+
+  <div class="callout blue"><div class="callout-k">Why this choice</div><p class="callout-text">Four specialists are enough to create standards, coach pilots, operate research, and build evidence. A larger central team would make accessibility look outsourced. A smaller team would lack the engineering, research, and QA depth needed to challenge automated scan results.</p></div>
+</section>
+
+<section class="section" id="governance">
+  <div class="section-header"><span class="section-label">Governance model</span><span class="section-divider"></span><span class="section-num">03</span></div>
+  <h2 class="subhead">Accountability stays close to the product. Escalation stays visible to leadership.</h2>
+  <p class="lead">The model compresses the original advisory, working, and support groups into a decision structure that can operate during normal product planning.</p>
+
+  <div class="mini">RACI-style ownership matrix</div>
+  <div class="table-wrap">
+    <table>
+      <caption>R = Responsible, A = Accountable, C = Consulted, I = Informed</caption>
+      <thead><tr><th>Decision or deliverable</th><th>Executive sponsor</th><th>Program office</th><th>Product &amp; engineering</th><th>Design &amp; QA</th><th>Legal &amp; procurement</th><th>Disabled-user panel</th></tr></thead>
+      <tbody>
+        <tr><td>Policy, standards, and risk appetite</td><td class="ac">A</td><td class="ra">R</td><td class="co">C</td><td class="co">C</td><td class="co">C</td><td class="in">I</td></tr>
+        <tr><td>Portfolio priority and funding</td><td class="ac">A</td><td class="ra">R</td><td class="co">C</td><td class="co">C</td><td class="co">C</td><td class="in">I</td></tr>
+        <tr><td>Accessible requirements and design</td><td class="in">I</td><td class="co">C</td><td class="ac">A</td><td class="ra">R</td><td class="in">I</td><td class="co">C</td></tr>
+        <tr><td>Implementation and remediation</td><td class="in">I</td><td class="co">C</td><td class="ra">R/A</td><td class="co">C</td><td class="in">I</td><td class="in">I</td></tr>
+        <tr><td>Release evidence and test sign-off</td><td class="in">I</td><td class="co">C</td><td class="ac">A</td><td class="ra">R</td><td class="in">I</td><td class="co">C</td></tr>
+        <tr><td>Vendor accessibility review</td><td class="in">I</td><td class="co">C</td><td class="co">C</td><td class="co">C</td><td class="ra">R/A</td><td class="in">I</td></tr>
+        <tr><td>User research and barrier validation</td><td class="in">I</td><td class="ac">A</td><td class="co">C</td><td class="ra">R</td><td class="in">I</td><td class="ra">R</td></tr>
+        <tr><td>Enterprise reporting and exceptions</td><td class="ac">A</td><td class="ra">R</td><td class="co">C</td><td class="co">C</td><td class="co">C</td><td class="in">I</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mini">Decision cadence</div>
+  <div class="cards three">
+    <article class="card"><span class="card-bar"></span><div class="card-label">Weekly</div><h3>Operational triage</h3><p>Review critical defects, user complaints, blocked releases, and urgent requests for guidance.</p></article>
+    <article class="card"><span class="card-bar blue"></span><div class="card-label">Monthly</div><h3>Portfolio and SLA review</h3><p>Inspect trend data, overdue issues, pilot health, training application, and vendor exceptions.</p></article>
+    <article class="card"><span class="card-bar gold"></span><div class="card-label">Quarterly</div><h3>Steering decisions</h3><p>Approve priority changes, budget shifts, policy exceptions, external audit actions, and scale decisions.</p></article>
+  </div>
+
+  <div class="mini">Training blueprint</div>
+  <div class="training">
+    <article class="train-card"><div class="train-role">Executives &amp; steering</div><h3>Govern and prioritize</h3><p>90-minute annual briefing, case-based risk workshop, quarterly dashboard review.</p><p class="train-proof">Proof: approves scope, exceptions, and investment using the priority model.</p></article>
+    <article class="train-card"><div class="train-role">Product &amp; design</div><h3>Define accessible outcomes</h3><p>Three-hour role lab, design critiques, acceptance-criteria templates, co-design sessions.</p><p class="train-proof">Proof: accessible PRD and prototype review on a live product.</p></article>
+    <article class="train-card"><div class="train-role">Engineering</div><h3>Build and prevent</h3><p>Three-hour coding labs, semantic patterns, ARIA guidance, CI integration, office hours.</p><p class="train-proof">Proof: passing code review plus manual spot check on a representative flow.</p></article>
+    <article class="train-card"><div class="train-role">QA</div><h3>Validate beyond automation</h3><p>Four-hour assistive-tech lab, severity calibration, pair testing, annual competency refresh.</p><p class="train-proof">Proof: completes an end-to-end keyboard and screen-reader test script.</p></article>
+    <article class="train-card"><div class="train-role">Content &amp; support</div><h3>Create and respond</h3><p>90-minute modules, accessible templates, captioning and document practice, escalation playbooks.</p><p class="train-proof">Proof: audited sample asset or correctly triaged accessibility ticket.</p></article>
+    <article class="train-card"><div class="train-role">Legal &amp; procurement</div><h3>Buy and contract responsibly</h3><p>Two-hour VPAT and contract lab, vendor evidence rubric, annual legal update.</p><p class="train-proof">Proof: documented review and risk disposition for a sample vendor.</p></article>
+  </div>
+  <div class="callout gold"><div class="callout-k">Why this choice</div><p class="callout-text">Training is tied to a work product because completion is not competence. Generic awareness remains useful for onboarding, but it is intentionally not the primary evidence that a role can perform its accessibility responsibilities.</p></div>
+</section>
+
+<section class="section" id="rollout">
+  <div class="section-header"><span class="section-label">Phased rollout</span><span class="section-divider"></span><span class="section-num">04</span></div>
+  <h2 class="subhead">Prove the operating model before expanding the surface area.</h2>
+  <p class="lead">The 24-month sequence retains the original five-phase logic, but narrows each phase to decisions and deliverables that can be verified.</p>
+
+  <div class="mini">24-month roadmap</div>
+  <div class="table-wrap" style="padding:18px;background:var(--bg2)">
+    <div class="roadmap" aria-label="24 month accessibility program roadmap">
+      <div class="month" style="grid-column:1">1</div><div class="month" style="grid-column:2">2</div><div class="month" style="grid-column:3">3</div><div class="month" style="grid-column:4">4</div><div class="month" style="grid-column:5">5</div><div class="month" style="grid-column:6">6</div><div class="month" style="grid-column:7">7</div><div class="month" style="grid-column:8">8</div><div class="month" style="grid-column:9">9</div><div class="month" style="grid-column:10">10</div><div class="month" style="grid-column:11">11</div><div class="month" style="grid-column:12">12</div><div class="month" style="grid-column:13">13</div><div class="month" style="grid-column:14">14</div><div class="month" style="grid-column:15">15</div><div class="month" style="grid-column:16">16</div><div class="month" style="grid-column:17">17</div><div class="month" style="grid-column:18">18</div><div class="month" style="grid-column:19">19</div><div class="month" style="grid-column:20">20</div><div class="month" style="grid-column:21">21</div><div class="month" style="grid-column:22">22</div><div class="month" style="grid-column:23">23</div><div class="month" style="grid-column:24">24</div>
+      <div class="phase p1"><h3>Foundation</h3><p><strong>M1-3:</strong> sponsor, lead, policy, baseline, asset inventory, priority model, procurement clauses.</p></div>
+      <div class="phase p2"><h3>Pilot</h3><p><strong>M4-6:</strong> three journeys, user panel, role training, design-system patterns, evidence templates.</p></div>
+      <div class="phase p3"><h3>Integrate</h3><p><strong>M7-12:</strong> SDLC gates, CI checks, manual QA, first remediation wave, KPI dashboard, monthly operations.</p></div>
+      <div class="phase p4"><h3>Scale</h3><p><strong>M13-18:</strong> second-wave products, vendor controls, external audit, champion network, maturity assessment.</p></div>
+      <div class="phase p5"><h3>Operationalize</h3><p><strong>M19-24:</strong> team OKRs, annual report, BAU funding, exception review, next roadmap.</p></div>
+    </div>
+  </div>
+
+  <div class="mini">Pilot selection</div>
+  <div class="cards three">
+    <article class="card"><span class="card-bar blue"></span><div class="card-label">Journey 01</div><h3>Public product discovery</h3><p>Corporate and product website path, including product comparison and support entry points.</p></article>
+    <article class="card"><span class="card-bar"></span><div class="card-label">Journey 02</div><h3>Companion mobile setup</h3><p>Pairing a Bluetooth device, permissions, account setup, core configuration, and error recovery.</p></article>
+    <article class="card"><span class="card-bar gold"></span><div class="card-label">Journey 03</div><h3>Customer support resolution</h3><p>Finding accessible documentation, contacting support, reporting a barrier, and receiving status updates.</p></article>
+  </div>
+
+  <div class="mini">Phase gates</div>
+  <div class="table-wrap">
+    <table>
+      <caption>Scale only when the preceding phase produces usable evidence.</caption>
+      <thead><tr><th>Gate</th><th>Required evidence</th><th>Owner</th><th>Decision</th></tr></thead>
+      <tbody>
+        <tr><td>Foundation to pilot</td><td>Approved policy, baseline, pilots, named owners, funded capacity</td><td>Executive sponsor</td><td>Start pilot work</td></tr>
+        <tr><td>Pilot to integration</td><td>Role competency, user-panel protocol, accessible patterns, first journey baseline</td><td>Program lead + product VPs</td><td>Add workflow controls</td></tr>
+        <tr><td>Integration to scale</td><td>Reduced critical defects, working release evidence, manageable SLA volume</td><td>Steering committee</td><td>Expand to next products</td></tr>
+        <tr><td>Scale to operations</td><td>Stable ownership, budget line, dashboard quality, independent audit findings addressed</td><td>Executive sponsor</td><td>Transition to BAU</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mini">Primary risks and mitigations</div>
+  <div class="risk-grid">
+    <article class="risk"><h3>Central team becomes a gatekeeper</h3><p>Mitigation: product teams remain accountable, reusable patterns reduce consultation demand, and exceptions have time limits.</p></article>
+    <article class="risk"><h3>Audit creates an unpayable backlog</h3><p>Mitigation: audit critical journeys first, separate urgent barriers from long-term debt, and cap work in progress.</p></article>
+    <article class="risk"><h3>Automation creates false confidence</h3><p>Mitigation: no release is declared accessible from automated scans alone. Manual and disabled-user evidence remain required for priority journeys.</p></article>
+    <article class="risk"><h3>Disabled users are treated as final-stage validators</h3><p>Mitigation: compensate panel members, involve them in pilot framing and prototype reviews, and publish how feedback changed decisions.</p></article>
+    <article class="risk"><h3>Vendor evidence is weak or misleading</h3><p>Mitigation: validate high-risk claims, require remediation terms, and maintain a time-bound exception register.</p></article>
+    <article class="risk"><h3>Hardware scope overwhelms the program</h3><p>Mitigation: begin with companion software and critical hardware interaction risks, then commission product-specific hardware studies where needed.</p></article>
+  </div>
+
+  <div class="callout blue"><div class="callout-k">Why this choice</div><p class="callout-text">The roadmap starts with three end-to-end journeys rather than every asset. That creates visible customer outcomes and tests whether governance, training, tooling, and ownership work together before the company scales the model.</p></div>
+</section>
+
+<section class="section" id="measurement">
+  <div class="section-header"><span class="section-label">Measurement framework</span><span class="section-divider"></span><span class="section-num">05</span></div>
+  <h2 class="subhead">Measure outcomes, flow, adoption, and risk. Do not collapse them into one score.</h2>
+  <p class="lead">The original evaluation plan proposed audits, user panels, training assessments, dashboards, stakeholder feedback, policy reviews, risk monitoring, and maturity assessments. The portfolio version turns those into a compact decision dashboard.</p>
+
+  <div class="mini">KPI dashboard concept</div>
+  <div class="kpi-grid">
+    <article class="kpi"><div class="name">Outcome · M24 target</div><div class="num">90%</div><p>Priority journeys pass manual and assistive-technology validation, including core tasks with disabled participants.</p></article>
+    <article class="kpi"><div class="name">Flow · M24 target</div><div class="num">85%</div><p>Critical accessibility defects resolved within the approved SLA, with overdue exceptions visible.</p></article>
+    <article class="kpi"><div class="name">Adoption · M24 target</div><div class="num">90%</div><p>Relevant user stories include accessibility acceptance criteria and release evidence.</p></article>
+    <article class="kpi"><div class="name">Learning · 12 months</div><div class="num">&lt;5%</div><p>Recurrence rate for previously corrected critical defect patterns.</p></article>
+    <article class="kpi"><div class="name">Culture · M24 target</div><div class="num">75%</div><p>Teams report that accessibility is part of how they define product quality.</p></article>
+    <article class="kpi"><div class="name">Procurement · M24 target</div><div class="num">100%</div><p>High-risk vendors receive accessibility evidence review before contract approval.</p></article>
+    <article class="kpi"><div class="name">Training · quarterly</div><div class="num">80%</div><p>Critical roles demonstrate competency through a work sample, not only course completion.</p></article>
+    <article class="kpi"><div class="name">User signal · trend</div><div class="num">↓</div><p>Task-blocking complaints decline while report acknowledgement and resolution transparency improve.</p></article>
+  </div>
+
+  <div class="mini">Evidence cadence</div>
+  <div class="table-wrap">
+    <table>
+      <caption>Different questions require different evidence and review frequencies.</caption>
+      <thead><tr><th>Question</th><th>Evidence</th><th>Frequency</th><th>Decision supported</th></tr></thead>
+      <tbody>
+        <tr><td>Are priority experiences usable?</td><td>Disabled-user task success, manual testing, support barriers</td><td>Every 2 months</td><td>Remediation and design changes</td></tr>
+        <tr><td>Are teams preventing defects?</td><td>Acceptance criteria, CI results, manual release evidence, recurrence</td><td>Monthly</td><td>Coaching and workflow changes</td></tr>
+        <tr><td>Is risk declining?</td><td>Critical issue age, exceptions, vendor reviews, complaints</td><td>Monthly and quarterly</td><td>Escalation and funding</td></tr>
+        <tr><td>Is the program becoming durable?</td><td>Maturity assessment, ownership, budget, cultural survey</td><td>Annual</td><td>Operating-model redesign</td></tr>
+        <tr><td>Should a pilot scale?</td><td>User outcomes, delivery effort, defect trends, adoption</td><td>At phase gate</td><td>Scale, revise, or stop</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout gold"><div class="callout-k">Why this choice</div><p class="callout-text">A single compliance percentage is easy to communicate and easy to game. The dashboard separates customer usability, delivery behavior, operational flow, and risk so leaders can see what improved and what merely moved.</p></div>
+</section>
+
+<section class="section" id="reflection">
+  <div class="section-header"><span class="section-label">Reflection</span><span class="section-divider"></span><span class="section-num">06</span></div>
+  <h2 class="subhead">The strongest proposal is selective about what it promises.</h2>
+  <div class="prose">
+    <p>The three source documents established a broad scope, a role-specific training model, a governance structure, a 24-month timeline, and a layered evaluation framework. The useful material was not the volume of standards or procedures. It was the underlying idea that accessibility must move from a one-time compliance exercise into a sustained organizational capability.</p>
+    <p>I therefore reframed the work around executive decisions, ownership, sequencing, evidence, and tradeoffs. The proposal does not claim that every Tech Co. asset will become conformant in 24 months. It proposes a system that can identify the most consequential barriers, prevent recurrence, and make investment choices visible.</p>
+  </div>
+
+  <div class="mini">What I intentionally excluded</div>
+  <div class="exclusions">
+    <ul>
+      <li><strong>A complete global legal matrix.</strong> Legal requirements change and depend on market, customer, and product context. Legal counsel should validate obligations; the portfolio case study should show the operating response.</li>
+      <li><strong>Enterprise-wide remediation of every legacy asset.</strong> That promise is not credible without an inventory, architecture review, and product-level estimates.</li>
+      <li><strong>Automated testing as a compliance proxy.</strong> Automation supports scale but cannot establish usability or full standards conformance.</li>
+      <li><strong>One mandatory curriculum for everyone.</strong> Role-specific proof of competency is more useful than broad completion statistics.</li>
+      <li><strong>Detailed hardware certification plans.</strong> Bluetooth hardware and embedded interfaces require product-specific engineering analysis that is beyond this enterprise operating-model proposal.</li>
+      <li><strong>A public conformance claim in the first year.</strong> External claims should follow stable evidence, not precede it.</li>
+    </ul>
+  </div>
+
+  <div class="mini">What this case study demonstrates</div>
+  <div class="cards three">
+    <article class="card"><span class="card-bar"></span><div class="card-label">Proposal writing</div><h3>Decisions before detail</h3><p>The executive request, assumptions, budget, gates, and exclusions make the recommendation testable.</p></article>
+    <article class="card"><span class="card-bar blue"></span><div class="card-label">Service design</div><h3>A system across functions</h3><p>The work connects governance, product delivery, training, procurement, user research, support, and evidence.</p></article>
+    <article class="card"><span class="card-bar gold"></span><div class="card-label">Strategic restraint</div><h3>Depth where it matters</h3><p>The proposal prioritizes customer journeys and operating mechanisms instead of reproducing every standard and procedure.</p></article>
+  </div>
+
+  <div class="callout"><div class="callout-k">Final reflection</div><p class="callout-text">Accessibility becomes durable when it is funded, owned, measured, and reviewed in the same systems that govern product quality, delivery risk, and customer experience.</p></div>
+  <p class="closing">A credible accessibility program does not promise perfection. It builds the <em>capacity to improve</em>, release after release.</p>
+</section>
+</main>
+</div>
+<script>
+const sections = [...document.querySelectorAll('main section[id]')];
+const links = [...document.querySelectorAll('.nav-link')];
+const mobilePhase = document.getElementById('mobilePhase');
+const labels = {
+  summary:'Summary', problem:'Problem & assumptions', strategy:'Program strategy',
+  governance:'Governance', rollout:'Rollout', measurement:'Measurement', reflection:'Reflection'
+};
+const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+  if (!visible) return;
+  const id = visible.target.id;
+  links.forEach(link => link.classList.toggle('active', link.dataset.target === id));
+  if (mobilePhase) mobilePhase.textContent = labels[id] || id;
+}, { rootMargin:'-25% 0px -55% 0px', threshold:[0,.2,.5] });
+sections.forEach(section => observer.observe(section));
+</script>
+</body>
+</html>

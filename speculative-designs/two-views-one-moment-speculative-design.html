@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="../supporting-images/fav.png">
+<title>Two Views, One Moment — Speculative Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0d0b14;
+  --bg2:       #14111e;
+  --bg3:       #1b1726;
+  --surface:   #221d30;
+  --border:    #2c2740;
+  --border2:   #3d3656;
+  --text:      #ececf2;
+  --text2:     #a09bb8;
+  --text3:     #635c7a;
+  --accent:    #b493ec;   /* patient view — memory / the remembered past */
+  --accent2:   #5cc7b4;   /* caregiver view — clinical calm / grounding */
+  --accent3:   #e7a678;   /* the moment — human warmth / connection */
+  --mono:      'DM Mono', monospace;
+  --serif:     'DM Serif Display', serif;
+  --sans:      'DM Sans', sans-serif;
+  --nav-w:     240px;
+  --max-w:     880px;
+}
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+.layout { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--nav-w); min-height: 100vh;
+  position: fixed; top: 0; left: 0;
+  display: flex; flex-direction: column;
+  padding: 40px 0 28px;
+  border-right: 1px solid var(--border);
+  background: var(--bg); z-index: 100;
+}
+.sidebar-back { padding: 0 28px 28px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+.brand-lockup { display:flex; align-items:center; gap:11px; margin-bottom: 16px; }
+.brand-mark { flex:none; }
+.brand-name { font-family: var(--serif); font-size: 1.05rem; color: var(--text); line-height: 1.2; display: block; }
+.brand-title { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; }
+.back-link { font-family: var(--mono); font-size: 0.68rem; color: var(--text2); text-decoration: none; letter-spacing: 0.06em; display: inline-flex; align-items: center; gap: 8px; transition: gap 0.15s, color 0.15s; }
+.back-link:hover { color: var(--accent); gap: 11px; }
+.back-link-here { font-family: var(--mono); font-size: 0.66rem; text-decoration: none; letter-spacing: 0.05em; display: block; color: var(--text3); margin-top: 8px; transition: color 0.15s; }
+.back-link-here:hover { color: var(--accent); }
+.nav-list { list-style: none; flex: 1; padding: 0 14px; }
+.nav-item { margin-bottom: 1px; }
+.nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: 6px; text-decoration: none;
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 400; color: var(--text2);
+  transition: all 0.15s ease; cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-link:hover { color: var(--text); background: var(--surface); }
+.nav-link.active { color: var(--text); background: var(--surface); font-weight: 500; }
+.nav-link.active .nav-dot { background: var(--accent); box-shadow: 0 0 0 3px rgba(180,147,236,0.15); }
+.nav-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border2); flex-shrink: 0; transition: all 0.15s; }
+.nav-index { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); margin-left: auto; }
+
+.sidebar-footer { padding: 24px 28px 0; border-top: 1px solid var(--border); display: flex; gap: 12px; }
+.social-link { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); text-decoration: none; letter-spacing: 0.08em; transition: color 0.15s; }
+.social-link:hover { color: var(--accent); }
+
+/* ── Main ── */
+.main { margin-left: var(--nav-w); flex: 1; padding: 0 64px 120px; max-width: calc(var(--max-w) + 128px); }
+
+/* ── Sections ── */
+.section { padding-top: 68px; padding-bottom: 52px; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: none; }
+.section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px; }
+.section-label { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; white-space:nowrap; }
+.section-divider { flex: 1; height: 1px; background: var(--border); }
+.section-num { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); }
+
+/* ── Breadcrumb ── */
+.breadcrumb { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 22px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.breadcrumb a { color: var(--text2); text-decoration: none; transition: color 0.15s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .sep { color: var(--border2); }
+.breadcrumb .current { color: var(--text); }
+
+/* ── Hero ── */
+.detail-hero { padding-top: 56px; padding-bottom: 8px; }
+.hero-eyebrow { font-family: var(--mono); font-size: 0.72rem; color: var(--accent2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.hero-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent2); }
+.hero-grid { display:grid; grid-template-columns: 1.08fr 0.92fr; gap: 44px; align-items:center; }
+.detail-title { font-family: var(--serif); font-size: clamp(2.3rem, 4.4vw, 3.5rem); line-height: 1.1; color: var(--text); margin-bottom: 18px; letter-spacing: -0.01em; }
+.detail-title em { font-style: italic; color: var(--accent); }
+.detail-subtitle { font-family: var(--sans); font-size: 1.05rem; color: var(--text2); font-weight: 300; margin-bottom: 28px; line-height: 1.7; }
+.hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.tag { font-family: var(--mono); font-size: 0.7rem; padding: 4px 10px; border-radius: 3px; letter-spacing: 0.05em; }
+.tag-patient { background: rgba(180,147,236,0.08); color: var(--accent);  border: 1px solid rgba(180,147,236,0.24); }
+.tag-care    { background: rgba(92,199,180,0.08);  color: var(--accent2); border: 1px solid rgba(92,199,180,0.24); }
+.tag-moment  { background: rgba(231,166,120,0.08); color: var(--accent3); border: 1px solid rgba(231,166,120,0.24); }
+
+/* two-lens art */
+.signal-stage { position: relative; }
+.lens-lab { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; }
+@keyframes breathe { 0%,100%{ opacity:.5 } 50%{ opacity:.92 } }
+@keyframes drift { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-3px) } }
+.moment-glow { animation: breathe 5.5s ease-in-out infinite; transform-origin:center; }
+.figs { animation: drift 6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce){ .moment-glow, .figs { animation: none; } }
+.stage-cap { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; text-align:center; margin-top: 12px; }
+
+/* ── Meta bar ── */
+.meta-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 40px; }
+.meta-cell { background: var(--bg2); padding: 20px 22px; }
+.meta-key { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.meta-val { font-size: 0.86rem; color: var(--text); line-height: 1.45; }
+
+/* ── Prose ── */
+.prose p { font-size: 0.97rem; color: var(--text2); font-weight: 300; line-height: 1.85; margin-bottom: 20px; }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong, strong { font-weight: 500; color: var(--text); }
+.prose em { color: var(--text); font-style: italic; }
+.intro-lead { font-size: 1.08rem; color: var(--text2); font-weight: 300; line-height: 1.75; max-width: 64ch; }
+.intro-lead em { font-style: italic; color: var(--text); }
+
+/* ── Callout ── */
+.callout { border-left: 2px solid var(--accent); background: linear-gradient(90deg, rgba(180,147,236,0.05), transparent); padding: 22px 26px; border-radius: 0 6px 6px 0; margin: 28px 0; }
+.callout .k { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; }
+.callout-text { font-family: var(--serif); font-size: 1.24rem; line-height: 1.42; color: var(--text); font-style: italic; }
+.callout.care { border-left-color: var(--accent2); background: linear-gradient(90deg, rgba(92,199,180,0.05), transparent); }
+.callout.care .k { color: var(--accent2); }
+.callout.moment { border-left-color: var(--accent3); background: linear-gradient(90deg, rgba(231,166,120,0.05), transparent); }
+.callout.moment .k { color: var(--accent3); }
+
+/* ── Grids ── */
+.split-grid { display: grid; gap: 40px; align-items: start; }
+.split-2 { grid-template-columns: 1fr 1fr; }
+.mt8{margin-top:8px}.mt20{margin-top:20px}.mt28{margin-top:28px}.mt40{margin-top:40px}.mt48{margin-top:48px}
+.subhead { font-family: var(--serif); font-size: 1.5rem; color: var(--text); margin-bottom: 12px; line-height:1.2; }
+.mini-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 16px; }
+
+/* ── Cards grid ── */
+.cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.cards-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.card { background: var(--bg2); padding: 26px; transition: background 0.15s; position: relative; }
+.card:hover { background: var(--bg3); }
+.card-accent-bar { position: absolute; top: 0; left: 0; width: 3px; height: 100%; }
+.bar-patient{background:var(--accent)} .bar-care{background:var(--accent2)} .bar-moment{background:var(--accent3)}
+.card-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+.card-label.patient{color:var(--accent)} .card-label.care{color:var(--accent2)} .card-label.moment{color:var(--accent3)}
+.card-title { font-family: var(--serif); font-size: 1.18rem; color: var(--text); margin-bottom: 10px; line-height: 1.25; }
+.card-desc { font-size: 0.87rem; color: var(--text2); line-height: 1.65; font-weight: 300; }
+.card-desc strong { color: var(--text); font-weight: 500; }
+
+/* mitigation cards */
+.card .mit { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 0.83rem; color: var(--text2); font-weight:300; line-height:1.6; display:flex; gap:9px; }
+.card .mit::before { content: '→'; font-family: var(--mono); font-size: 0.72rem; color: var(--accent2); margin-top: 2px; }
+.card .mit .ml { font-family: var(--mono); font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color: var(--text3); display:block; margin-bottom: 3px; }
+
+/* ── Two views showcase ── */
+.views { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; position: relative; }
+.view-pane { border-radius: 10px; padding: 22px; border: 1px solid var(--border); background: var(--bg2); }
+.view-pane.patient { border-color: rgba(180,147,236,0.32); background: linear-gradient(180deg, rgba(180,147,236,0.06), var(--bg2)); }
+.view-pane.care    { border-color: rgba(92,199,180,0.32);  background: linear-gradient(180deg, rgba(92,199,180,0.06), var(--bg2)); }
+.view-head { display:flex; align-items:center; gap:9px; font-family: var(--mono); font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:16px; }
+.view-pane.patient .view-head { color: var(--accent); }
+.view-pane.care .view-head { color: var(--accent2); }
+.view-scene { border-radius: 8px; background: var(--bg3); border:1px solid var(--border); padding: 20px; min-height: 148px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; position:relative; }
+.era-tag { font-family: var(--mono); font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color: var(--accent3); border:1px solid rgba(231,166,120,0.4); border-radius:100px; padding:3px 12px; }
+.scene-note { font-family: var(--serif); font-style:italic; font-size:0.98rem; color: var(--text); text-align:center; }
+.cue-list { width:100%; display:flex; flex-direction:column; gap:8px; }
+.cue { display:flex; gap:9px; align-items:flex-start; background: rgba(92,199,180,0.07); border:1px solid rgba(92,199,180,0.22); border-radius:6px; padding:8px 11px; }
+.cue .ck { font-family: var(--mono); font-size:0.54rem; letter-spacing:0.1em; text-transform:uppercase; color: var(--accent2); flex:none; margin-top:2px; min-width:74px; }
+.cue .cv { font-size:0.82rem; color: var(--text); line-height:1.4; }
+.view-cap { font-size: 0.85rem; color: var(--text2); font-weight:300; line-height:1.6; margin-top:16px; }
+.views-seam { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2; font-family:var(--mono); font-size:0.54rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent3); background:var(--bg); border:1px solid rgba(231,166,120,0.4); border-radius:100px; padding:5px 12px; white-space:nowrap; }
+
+/* ── Timeline (process) ── */
+.timeline { position: relative; margin-left: 6px; margin-top: 8px; }
+.timeline::before { content: ''; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 1px; background: var(--border); }
+.step { position: relative; padding: 0 0 26px 34px; }
+.step:last-child { padding-bottom: 0; }
+.step::before { content: ''; position: absolute; left: 1px; top: 4px; width: 11px; height: 11px; border-radius: 50%; background: var(--accent); border: 2px solid var(--accent); }
+.step-num { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 5px; text-transform:uppercase; }
+.step-title { font-family: var(--serif); font-size: 1.12rem; color: var(--text); margin-bottom: 6px; }
+.step-desc { font-size: 0.87rem; color: var(--text2); font-weight: 300; line-height: 1.65; max-width: 62ch; }
+
+/* ── Before/after ── */
+.ba { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: stretch; }
+.ba .box { border: 1px solid var(--border); border-radius: 8px; padding: 24px; background: var(--bg2); }
+.ba .box.after { border-color: rgba(92,199,180,0.4); background: linear-gradient(180deg, rgba(92,199,180,0.04), var(--bg2)); }
+.ba .lab { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 14px; }
+.ba .box.after .lab { color: var(--accent2); }
+.ba .box p { font-size: 0.9rem; color: var(--text2); font-weight:300; line-height:1.6; }
+.ba .box.after p { color: var(--text); }
+.ba .arrow { font-family: var(--mono); color: var(--accent2); font-size: 1.3rem; align-self:center; }
+
+/* ── Chips ── */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--mono); font-size: 0.72rem; border: 1px solid var(--border2); background: var(--bg2); border-radius: 100px; padding: 6px 14px; color: var(--text2); }
+.chip b { color: var(--text); }
+
+/* ── Page nav / footer ── */
+.page-nav { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 8px; }
+.closing { font-family: var(--serif); font-size: clamp(1.6rem,3vw,2.3rem); line-height: 1.25; color: var(--text); max-width: 24ch; }
+.closing em { font-style: italic; color: var(--accent); }
+.foot-credit { font-family: var(--mono); font-size: 0.66rem; color: var(--text3); line-height: 2; margin-top: 24px; }
+.foot-credit b { color: var(--text2); }
+
+/* ── Mobile topbar ── */
+.topbar { display:none; position: fixed; top:0; left:0; right:0; z-index: 120; background: rgba(13,11,20,.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 12px 20px; align-items:center; justify-content: space-between; }
+.topbar .tb-brand { display:flex; align-items:center; gap:9px; font-family: var(--serif); font-size: 1rem; color: var(--text); text-decoration:none; }
+.topbar .tb-phase { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+  :root { --nav-w: 0px; }
+  .sidebar { display: none; }
+  .topbar { display: flex; }
+  .main { margin-left: 0; padding: 56px 22px 80px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+  .split-2 { grid-template-columns: 1fr; }
+  .cards-grid, .cards-grid.cols-3 { grid-template-columns: 1fr; }
+  .meta-bar { grid-template-columns: 1fr 1fr; }
+  .views { grid-template-columns: 1fr; }
+  .views-seam { position: static; transform:none; display:inline-block; margin: 2px auto; }
+  .ba { grid-template-columns: 1fr; }
+  .ba .arrow { transform: rotate(90deg); text-align:center; }
+}
+
+.brand-link { text-decoration: none; }
+
+/* focus */
+a:focus-visible, .btn:focus-visible, .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+.skip { position:absolute; left:-999px; top:0; background:var(--accent); color:#0d0b14; padding:10px 16px; z-index:200; font-family:var(--mono); font-size:0.72rem; }
+.skip:focus { left:0; }
+</style>
+</head>
+<body>
+<a href="#overview" class="skip">Skip to content</a>
+
+<!-- MOBILE TOPBAR -->
+<div class="topbar">
+  <a href="#overview" class="tb-brand">
+    <svg width="22" height="20" viewBox="0 0 30 26" aria-hidden="true"><circle cx="11" cy="13" r="9" fill="none" stroke="var(--accent)" stroke-width="1.5"/><circle cx="19" cy="13" r="9" fill="none" stroke="var(--accent2)" stroke-width="1.5"/></svg>
+    Two Views, One Moment
+  </a>
+  <span class="tb-phase" id="mobilePhase">Overview</span>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-back">
+      <div class="brand-lockup">
+        <svg class="brand-mark" width="30" height="26" viewBox="0 0 30 26" aria-hidden="true"><circle cx="11" cy="13" r="9.2" fill="none" stroke="var(--accent)" stroke-width="1.6"/><circle cx="19" cy="13" r="9.2" fill="none" stroke="var(--accent2)" stroke-width="1.6"/></svg>
+        <span>
+        <a href="../index.html" class="brand-link">
+          <span class="brand-name">C.J. Jones</span>
+        </a>
+          <span class="brand-title">CS · UX · MTH · ACS</span>
+        </span>
+      </div>
+      <a class="back-link" href="../index.html">← All projects</a>
+      <a class="back-link-here" href="two-views-one-moment-speculative-design.html">↳ Two Views, One Moment</a>
+    </div>
+
+    <ul class="nav-list">
+      <li class="nav-item"><a class="nav-link" href="#overview" data-target="overview"><span class="nav-dot"></span>Overview<span class="nav-index">00</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#context" data-target="context"><span class="nav-dot"></span>Context<span class="nav-index">01</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#approach" data-target="approach"><span class="nav-dot"></span>The System<span class="nav-index">02</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#rationale" data-target="rationale"><span class="nav-dot"></span>Rationale<span class="nav-index">03</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#risks" data-target="risks"><span class="nav-dot"></span>Risks &amp; Challenges<span class="nav-index">04</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#alignment" data-target="alignment"><span class="nav-dot"></span>Alignment<span class="nav-index">05</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a class="social-link" href="mailto:sirhcse@gmail.com">EMAIL</a>
+      <a class="social-link" target="_blank" href="https://www.linkedin.com/in/sirhcse/">LINKEDIN</a>
+      <a class="social-link" target="_blank" href="https://forms.gle/ohrq7YSMyn58azLk9">ISSUES?</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO / OVERVIEW -->
+    <section class="detail-hero section" id="overview" style="border-bottom:1px solid var(--border)">
+      <div class="breadcrumb">
+        <a href="#overview">Speculative Design</a>
+        <span class="sep">/</span>
+        <span class="current">Two Views, One Moment</span>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <div class="hero-eyebrow">Dementia Care · AR/MR System</div>
+          <h1 class="detail-title">Two Views, <em>One Moment</em></h1>
+          <p class="detail-subtitle">A two-sided system that meets a person with dementia inside their reality — while quietly coaching the caregiver through the same difficult moment.</p>
+          <div class="hero-tags">
+            <span class="tag tag-patient">Speculative Design</span>
+            <span class="tag tag-care">AR / MR</span>
+            <span class="tag tag-moment">Validation-Based Care</span>
+          </div>
+        </div>
+        <div class="signal-stage" aria-hidden="true">
+          <svg viewBox="0 0 360 340" width="100%" role="img">
+            <defs>
+              <clipPath id="leftLens"><circle cx="138" cy="172" r="104"/></clipPath>
+            </defs>
+            <!-- patient lens (left, violet) -->
+            <circle cx="138" cy="172" r="104" fill="rgba(180,147,236,0.05)" stroke="var(--accent)" stroke-width="1.4"/>
+            <!-- caregiver lens (right, teal) -->
+            <circle cx="222" cy="172" r="104" fill="rgba(92,199,180,0.05)" stroke="var(--accent2)" stroke-width="1.4"/>
+            <!-- shared moment (overlap) -->
+            <circle class="moment-glow" cx="222" cy="172" r="104" fill="rgba(231,166,120,0.10)" clip-path="url(#leftLens)"/>
+
+            <!-- patient-side glyph: a remembered portrait -->
+            <g transform="translate(78,168)">
+              <rect x="-20" y="-24" width="40" height="48" rx="5" fill="none" stroke="var(--accent)" stroke-width="1.3"/>
+              <circle cx="0" cy="-6" r="8" fill="var(--accent)" opacity="0.85"/>
+              <path d="M-13 18 q13 -18 26 0" fill="var(--accent)" opacity="0.85"/>
+            </g>
+            <text class="lens-lab" x="78" y="214" fill="var(--accent)" text-anchor="middle">AS REMEMBERED</text>
+
+            <!-- caregiver-side glyph: a private cue card -->
+            <g transform="translate(282,168)">
+              <rect x="-24" y="-22" width="48" height="44" rx="5" fill="none" stroke="var(--accent2)" stroke-width="1.3"/>
+              <line x1="-15" y1="-9" x2="15" y2="-9" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round"/>
+              <line x1="-15" y1="0" x2="9" y2="0" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round"/>
+              <line x1="-15" y1="9" x2="12" y2="9" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round"/>
+            </g>
+            <text class="lens-lab" x="282" y="214" fill="var(--accent2)" text-anchor="middle">PRIVATE CUES</text>
+
+            <!-- two figures meeting in the overlap -->
+            <g transform="translate(180,166)"><g class="figs">
+              <g transform="translate(-15,0)">
+                <circle cx="0" cy="-8" r="9" fill="var(--accent3)"/>
+                <path d="M-13 16 q13 -17 26 0 z" fill="var(--accent3)"/>
+              </g>
+              <g transform="translate(15,0)">
+                <circle cx="0" cy="-8" r="9" fill="var(--accent3)" opacity="0.72"/>
+                <path d="M-13 16 q13 -17 26 0 z" fill="var(--accent3)" opacity="0.72"/>
+              </g>
+            </g></g>
+
+            <!-- labels -->
+            <text class="lens-lab" x="96"  y="86" fill="var(--accent)"  text-anchor="middle">PATIENT VIEW</text>
+            <text class="lens-lab" x="264" y="86" fill="var(--accent2)" text-anchor="middle">CAREGIVER VIEW</text>
+            <text class="lens-lab" x="180" y="300" fill="var(--accent3)" text-anchor="middle" letter-spacing="0.16em">ONE MOMENT</text>
+          </svg>
+          <div class="stage-cap">Fig.00 — two views held over a single shared moment</div>
+        </div>
+      </div>
+      <div class="meta-bar">
+        <div class="meta-cell"><div class="meta-key">Author</div><div class="meta-val">Christopher Jones</div></div>
+        <div class="meta-cell"><div class="meta-key">Type</div><div class="meta-val">Speculative design proposal</div></div>
+        <div class="meta-cell"><div class="meta-key">System</div><div class="meta-val">"Memory Space" — two-sided AR/MR</div></div>
+        <div class="meta-cell"><div class="meta-key">Focus</div><div class="meta-val">Dementia care &amp; recognition mismatch</div></div>
+      </div>
+    </section>
+
+    <!-- HMW + at a glance -->
+    <section class="section" id="hmw" style="padding-top:56px">
+      <div class="section-header">
+        <span class="section-label">How Might We</span>
+        <span class="section-divider"></span>
+        <span class="section-num">the question</span>
+      </div>
+      <div class="callout">
+        <div class="k">HMW</div>
+        <p class="callout-text">How might we help both a dementia patient and their caregiver navigate a recognition mismatch without distress?</p>
+      </div>
+
+      <div class="cards-grid cols-3 mt28">
+        <div class="card"><span class="card-accent-bar bar-patient"></span><div class="card-label patient">The problem</div><p class="card-desc">A person may live in an earlier moment of their life — and being corrected usually deepens distress on both sides.</p></div>
+        <div class="card"><span class="card-accent-bar bar-care"></span><div class="card-label care">The system</div><p class="card-desc">"Memory Space" splits into two synchronized views — one shown to the patient, one kept privately for the caregiver.</p></div>
+        <div class="card"><span class="card-accent-bar bar-moment"></span><div class="card-label moment">The principle</div><p class="card-desc">The technology disappears. What's left isn't an interface — it's a calmer, more natural moment of human connection.</p></div>
+      </div>
+    </section>
+
+    <!-- 01 CONTEXT -->
+    <section class="section" id="context">
+      <div class="section-header">
+        <span class="section-label">Context</span>
+        <span class="section-divider"></span>
+        <span class="section-num">01</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:20px">When the present becomes another time</h2>
+      <div class="prose" style="max-width:66ch">
+        <p>Dementia frequently produces <strong>recognition mismatch</strong>. A person may experience the present as an earlier point in their life, relating to the time and people around them as they remember them rather than as they are in the moment.</p>
+        <p>Meanwhile, the caregiver is left to absorb the strain of not being recognized. <strong>Direct correction in these moments usually worsens the resulting distress on both sides.</strong></p>
+      </div>
+
+      <div class="callout care mt28">
+        <div class="k">The design tension</div>
+        <p class="callout-text">Two people share the exact same moment — and need opposite things from it.</p>
+      </div>
+
+      <div class="mini-label mt48">The process</div>
+      <div class="timeline">
+        <div class="step">
+          <div class="step-num">Step 01 · Stakeholder research</div>
+          <div class="step-title">Surface the real clinical constraints</div>
+          <div class="step-desc">Begin with stakeholder research to understand the constraints that actually shape these moments — before proposing anything.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">Step 02 · Low-fidelity storyboards</div>
+          <div class="step-title">Sketch the emotional experience first</div>
+          <div class="step-desc">Move from low-fidelity storyboards into the feel of the interaction, where changes cost a pencil rather than a headset.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">Step 03 · Wizard-of-Oz prototypes</div>
+          <div class="step-title">Simulate the overlays before hardware</div>
+          <div class="step-desc">Build Wizard-of-Oz prototypes that simulate the AR overlays, testing the experience before committing to any device.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">Step 04 · Observational testing</div>
+          <div class="step-title">Learn in supervised care settings</div>
+          <div class="step-desc">Run observational testing with clinicians, iterating on how the system infers the patient's perceived time and delivers caregiver cues.</div>
+        </div>
+      </div>
+
+      <div class="callout moment mt40">
+        <div class="k">Throughout</div>
+        <p class="callout-text">Treat clinicians and caregivers as co-designers whose lived experience drives each iteration — brought in early and often, so the system is shaped by the people who will actually use it.</p>
+      </div>
+    </section>
+
+    <!-- 02 THE SYSTEM / APPROACH -->
+    <section class="section" id="approach">
+      <div class="section-header">
+        <span class="section-label">The System</span>
+        <span class="section-divider"></span>
+        <span class="section-num">02</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">Two views of the same moment</h2>
+      <div class="prose" style="max-width:66ch">
+        <p><strong>"Memory Space"</strong> is a two-sided AR/MR dementia-care system that bridges recognition gaps by adapting what patients see, while privately coaching caregivers through emotionally difficult moments.</p>
+      </div>
+
+      <!-- two views showcase -->
+      <div class="views mt40">
+        <div class="view-pane patient">
+          <div class="view-head"><span>◐</span> Patient view</div>
+          <div class="view-scene">
+            <span class="era-tag">· the year she's living in ·</span>
+            <div class="scene-note">She sees her brother, Daniel — as he looked and sounded then.</div>
+          </div>
+          <p class="view-cap">For the patient, the system can present loved ones as they looked and sounded during the year the patient believes they are living in.</p>
+        </div>
+        <div class="view-pane care">
+          <div class="view-head"><span>◑</span> Caregiver view · private</div>
+          <div class="view-scene">
+            <div class="cue-list">
+              <div class="cue"><span class="ck">She thinks</span><span class="cv">it's the year she was twenty.</span></div>
+              <div class="cue"><span class="ck">Your role</span><span class="cv">her brother, Daniel.</span></div>
+              <div class="cue"><span class="ck">Tone</span><span class="cv">warm, unhurried, no correcting.</span></div>
+            </div>
+          </div>
+          <p class="view-cap">For the caregiver, a private overlay supplies real-time cues about who the patient thinks they are, what relationship role to occupy, and what tone to use.</p>
+        </div>
+        <span class="views-seam">one moment</span>
+      </div>
+
+      <div class="callout moment mt40">
+        <div class="k">The guiding principle</div>
+        <p class="callout-text">Mixed reality works best when the technology disappears and the interaction feels intuitive — every unnecessary technical detail stripped away.</p>
+      </div>
+
+      <div class="prose mt28" style="max-width:66ch">
+        <p>Memory Space applies that principle to dementia care, editing the perceived environment so that what remains is <em>not an interface</em> — but a calmer, more natural moment of human connection.</p>
+      </div>
+    </section>
+
+    <!-- 03 RATIONALE -->
+    <section class="section" id="rationale">
+      <div class="section-header">
+        <span class="section-label">Rationale</span>
+        <span class="section-divider"></span>
+        <span class="section-num">03</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">Meet people where they are</h2>
+      <div class="prose" style="max-width:66ch">
+        <p>The approach meets patients within their reality instead of forcing correction, aligning with <strong>validation-based dementia care</strong> that reduces agitation. Splitting the system into a patient view and a caregiver view respects that these two users have <strong>opposite needs in the very same moment</strong>.</p>
+        <p>Keeping the mediation invisible — so the technology fades and only the human interaction remains — keeps <strong>cognitive load low</strong> for a population that cannot manage complex interfaces. Starting with storyboards and simulated overlays lets me test the emotional experience cheaply before investing in AR hardware.</p>
+        <p>Centering clinician input early exposes failure modes — such as unpredictable shifts in perceived time and patients ignoring screens — and pushes the design toward <strong>caregiver support rather than patient-facing screens</strong>.</p>
+      </div>
+
+      <div class="ba mt40">
+        <div class="box">
+          <div class="lab">Forcing correction</div>
+          <p>Insisting on the present reality reminds the patient of what they've lost — and reliably escalates agitation on both sides.</p>
+        </div>
+        <div class="arrow">→</div>
+        <div class="box after">
+          <div class="lab">Validation-based care</div>
+          <p>Meeting the person inside their reality — the pivot this design makes toward <strong style="color:var(--accent2)">caregiver support</strong>, not patient-facing screens.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 RISKS -->
+    <section class="section" id="risks">
+      <div class="section-header">
+        <span class="section-label">Risks &amp; Challenges</span>
+        <span class="section-divider"></span>
+        <span class="section-num">04</span>
+      </div>
+      <p class="intro-lead">A system that gently bends reality carries real risks. Each one shapes the design rather than sitting beside it.</p>
+
+      <div class="cards-grid mt40">
+        <div class="card">
+          <div class="card-label patient">Challenge 01</div>
+          <h4 class="card-title">Unpredictable reality shifts</h4>
+          <p class="card-desc">Patients change who and when they think they are.</p>
+          <div class="mit"><span><span class="ml">Response</span>The system updates live, and lets caregivers adjust by hand.</span></div>
+        </div>
+        <div class="card">
+          <div class="card-label care">Challenge 02</div>
+          <h4 class="card-title">Patient comprehension</h4>
+          <p class="card-desc">Some patients won't engage with a screen at all.</p>
+          <div class="mit"><span><span class="ml">Response</span>The caregiver side leads; patient AR stays optional.</span></div>
+        </div>
+        <div class="card">
+          <div class="card-label moment">Challenge 03</div>
+          <h4 class="card-title">Information capture</h4>
+          <p class="card-desc">It's hard to auto-detect where the patient's mind is.</p>
+          <div class="mit"><span><span class="ml">Response</span>Caregivers supply that input simply.</span></div>
+        </div>
+        <div class="card">
+          <div class="card-label patient">Challenge 04</div>
+          <h4 class="card-title">Ethical risk of deception</h4>
+          <p class="card-desc">Bending reality could feel manipulative.</p>
+          <div class="mit"><span><span class="ml">Response</span>The design follows validation-therapy norms and loops in families.</span></div>
+        </div>
+        <div class="card">
+          <div class="card-label care">Challenge 05</div>
+          <h4 class="card-title">Hardware burden</h4>
+          <p class="card-desc">Headsets are a lot for frail users to carry.</p>
+          <div class="mit"><span><span class="ml">Response</span>Favor lighter devices and a gradual roll-out.</span></div>
+        </div>
+        <div class="card" style="background:linear-gradient(180deg, rgba(231,166,120,0.05), var(--bg2))">
+          <div class="card-label">The throughline</div>
+          <p class="card-desc">Every response leans the same way: keep the caregiver in control, and keep the patient's dignity at the center.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 ALIGNMENT -->
+    <section class="section" id="alignment">
+      <div class="section-header">
+        <span class="section-label">Alignment with Design Statement</span>
+        <span class="section-divider"></span>
+        <span class="section-num">05</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:24px">How the proposal stays honest</h2>
+
+      <div class="cards-grid">
+        <div class="card"><span class="card-accent-bar bar-patient"></span><div class="card-label patient">Bridging disciplines</div><p class="card-desc">The two-sided design only works when clinical insight, engineering, and design come together.</p></div>
+        <div class="card"><span class="card-accent-bar bar-care"></span><div class="card-label care">Early &amp; continuous involvement</div><p class="card-desc">Contextual inquiry — and treating clinicians and caregivers as co-designers — grounds the work in real behavior rather than assumptions.</p></div>
+        <div class="card"><span class="card-accent-bar bar-moment"></span><div class="card-label moment">Empirical, iterative refinement</div><p class="card-desc">Storyboards lead to Wizard-of-Oz prototypes and then observational testing, learning from each round before building hardware.</p></div>
+        <div class="card"><span class="card-accent-bar bar-patient"></span><div class="card-label patient">Systems as a web of impacts</div><p class="card-desc">Second-order effects — like the ethics of deception — alongside technical and financial feasibility keep the design usable and sustainable.</p></div>
+      </div>
+
+      <div class="page-nav mt48">
+        <div class="closing">Two views, one moment — and the technology, at its best, <em>disappears</em>.</div>
+        <div class="foot-credit">
+          <b>TWO VIEWS, ONE MOMENT</b> — DESIGNING A TWO-SIDED SYSTEM FOR DEMENTIA CARE<br>
+          SPECULATIVE DESIGN · "MEMORY SPACE" AR/MR<br>
+          CHRISTOPHER JONES
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  var labels = {overview:'Overview',context:'Context',approach:'The System',rationale:'Rationale',risks:'Risks & Challenges',alignment:'Alignment'};
+  var links = {};
+  document.querySelectorAll('.nav-link').forEach(function(a){ links[a.getAttribute('data-target')] = a; });
+  var mobile = document.getElementById('mobilePhase');
+  var current = null;
+
+  function navKey(id){ return id === 'hmw' ? 'overview' : id; }
+
+  function setActive(id){
+    var key = navKey(id);
+    if(key === current) return; current = key;
+    Object.keys(links).forEach(function(k){ links[k].classList.toggle('active', k === key); });
+    if(mobile) mobile.textContent = labels[key] || '';
+  }
+
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ setActive(e.target.id); } });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    ['overview','hmw','context','approach','rationale','risks','alignment'].forEach(function(id){
+      var el = document.getElementById(id); if(el) obs.observe(el);
+    });
+  }
+  setActive('overview');
+})();
+</script>
+</body>
+</html>

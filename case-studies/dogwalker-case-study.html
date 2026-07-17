@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="../supporting-images/fav.png">
+<title>Reuse, Not Rebuild — Observability Automation Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0c0c0e;
+  --bg2:       #111114;
+  --bg3:       #18181d;
+  --surface:   #1e1e25;
+  --border:    #2a2a35;
+  --border2:   #3a3a48;
+  --text:      #e8e8f0;
+  --text2:     #9898b0;
+  --text3:     #5a5a72;
+  --accent:    #b18cf5;   /* violet — the catalog, DogWalker itself */
+  --accent2:   #5ed6a8;   /* green  — healthy, proven, reused */
+  --accent3:   #f0925a;   /* amber  — stale, broken, expensive */
+  --mono:      'DM Mono', monospace;
+  --serif:     'DM Serif Display', serif;
+  --sans:      'DM Sans', sans-serif;
+  --nav-w:     240px;
+  --max-w:     880px;
+}
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-size: 16px; line-height: 1.6;
+  min-height: 100vh; overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+.layout { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--nav-w); min-height: 100vh;
+  position: fixed; top: 0; left: 0;
+  display: flex; flex-direction: column;
+  padding: 40px 0 28px;
+  border-right: 1px solid var(--border);
+  background: var(--bg); z-index: 100;
+}
+.sidebar-back { padding: 0 28px 28px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+.back-link { font-family: var(--mono); font-size: 0.68rem; color: var(--text2); text-decoration: none; letter-spacing: 0.06em; display: inline-flex; align-items: center; gap: 8px; transition: gap 0.15s, color 0.15s; }
+.back-link:hover { color: var(--accent); gap: 11px; }
+.back-link-here { font-family: var(--mono); font-size: 0.68rem; text-decoration: none; letter-spacing: 0.06em; display: inline-flex; align-items: center; transition: gap 0.15s, color 0.15s; margin-left: 15px; }
+.back-link-here:hover { color: var(--accent); gap: 11px; }
+.brand-name { font-family: var(--serif); font-size: 1.05rem; color: var(--text); line-height: 1.3; display: block; margin-bottom: 6px; }
+.brand-title { font-family: var(--mono); font-size: 0.66rem; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; }
+.nav-list { list-style: none; flex: 1; padding: 0 14px; }
+.nav-item { margin-bottom: 1px; }
+.nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: 6px; text-decoration: none;
+  font-family: var(--sans); font-size: 0.82rem; font-weight: 400; color: var(--text2);
+  transition: all 0.15s ease; cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-link:hover { color: var(--text); background: var(--surface); }
+.nav-link.active { color: var(--text); background: var(--surface); font-weight: 500; }
+.nav-link.active .nav-dot { background: var(--accent); box-shadow: 0 0 0 3px rgba(177,140,245,0.15); }
+.nav-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border2); flex-shrink: 0; transition: all 0.15s; }
+.nav-index { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); margin-left: auto; }
+
+.sidebar-footer { padding: 24px 28px 0; border-top: 1px solid var(--border); display: flex; gap: 12px; }
+.social-link { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); text-decoration: none; letter-spacing: 0.08em; transition: color 0.15s; }
+.social-link:hover { color: var(--accent); }
+
+/* ── Main ── */
+.main { margin-left: var(--nav-w); flex: 1; padding: 0 64px 120px; max-width: calc(var(--max-w) + 128px); }
+
+/* ── Sections ── */
+.section { padding-top: 68px; padding-bottom: 52px; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: none; }
+.section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px; }
+.section-label { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; white-space:nowrap; }
+.section-divider { flex: 1; height: 1px; background: var(--border); }
+.section-num { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); }
+
+/* ── Figure ── */
+.figure { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--bg2); }
+.figure-body { padding: 26px; background:
+  repeating-linear-gradient(45deg, transparent, transparent 16px, rgba(255,255,255,0.010) 16px, rgba(255,255,255,0.010) 32px); }
+.figure-caption { font-family: var(--mono); font-size: 0.64rem; color: var(--text3); padding: 12px 18px; border-top: 1px solid var(--border); letter-spacing: 0.03em; display:flex; gap:8px; }
+.figure-caption b { color: var(--accent); font-weight: 500; }
+
+/* ── Figure image (responsive fit) ── */
+.figure-img-fit {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Breadcrumb ── */
+.breadcrumb { font-family: var(--mono); font-size: 0.68rem; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 22px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.breadcrumb a { color: var(--text2); text-decoration: none; transition: color 0.15s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .sep { color: var(--border2); }
+.breadcrumb .current { color: var(--text); }
+
+/* ── Hero ── */
+.detail-hero { padding-top: 56px; padding-bottom: 8px; }
+.hero-eyebrow { font-family: var(--mono); font-size: 0.72rem; color: var(--accent2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.hero-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent2); }
+.hero-grid { display:grid; grid-template-columns: 1.05fr 0.95fr; gap: 44px; align-items:center; }
+.detail-title { font-family: var(--serif); font-size: clamp(2.6rem, 5vw, 4rem); line-height: 1.08; color: var(--text); margin-bottom: 18px; letter-spacing: -0.01em; }
+.detail-title em { font-style: italic; color: var(--accent); }
+.detail-subtitle { font-family: var(--sans); font-size: 1.08rem; color: var(--text2); font-weight: 300; margin-bottom: 28px; line-height: 1.7; }
+.hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.tag { font-family: var(--mono); font-size: 0.7rem; padding: 4px 10px; border-radius: 3px; letter-spacing: 0.05em; }
+.tag-violet { background: rgba(177,140,245,0.08); color: var(--accent);  border: 1px solid rgba(177,140,245,0.2); }
+.tag-green  { background: rgba(94,214,168,0.08); color: var(--accent2); border: 1px solid rgba(94,214,168,0.2); }
+.tag-amber  { background: rgba(240,146,90,0.08); color: var(--accent3); border: 1px solid rgba(240,146,90,0.2); }
+
+/* hero art */
+.signal-stage { position: relative; }
+@keyframes flowdash { to { stroke-dashoffset: -40; } }
+@keyframes glowpulse { 0%,100%{ opacity:.45 } 50%{ opacity:1 } }
+.flowline { stroke-dasharray: 4 6; animation: flowdash 2.6s linear infinite; }
+.gpulse { animation: glowpulse 3.2s ease-in-out infinite; }
+.gpulse.g2 { animation-delay: 1.1s } .gpulse.g3 { animation-delay: 2.2s }
+@media (prefers-reduced-motion: reduce){ .flowline,.gpulse { animation: none } }
+.stage-cap { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; text-align:center; margin-top: 12px; }
+.axl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; }
+
+/* ── Meta bar ── */
+.meta-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 40px; }
+.meta-cell { background: var(--bg2); padding: 20px 22px; }
+.meta-key { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.meta-val { font-size: 0.86rem; color: var(--text); line-height: 1.45; }
+
+/* ── Prose ── */
+.prose p { font-size: 0.95rem; color: var(--text2); font-weight: 300; line-height: 1.85; margin-bottom: 20px; }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong, strong { font-weight: 500; color: var(--text); }
+.prose em { color: var(--text); font-style: italic; }
+.intro-lead { font-size: 1.05rem; color: var(--text2); font-weight: 300; line-height: 1.75; max-width: 62ch; }
+
+/* ── Figure ── */
+.figure { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--bg2); }
+.figure-body { padding: 26px; background:
+  repeating-linear-gradient(45deg, transparent, transparent 16px, rgba(255,255,255,0.010) 16px, rgba(255,255,255,0.010) 32px); }
+.figure-caption { font-family: var(--mono); font-size: 0.64rem; color: var(--text3); padding: 12px 18px; border-top: 1px solid var(--border); letter-spacing: 0.03em; display:flex; gap:8px; }
+.figure-caption b { color: var(--accent); font-weight: 500; }
+
+/* ── Code / tag query ── */
+.code { font-family: var(--mono); font-size: 0.78rem; background: var(--bg3); border: 1px solid var(--border); border-left: 2px solid var(--accent); border-radius: 0 6px 6px 0; padding: 14px 18px; color: var(--text2); overflow-x: auto; white-space: nowrap; }
+.code .kk { color: var(--accent); }
+.code .vv { color: var(--accent2); }
+.code-label { font-family: var(--mono); font-size: 0.58rem; color: var(--text3); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+
+/* ── Callout ── */
+.callout { border-left: 2px solid var(--accent); background: linear-gradient(90deg, rgba(177,140,245,0.05), transparent); padding: 22px 26px; border-radius: 0 6px 6px 0; margin: 28px 0; }
+.callout .k { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; }
+.callout-text { font-family: var(--serif); font-size: 1.24rem; line-height: 1.42; color: var(--text); font-style: italic; }
+.callout.green { border-left-color: var(--accent2); background: linear-gradient(90deg, rgba(94,214,168,0.05), transparent); }
+.callout.green .k { color: var(--accent2); }
+.callout.amber { border-left-color: var(--accent3); background: linear-gradient(90deg, rgba(240,146,90,0.05), transparent); }
+.callout.amber .k { color: var(--accent3); }
+
+/* pull quote */
+.pull { border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding: 30px 0; margin: 40px 0; }
+.pull-text { font-family: var(--serif); font-style: italic; font-size: 1.5rem; line-height: 1.35; color: var(--text); max-width: 30ch; }
+.pull-cite { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 14px; }
+
+/* ── Grids ── */
+.split-grid { display: grid; gap: 40px; align-items: start; }
+.split-2 { grid-template-columns: 1fr 1fr; }
+.split-bias { grid-template-columns: 1.3fr 0.7fr; }
+.mt8{margin-top:8px}.mt20{margin-top:20px}.mt28{margin-top:28px}.mt40{margin-top:40px}.mt48{margin-top:48px}
+.subhead { font-family: var(--serif); font-size: 1.5rem; color: var(--text); margin-bottom: 12px; line-height:1.2; }
+.mini-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 16px; }
+
+/* ── Aside list ── */
+.aside-block { padding: 22px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; }
+.aside-block-title { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px; }
+.aside-list { list-style: none; }
+.aside-list li { font-size: 0.85rem; color: var(--text2); padding: 9px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 9px; line-height: 1.5; font-weight:300; }
+.aside-list li:last-child { border-bottom: none; }
+.aside-list li::before { content: '→'; font-family: var(--mono); font-size: 0.66rem; color: var(--accent); margin-top: 3px; }
+.aside-list.warn li::before { content: '⚠'; color: var(--accent3); }
+.aside-list.good li::before { content: '✓'; color: var(--accent2); }
+
+/* ── Cards grid ── */
+.cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.cards-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.card { background: var(--bg2); padding: 26px; transition: background 0.15s; position: relative; }
+.card:hover { background: var(--bg3); }
+.card-accent-bar { position: absolute; top: 0; left: 0; width: 3px; height: 100%; }
+.bar-violet{background:var(--accent)} .bar-green{background:var(--accent2)} .bar-amber{background:var(--accent3)}
+.card-label { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+.card-label.violet{color:var(--accent)} .card-label.green{color:var(--accent2)} .card-label.amber{color:var(--accent3)}
+.card-title { font-family: var(--serif); font-size: 1.18rem; color: var(--text); margin-bottom: 10px; line-height: 1.25; }
+.card-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.65; font-weight: 300; }
+.card-desc + .card-desc { margin-top: 10px; }
+.card.star { background: linear-gradient(180deg, rgba(177,140,245,0.05), var(--bg2)); }
+
+/* ── Personas ── */
+.persona { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 26px; display: flex; gap: 18px; align-items: flex-start; }
+.persona .av { width: 46px; height: 46px; flex: none; }
+.persona .role { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+.persona .role.violet{color:var(--accent)} .persona .role.green{color:var(--accent2)} .persona .role.amber{color:var(--accent3)}
+.persona h3 { font-family: var(--serif); font-size: 1.2rem; color: var(--text); margin-bottom: 8px; }
+.persona p { font-size: 0.85rem; color: var(--text2); font-weight: 300; line-height: 1.6; }
+.persona p + p { margin-top: 10px; }
+
+/* ── Timeline ── */
+.timeline { position: relative; margin-left: 6px; }
+.timeline::before { content: ''; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 1px; background: var(--border); }
+.step { position: relative; padding: 0 0 20px 34px; }
+.step:last-child { padding-bottom: 0; }
+.step::before { content: ''; position: absolute; left: 1px; top: 4px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--border2); }
+.step.done::before { border-color: var(--accent2); background: var(--accent2); }
+.step.break::before { border-color: var(--accent3); background: var(--accent3); }
+.step-num { font-family: var(--mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.1em; margin-bottom: 4px; text-transform:uppercase; }
+.step-title { font-family: var(--serif); font-size: 1.05rem; color: var(--text); margin-bottom: 5px; }
+.step-desc { font-size: 0.85rem; color: var(--text2); font-weight: 300; line-height: 1.6; max-width: 62ch; }
+
+/* ── Experiment cards ── */
+.exp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.exp-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 22px; transition: border-color 0.2s; }
+.exp-card:hover { border-color: var(--border2); }
+.exp-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.exp-status { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 3px; text-transform:uppercase; }
+.status-a { background: rgba(177,140,245,0.1); color: var(--accent); }
+.status-b { background: rgba(94,214,168,0.1); color: var(--accent2); }
+.status-c { background: rgba(240,146,90,0.1); color: var(--accent3); }
+.exp-idx { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); }
+.exp-title { font-family: var(--serif); font-size: 1.05rem; color: var(--text); margin-bottom: 6px; }
+.exp-desc { font-size: 0.82rem; color: var(--text2); font-weight: 300; line-height: 1.6; }
+
+/* ── Stats ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.stat { background: var(--bg2); padding: 24px 26px; }
+.stat-num { font-family: var(--serif); font-size: 2rem; line-height: 1; margin-bottom: 8px; color: var(--text); }
+.stat-num.accent { color: var(--accent); } .stat-num.accent2 { color: var(--accent2); } .stat-num.accent3 { color: var(--accent3); }
+.stat-label { font-family: var(--mono); font-size: 0.64rem; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; line-height:1.4; }
+
+/* ── Before/after ── */
+.ba { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: center; }
+.ba .box { border: 1px solid var(--border); border-radius: 8px; padding: 22px; background: var(--bg2); }
+.ba .box.after { border-color: rgba(94,214,168,0.4); background: linear-gradient(180deg, rgba(94,214,168,0.04), var(--bg2)); }
+.ba .lab { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
+.ba .box.after .lab { color: var(--accent2); }
+.ba .box p { font-size: 0.9rem; color: var(--text2); font-weight:300; font-style: italic; line-height:1.55; }
+.ba .arrow { font-family: var(--mono); color: var(--accent2); font-size: 1.3rem; }
+.ba.top { align-items: start; }
+
+/* numbered step list inside ba boxes */
+.nlist { list-style:none; counter-reset: n; }
+.nlist li { counter-increment: n; font-size: 0.84rem; color: var(--text2); font-weight:300; line-height:1.5; padding: 7px 0; border-bottom: 1px solid var(--border); display:flex; gap:10px; font-style: normal; }
+.nlist li:last-child { border-bottom:none; }
+.nlist li::before { content: counter(n); font-family: var(--mono); font-size:0.62rem; color: var(--text3); flex:none; width:14px; margin-top:2px; }
+.box.after .nlist li::before { color: var(--accent2); }
+
+/* ── Chips / pills ── */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--mono); font-size: 0.72rem; border: 1px solid var(--border2); background: var(--bg2); border-radius: 100px; padding: 6px 14px; color: var(--text2); }
+.chip b { color: var(--text); }
+.chip.hot { border-color: rgba(240,146,90,0.4); color: var(--accent3); }
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { font-family: var(--mono); font-size: 0.66rem; padding: 3px 9px; border-radius: 3px; background: var(--surface); color: var(--text2); letter-spacing: 0.04em; }
+
+/* ── Trio ── */
+.trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.sig { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 24px; text-align: center; transition: border-color .2s; }
+.sig:hover { border-color: var(--border2); }
+.sig .art { height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.sig h3 { font-family: var(--serif); font-size: 1.24rem; color: var(--text); margin-bottom: 4px; }
+.sig .was { font-family: var(--mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.06em; margin-bottom: 12px; text-transform:uppercase; }
+.sig p { font-size: 0.83rem; color: var(--text2); font-weight: 300; line-height: 1.6; }
+@keyframes srch { 0%,100%{transform:translate(-8px,-4px)} 50%{transform:translate(8px,4px)} }
+@keyframes assemble { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+@keyframes sweepbar { 0%,100%{transform:translateX(-12px)} 50%{transform:translateX(12px)} }
+.sig:hover .a-srch { animation: srch 2.6s ease-in-out infinite; }
+.sig:hover .a-asm { animation: assemble 1.8s ease-in-out infinite; }
+.sig:hover .a-sweep { animation: sweepbar 2.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce){ .sig:hover * { animation: none !important; } }
+
+/* ── Page nav ── */
+.page-nav { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 8px; }
+.closing { font-family: var(--serif); font-size: clamp(1.6rem,3vw,2.4rem); line-height: 1.22; color: var(--text); max-width: 24ch; }
+.closing em { font-style: italic; color: var(--accent); }
+.foot-credit { font-family: var(--mono); font-size: 0.66rem; color: var(--text3); line-height: 2; margin-top: 24px; }
+.foot-credit b { color: var(--text2); }
+
+/* ── Mobile topbar ── */
+.topbar { display:none; position: fixed; top:0; left:0; right:0; z-index: 120; background: rgba(12,12,14,.88); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 12px 20px; align-items:center; justify-content: space-between; }
+.topbar .tb-brand { display:flex; align-items:center; gap:9px; font-family: var(--serif); font-size: 1rem; color: var(--text); text-decoration:none; }
+.topbar .tb-phase { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+  :root { --nav-w: 0px; }
+  .sidebar { display: none; }
+  .topbar { display: flex; }
+  .main { margin-left: 0; padding: 56px 22px 80px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+  .split-2, .split-bias { grid-template-columns: 1fr; }
+  .cards-grid, .cards-grid.cols-3 { grid-template-columns: 1fr; }
+  .meta-bar { grid-template-columns: 1fr 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .exp-grid { grid-template-columns: 1fr; }
+  .trio { grid-template-columns: 1fr; }
+  .ba { grid-template-columns: 1fr; }
+  .ba .arrow { transform: rotate(90deg); text-align:center; }
+  .code { white-space: pre-wrap; word-break: break-word; }
+}
+
+/* focus */
+a:focus-visible, .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+.skip { position:absolute; left:-999px; top:0; background:var(--accent); color:#0c0c0e; padding:10px 16px; z-index:200; font-family:var(--mono); font-size:0.72rem; }
+.skip:focus { left:0; }
+
+.brand-link { text-decoration: none; }
+</style>
+</head>
+<body>
+<a href="#overview" class="skip">Skip to content</a>
+
+<!-- MOBILE TOPBAR -->
+<div class="topbar">
+  <a href="#overview" class="tb-brand">
+    <svg width="20" height="20" viewBox="0 0 26 26" aria-hidden="true">
+      <circle cx="9" cy="9" r="4.5" fill="none" stroke="var(--accent)" stroke-width="2"/>
+      <line x1="12.5" y1="12.5" x2="21" y2="21" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="19" cy="7" r="2" fill="var(--accent2)"/>
+    </svg>
+    DogWalker
+  </a>
+  <span class="tb-phase" id="mobilePhase">Overview</span>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-back">
+        <a href="../index.html" class="brand-link">
+          <span class="brand-name">C.J. Jones</span>
+        </a>
+      <span class="brand-title">CS · UX · MTH · ACS</span>
+      <a class="back-link" href="../index.html">← All projects</a>
+      <a class="back-link-here" href="dogwalker-case-study.html">↳ Dogwalker Observability Catalog</a>
+    </div>
+
+    <ul class="nav-list">
+      <li class="nav-item"><a class="nav-link" href="#overview" data-target="overview"><span class="nav-dot"></span>Overview<span class="nav-index">01</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#tldr" data-target="tldr"><span class="nav-dot"></span>TL;DR<span class="nav-index">—</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#problem" data-target="problem"><span class="nav-dot"></span>The Problem<span class="nav-index">02</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#research" data-target="research"><span class="nav-dot"></span>Research<span class="nav-index">03</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#synthesis" data-target="synthesis"><span class="nav-dot"></span>Synthesis<span class="nav-index">04</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#ideation" data-target="ideation"><span class="nav-dot"></span>Ideation<span class="nav-index">05</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#prototyping" data-target="prototyping"><span class="nav-dot"></span>Testing &amp; Prototypes<span class="nav-index">06</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#final" data-target="final"><span class="nav-dot"></span>Final Design<span class="nav-index">07</span></a></li>
+      <li class="nav-item"><a class="nav-link" href="#reflection" data-target="reflection"><span class="nav-dot"></span>Reflection<span class="nav-index">08</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a class="social-link" href="mailto:sirhcse@gmail.com">EMAIL</a>
+      <a class="social-link" target="_blank" href="https://www.linkedin.com/in/sirhcse/">LINKEDIN</a>
+      <a class="social-link" target="_blank" href="https://forms.gle/ohrq7YSMyn58azLk9">ISSUES?</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO / OVERVIEW -->
+    <section class="detail-hero section" id="overview" style="border-bottom:1px solid var(--border)">
+      <div class="breadcrumb">
+        <a href="#overview">Enterprise Observability</a>
+        <span class="sep">/</span>
+        <span class="current">DogWalker</span>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <div class="hero-eyebrow">Enterprise Observability Automation · Fall 2019</div>
+          <h1 class="detail-title">Reuse, <em>Not Rebuild</em></h1>
+          <p class="detail-subtitle">Turning hours of manual Datadog setup at Nordstrom into a single tagged request — by cataloging teams' proven dashboards, alerts, and metrics so an entire board could be generated from one line of text.</p>
+          <div class="hero-tags">
+            <span class="tag tag-violet">Product Research</span>
+            <span class="tag tag-green">Developer Experience</span>
+            <span class="tag tag-violet">Automation</span>
+            <span class="tag tag-green">Platform Engineering</span>
+            <span class="tag tag-amber">Observability Governance</span>
+          </div>
+        </div>
+        <div class="signal-stage" aria-hidden="true">
+          <svg viewBox="0 0 440 300" width="100%" role="img">
+            <rect x="0" y="0" width="440" height="300" rx="10" fill="var(--bg2)" stroke="var(--border)"/>
+
+            <!-- tag query -->
+            <rect x="18" y="128" width="96" height="30" rx="6" fill="var(--bg3)" stroke="var(--accent)"/>
+            <text class="axl" x="66" y="147" fill="var(--accent)" text-anchor="middle">TAGGED REQUEST</text>
+            <line class="flowline" x1="116" y1="143" x2="152" y2="143" stroke="var(--accent)" stroke-width="1.6"/>
+
+            <!-- catalog stack -->
+            <g>
+              <rect x="156" y="106" width="96" height="20" rx="4" fill="var(--bg3)" stroke="var(--accent)" opacity="0.5"/>
+              <rect x="156" y="130" width="96" height="20" rx="4" fill="rgba(177,140,245,0.16)" stroke="var(--accent)"/>
+              <rect x="156" y="154" width="96" height="20" rx="4" fill="var(--bg3)" stroke="var(--accent)" opacity="0.5"/>
+              <text class="axl" x="204" y="144" fill="var(--accent)" text-anchor="middle">CATALOG</text>
+            </g>
+
+            <!-- fork -->
+            <path class="flowline" d="M252 136 C 280 136, 288 92, 316 92" fill="none" stroke="var(--accent2)" stroke-width="2.6"/>
+            <path class="flowline" d="M252 150 C 280 150, 288 208, 316 208" fill="none" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="3 5" opacity="0.75"/>
+
+            <!-- reuse path (dominant) -->
+            <rect x="318" y="74" width="106" height="38" rx="6" fill="rgba(94,214,168,0.14)" stroke="var(--accent2)" stroke-width="1.4"/>
+            <text class="axl" x="371" y="90" fill="var(--accent2)" text-anchor="middle">REUSE</text>
+            <text class="axl" x="371" y="102" fill="var(--accent2)" text-anchor="middle" opacity="0.75">PROVEN COMPONENT</text>
+
+            <!-- generate path (only if needed) -->
+            <rect x="318" y="190" width="106" height="38" rx="6" fill="var(--bg3)" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3"/>
+            <text class="axl" x="371" y="206" fill="var(--accent)" text-anchor="middle">GENERATE</text>
+            <text class="axl" x="371" y="218" fill="var(--text3)" text-anchor="middle">ONLY IF MISSING</text>
+
+            <!-- governor: health dots sit on the catalog rows -->
+            <circle class="gpulse"    cx="243" cy="116" r="3.5" fill="var(--accent2)"/>
+            <circle class="gpulse g2" cx="243" cy="140" r="3.5" fill="var(--accent3)"/>
+            <circle class="gpulse g3" cx="243" cy="164" r="3.5" fill="var(--accent2)"/>
+
+            <!-- legend -->
+            <circle cx="24" cy="264" r="3.5" fill="var(--accent2)"/>
+            <text class="axl" x="34" y="267" fill="var(--text3)">HEALTHY</text>
+            <circle cx="104" cy="264" r="3.5" fill="var(--accent3)"/>
+            <text class="axl" x="114" y="267" fill="var(--accent3)">STALE / COSTLY</text>
+          </svg>
+          <div class="stage-cap">Fig.00 — search the catalog first; generate only what's missing</div>
+        </div>
+      </div>
+      <div class="meta-bar">
+        <div class="meta-cell"><div class="meta-key">Organization</div><div class="meta-val">Nordstrom<br><span style="color:var(--text3)">Fall 2019</span></div></div>
+        <div class="meta-cell"><div class="meta-key">Stakeholders</div><div class="meta-val">Development teams, platform engineering, data analysts</div></div>
+        <div class="meta-cell"><div class="meta-key">Project type</div><div class="meta-val">Internal developer platform &amp; observability automation</div></div>
+        <div class="meta-cell"><div class="meta-key">My focus</div><div class="meta-val">Research, system design, catalog architecture, automation, prototyping, DX</div></div>
+      </div>
+      <div class="aside-block mt28">
+        <div class="aside-block-title">Technology explored</div>
+        <div class="pill-row">
+          <span class="pill">DATADOG PYTHON API</span>
+          <span class="pill">AWS LAMBDA</span>
+          <span class="pill">AWS DATABASES</span>
+          <span class="pill">COMMAND-LINE INTERFACES</span>
+          <span class="pill">GITLAB CI/CD</span>
+          <span class="pill">AUTOMATED GOVERNANCE WORKFLOWS</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TL;DR -->
+    <section class="section" id="tldr" style="padding-top:56px">
+      <div class="section-header">
+        <span class="section-label">TL;DR</span>
+        <span class="section-divider"></span>
+        <span class="section-num">at a glance</span>
+      </div>
+
+      <figure class="figure">
+        <img class="figure-img-fit" src="../supporting-images/rnr_0001.png" />
+        <figcaption class="figure-caption"><b>FIG.01</b> Summarized view of updates and entry points.</figcaption>
+      </figure>
+      <br/>
+      
+      <div class="cards-grid cols-3">
+        <div class="card"><span class="card-accent-bar bar-amber"></span><div class="card-label amber">Problem</div><p class="card-desc">Teams repeatedly spent hours or days creating similar Datadog dashboards, alerts, and metrics. They knew <em>what</em> they wanted to monitor, but not where the data lived, whether another team had already solved it, or how to configure custom metrics.</p><p class="card-desc">The result: duplicated work, inconsistent practices, siloed knowledge, unused resources, and unnecessary cost.</p></div>
+        <div class="card"><span class="card-accent-bar bar-violet"></span><div class="card-label violet">Solution</div><p class="card-desc">A centralized catalog of dashboards, widgets, alerts, metrics, and custom metrics — searchable by tag. Users could inspect working components from other teams, import them, or generate a new configuration from a tagged request.</p><p class="card-desc">Automated checks flagged broken, unused, misconfigured, or unusually expensive resources.</p></div>
+        <div class="card"><span class="card-accent-bar bar-green"></span><div class="card-label green">Intended impact</div><p class="card-desc">A setup process that took hours or days could be completed in minutes. Teams could reuse proven components, reduce duplicated effort, share operational knowledge, and understand the financial impact of their observability footprint.</p></div>
+      </div>
+      <div class="stats-row mt28">
+        <div class="stat"><div class="stat-num accent3">Days</div><div class="stat-label">Old setup time</div></div>
+        <div class="stat"><div class="stat-num accent2">Minutes</div><div class="stat-label">Intended setup time</div></div>
+        <div class="stat"><div class="stat-num accent">5</div><div class="stat-label">Key findings</div></div>
+        <div class="stat"><div class="stat-num">7</div><div class="stat-label">Design requirements</div></div>
+      </div>
+      <div class="callout violet mt28">
+        <div class="k">A note on metrics</div>
+        <p class="callout-text" style="font-family:var(--sans);font-style:normal;font-size:0.95rem;font-weight:300;color:var(--text2);line-height:1.75">Because this is a historical project, complete adoption, cost-reduction, and post-launch performance measurements are unavailable.</p>
+      </div>
+    </section>
+
+    <!-- 02 PROBLEM -->
+    <section class="section" id="problem">
+      <div class="section-header">
+        <span class="section-label">The Problem</span>
+        <span class="section-divider"></span>
+        <span class="section-num">02</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:24px">Everyone solving the same problem, alone</h2>
+      <div class="prose" style="max-width:64ch">
+        <p>Datadog was widely used across the company, but every team approached onboarding and configuration differently. Creating a useful dashboard was rarely as simple as selecting a few metrics.</p>
+      </div>
+
+      <div class="split-grid split-2 mt28">
+        <div class="aside-block">
+          <div class="aside-block-title">First, teams had to determine…</div>
+          <ul class="aside-list">
+            <li>Which data was already available</li>
+            <li>Which metric names were correct</li>
+            <li>Whether custom instrumentation was required</li>
+            <li>Which widgets best represented the system</li>
+            <li>Which thresholds should trigger alerts</li>
+            <li>Whether another team had already built something similar</li>
+            <li>How the monitors would affect Datadog usage and cost</li>
+          </ul>
+        </div>
+        <div>
+          <div class="prose">
+            <p>This work was repeated across development, platform, and analytics teams. Even when teams understood what they wanted to observe, <strong>they did not necessarily know where to find the data</strong> or how to translate it into Datadog resources.</p>
+          </div>
+          <div class="callout amber">
+            <div class="k">Siloed knowledge</div>
+            <p class="callout-text">The organization did not lack monitoring knowledge. It lacked a system for finding and sharing that knowledge.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-label mt48">A fragmented process</div>
+      <div class="split-grid split-bias">
+        <div class="timeline">
+          <div class="step"><div class="step-num">Step 01</div><div class="step-title">Search Datadog manually</div></div>
+          <div class="step"><div class="step-num">Step 02</div><div class="step-title">Ask another team for examples</div></div>
+          <div class="step"><div class="step-num">Step 03</div><div class="step-title">Read API documentation</div></div>
+          <div class="step"><div class="step-num">Step 04</div><div class="step-title">Create or locate metrics</div></div>
+          <div class="step"><div class="step-num">Step 05</div><div class="step-title">Test several widgets</div></div>
+          <div class="step"><div class="step-num">Step 06</div><div class="step-title">Configure alert thresholds</div></div>
+          <div class="step"><div class="step-num">Step 07</div><div class="step-title">Connect custom scripts or one-off API calls</div></div>
+          <div class="step"><div class="step-num">Step 08</div><div class="step-title">Review the result with platform engineers</div></div>
+          <div class="step break"><div class="step-num">Step 09 · and again</div><div class="step-title">Repeat the process when the configuration failed</div><div class="step-desc">Hours or days, with inconsistent results — and often duplicating a dashboard another team had already built.</div></div>
+        </div>
+        <div class="aside-block">
+          <div class="aside-block-title">Financial risk · what drove cost up</div>
+          <ul class="aside-list warn">
+            <li>Excessive custom metrics</li>
+            <li>Duplicated monitors</li>
+            <li>High-cardinality tags</li>
+            <li>Stale dashboards</li>
+            <li>Unused synthetic tests</li>
+            <li>Broken resources still generating data</li>
+            <li>Teams creating similar resources independently</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pull">
+        <p class="pull-text">Without governance, the observability environment could become more expensive as it became less understandable.</p>
+        <div class="pull-cite">The compounding cost</div>
+      </div>
+
+      <div class="callout">
+        <div class="k">How might we…</div>
+        <p class="callout-text">How might we help teams discover, reuse, and safely generate the monitoring resources they need — while reducing setup time, duplicated work, and unnecessary observability costs?</p>
+      </div>
+    </section>
+
+    <!-- 03 RESEARCH -->
+    <section class="section" id="research">
+      <div class="section-header">
+        <span class="section-label">Research</span>
+        <span class="section-divider"></span>
+        <span class="section-num">03</span>
+      </div>
+      <p class="intro-lead">The research combined stakeholder interviews, usability walkthroughs, technical documentation review, and an audit of existing Datadog resources.</p>
+
+      <div class="mini-label mt40">The three stakeholder groups</div>
+      <div style="display:grid;gap:14px">
+        <div class="persona">
+          <svg class="av" viewBox="0 0 46 46" aria-hidden="true">
+            <circle cx="23" cy="23" r="22" fill="none" stroke="var(--accent)" stroke-width="1.2"/>
+            <path d="M17 17 L11 23 L17 29" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M29 17 L35 23 L29 29" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>
+            <div class="role violet">Development teams</div>
+            <h3>Fluent in the system, not in Datadog</h3>
+            <p>Developers wanted to monitor application behavior, deployments, errors, latency, queues, dependencies, and service-level health.</p>
+            <p>They understood the system they were building, but were <strong>less familiar with Datadog's resource model, API, custom metrics, or cost implications</strong>.</p>
+          </div>
+        </div>
+
+        <div class="persona">
+          <svg class="av" viewBox="0 0 46 46" aria-hidden="true">
+            <circle cx="23" cy="23" r="22" fill="none" stroke="var(--accent2)" stroke-width="1.2"/>
+            <circle cx="23" cy="23" r="5" fill="var(--accent2)"/>
+            <circle cx="23" cy="11" r="3" fill="var(--accent2)" opacity="0.55"/>
+            <circle cx="13" cy="30" r="3" fill="var(--accent2)" opacity="0.55"/>
+            <circle cx="33" cy="30" r="3" fill="var(--accent2)" opacity="0.55"/>
+            <g stroke="var(--accent2)" stroke-width="1.2" opacity="0.7">
+              <line x1="23" y1="18" x2="23" y2="14"/>
+              <line x1="19" y1="26" x2="15" y2="28"/>
+              <line x1="27" y1="26" x2="31" y2="28"/>
+            </g>
+          </svg>
+          <div>
+            <div class="role green">Platform engineering</div>
+            <h3>The expertise existed — as informal support</h3>
+            <p>Platform engineers supported shared infrastructure and were frequently asked to help other teams create dashboards and alerts.</p>
+            <p>They had the strongest understanding of Datadog, but much of that expertise was <em>distributed through informal support, examples, scripts, and team-specific conventions</em> — not something anyone could search.</p>
+          </div>
+        </div>
+
+        <div class="persona">
+          <svg class="av" viewBox="0 0 46 46" aria-hidden="true">
+            <circle cx="23" cy="23" r="22" fill="none" stroke="var(--accent3)" stroke-width="1.2"/>
+            <rect x="12" y="24" width="5" height="10" rx="1" fill="var(--accent3)" opacity="0.6"/>
+            <rect x="20" y="17" width="5" height="17" rx="1" fill="var(--accent3)"/>
+            <rect x="28" y="21" width="5" height="13" rx="1" fill="var(--accent3)" opacity="0.6"/>
+          </svg>
+          <div>
+            <div class="role amber">Data analysts</div>
+            <h3>Same needs, different vocabulary</h3>
+            <p>Analysts needed dashboards and alerts for data quality, pipeline behavior, database activity, and reporting systems.</p>
+            <p>Their needs often <strong>overlapped with engineering teams</strong> — but they used different terminology and had different levels of access to infrastructure data.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="split-grid split-2 mt48">
+        <div>
+          <h3 class="subhead">Existing-system review</h3>
+          <div class="prose" style="margin-bottom:16px">
+            <p>I reviewed the company's dashboards, widgets, alerts, monitors, metrics, custom metrics, synthetic tests, one-off scripts, direct API integrations, and CLI utilities.</p>
+            <p>The review showed <strong>substantial variation in naming, tagging, structure, quality, and continued usage</strong>. Some resources were actively maintained and widely reused. Others had no recent data, pointed to invalid metrics, contained broken queries, or had unclear ownership.</p>
+          </div>
+        </div>
+        <div>
+          <h3 class="subhead">Technical research</h3>
+          <div class="aside-block" style="margin-bottom:12px">
+            <div class="aside-block-title">Datadog Python API</div>
+            <div class="pill-row">
+              <span class="pill">DASHBOARD CREATION</span>
+              <span class="pill">MONITOR CREATION</span>
+              <span class="pill">METRIC RETRIEVAL</span>
+              <span class="pill">CUSTOM METRICS</span>
+              <span class="pill">SYNTHETICS</span>
+              <span class="pill">API AUTH</span>
+              <span class="pill">RESOURCE METADATA</span>
+              <span class="pill">WIDGET CONFIG</span>
+            </div>
+          </div>
+          <div class="aside-block">
+            <div class="aside-block-title">Supporting infrastructure</div>
+            <div class="pill-row">
+              <span class="pill">AWS LAMBDA</span>
+              <span class="pill">AWS DATABASES</span>
+              <span class="pill">GITLAB CI/CD RUNNERS</span>
+              <span class="pill">CLI ACCESS</span>
+              <span class="pill">TAGGING SYSTEMS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-label mt48">Common onboarding challenges</div>
+      <div class="aside-block">
+        <ul class="aside-list warn">
+          <li>Users knew the operational question, but not the metric name.</li>
+          <li>Teams could not easily determine whether a relevant dashboard already existed.</li>
+          <li>Custom metrics required additional instrumentation and unfamiliar setup.</li>
+          <li>Alert configuration involved uncertainty about thresholds and expected behavior.</li>
+          <li>New users struggled to understand the relationship between metrics, widgets, dashboards, and monitors.</li>
+          <li>Platform engineers repeatedly answered similar setup questions.</li>
+          <li>Teams could not easily assess whether a resource was still working or worth its cost.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 04 SYNTHESIS -->
+    <section class="section" id="synthesis">
+      <div class="section-header">
+        <span class="section-label">Synthesis</span>
+        <span class="section-divider"></span>
+        <span class="section-num">04</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:16px">Dashboard creation was only the visible part</h2>
+      <p class="intro-lead">The underlying need was a <em>searchable observability catalog</em> that could connect people, operational questions, metrics, and reusable monitoring components.</p>
+
+      <div class="mini-label mt48">Key findings</div>
+      <div class="cards-grid">
+        <div class="card">
+          <span class="card-accent-bar bar-violet"></span>
+          <div class="card-label violet">Finding 01</div>
+          <h4 class="card-title">Teams knew what to observe, but not where to find it</h4>
+          <p class="card-desc">Users began with an operational question — <em>Is this service healthy? Are requests slowing down? Is the queue backing up? Did the deployment increase errors? Is the database approaching capacity?</em></p>
+          <p class="card-desc">They did not necessarily know the exact metric, query syntax, widget, or alert configuration required to answer it.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-amber"></span>
+          <div class="card-label amber">Finding 02</div>
+          <h4 class="card-title">The same work was repeated across teams</h4>
+          <p class="card-desc">Different groups frequently created similar dashboards and monitors without knowing a working version already existed elsewhere.</p>
+          <p class="card-desc">The lack of discovery created duplicated engineering effort and inconsistent results.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-violet"></span>
+          <div class="card-label violet">Finding 03</div>
+          <h4 class="card-title">The company needed a catalog, not more templates</h4>
+          <p class="card-desc">Static templates could provide a starting point, but would not solve discovery, ownership, maintenance, ranking, or governance.</p>
+          <p class="card-desc"><strong>The requirement was a living catalog</strong> that understood which resources existed, how they were used, whether they still worked, and who might benefit from them.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-amber"></span>
+          <div class="card-label amber">Finding 04</div>
+          <h4 class="card-title">Resource quality and resource cost were connected</h4>
+          <p class="card-desc">Broken or poorly configured resources were not only confusing — they could continue consuming paid Datadog capacity.</p>
+          <p class="card-desc">Governance needed to consider correctness, usage, ownership, and financial impact together.</p>
+        </div>
+        <div class="card" style="grid-column:1/-1">
+          <span class="card-accent-bar bar-green"></span>
+          <div class="card-label green">Finding 05</div>
+          <h4 class="card-title">Self-service still required safe defaults</h4>
+          <p class="card-desc">Automated creation could reduce setup time, but unrestricted generation could create more duplication and cost. <strong>The service needed to prioritize existing, proven resources before creating new ones.</strong></p>
+        </div>
+      </div>
+
+      <div class="mini-label mt48">Design requirements</div>
+      <div class="cards-grid cols-3">
+        <div class="card star"><div class="card-label violet">Requirement 01</div><h4 class="card-title">Search before creation</h4><p class="card-desc">First determine whether a suitable resource already exists.</p></div>
+        <div class="card"><div class="card-label">Requirement 02</div><h4 class="card-title">Reuse proven components</h4><p class="card-desc">Frequently accessed, successfully running resources should be easy to inspect and import.</p></div>
+        <div class="card"><div class="card-label">Requirement 03</div><h4 class="card-title">Support intent-based requests</h4><p class="card-desc">Let users search in operational language rather than exact Datadog identifiers.</p></div>
+        <div class="card"><div class="card-label">Requirement 04</div><h4 class="card-title">Make ownership visible</h4><p class="card-desc">Entries should identify the responsible team, usage context, tags, and maintenance status.</p></div>
+        <div class="card"><div class="card-label">Requirement 05</div><h4 class="card-title">Detect resource health</h4><p class="card-desc">Identify broken queries, invalid metrics, stale dashboards, dataless widgets, misconfigured alerts.</p></div>
+        <div class="card"><div class="card-label">Requirement 06</div><h4 class="card-title">Expose cost signals</h4><p class="card-desc">Flag expensive custom metrics and configurations before they become persistent cost problems.</p></div>
+        <div class="card" style="grid-column:1/-1;background:linear-gradient(180deg, rgba(240,146,90,0.05), var(--bg2))"><div class="card-label amber">Requirement 07 · the guardrail</div><h4 class="card-title">Automate cautiously</h4><p class="card-desc">Destructive actions should require clear rules, review, or quarantine periods — rather than silently deleting resources.</p></div>
+      </div>
+    </section>
+
+    <!-- 05 IDEATION -->
+    <section class="section" id="ideation">
+      <div class="section-header">
+        <span class="section-label">Ideation</span>
+        <span class="section-divider"></span>
+        <span class="section-num">05</span>
+      </div>
+      <p class="intro-lead">The design direction centered on four connected capabilities.</p>
+
+      <div class="exp-grid mt40">
+        <div class="exp-card">
+          <div class="exp-card-header"><span class="exp-status status-a">Capability</span><span class="exp-idx">01</span></div>
+          <h3 class="exp-title">Build a company-wide observability catalog</h3>
+          <p class="exp-desc">Collect and normalize Datadog resources into a searchable internal catalog.</p>
+        </div>
+        <div class="exp-card">
+          <div class="exp-card-header"><span class="exp-status status-b">Capability</span><span class="exp-idx">02</span></div>
+          <h3 class="exp-title">Rank useful resources</h3>
+          <p class="exp-desc">Present widely used, healthy resources before untested or stale ones.</p>
+        </div>
+        <div class="exp-card">
+          <div class="exp-card-header"><span class="exp-status status-a">Capability</span><span class="exp-idx">03</span></div>
+          <h3 class="exp-title">Generate resources from tags</h3>
+          <p class="exp-desc">Search first; generate a new dashboard or monitor only when no suitable resource exists.</p>
+        </div>
+        <div class="exp-card">
+          <div class="exp-card-header"><span class="exp-status status-c">Capability</span><span class="exp-idx">04</span></div>
+          <h3 class="exp-title">Automate observability governance</h3>
+          <p class="exp-desc">Scheduled processes evaluate the catalog for broken, unused, duplicate, unowned, or expensive resources.</p>
+        </div>
+      </div>
+
+      <div class="split-grid split-2 mt48">
+        <div>
+          <h3 class="subhead">What each catalog entry holds</h3>
+          <div class="aside-block">
+            <div class="pill-row">
+              <span class="pill">RESOURCE NAME</span>
+              <span class="pill">TYPE</span>
+              <span class="pill">DESCRIPTION</span>
+              <span class="pill">OWNER / TEAM</span>
+              <span class="pill">ASSOCIATED SERVICES</span>
+              <span class="pill">METRIC NAMES</span>
+              <span class="pill">TAGS</span>
+              <span class="pill">USAGE FREQUENCY</span>
+              <span class="pill">ACCESS FREQUENCY</span>
+              <span class="pill">LAST DATA POINT</span>
+              <span class="pill">LAST UPDATE</span>
+              <span class="pill">HEALTH STATUS</span>
+              <span class="pill">COST CONCERN</span>
+              <span class="pill">RELATED RESOURCES</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="subhead">How resources get ranked</h3>
+          <div class="aside-block">
+            <ul class="aside-list good">
+              <li>Frequency of access</li>
+              <li>Number of teams using the resource</li>
+              <li>Recent successful data</li>
+              <li>Lack of query errors</li>
+              <li>Active ownership</li>
+              <li>Continued maintenance</li>
+              <li>Successful alert behavior</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-label mt48">Generate resources from tags</div>
+      <div class="code-label">Example request</div>
+      <div class="code"><span class="kk">service</span>:<span class="vv">payments</span>  <span class="kk">environment</span>:<span class="vv">production</span>  <span class="kk">goal</span>:<span class="vv">latency</span></div>
+      <div class="aside-block mt20">
+        <div class="aside-block-title">DogWalker would then</div>
+        <ul class="aside-list">
+          <li>Search the catalog for existing resources</li>
+          <li>Return relevant dashboards, widgets, metrics, and alerts</li>
+          <li>Allow the user to inspect and select components</li>
+          <li>Generate a new dashboard or monitor <em>only when no suitable resource existed</em></li>
+        </ul>
+      </div>
+
+      <div class="mini-label mt48">Automate governance — but carefully</div>
+      <div class="prose" style="max-width:64ch;margin-bottom:20px">
+        <p>The initial concept included <strong>automatically deleting dead resources</strong>. Through a modern governance lens, automatic deletion would be too aggressive for many enterprise environments.</p>
+      </div>
+      <div class="ba top">
+        <div class="box">
+          <div class="lab">Initial concept</div>
+          <p>Detect a dead resource → delete it.</p>
+        </div>
+        <div class="arrow">→</div>
+        <div class="box after">
+          <div class="lab">The safer pattern</div>
+          <ol class="nlist">
+            <li>Flag the resource.</li>
+            <li>Notify its owner.</li>
+            <li>Move it into review or quarantine.</li>
+            <li>Delete only after a defined period or explicit approval.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 PROTOTYPING -->
+    <section class="section" id="prototyping">
+      <div class="section-header">
+        <span class="section-label">Testing &amp; Prototypes</span>
+        <span class="section-divider"></span>
+        <span class="section-num">06</span>
+      </div>
+      <p class="intro-lead">The prototype connected Datadog resource collection, catalog storage, search, generation, and automated maintenance.</p>
+
+      <figure class="figure mt40">
+        <div class="figure-body">
+          <svg viewBox="0 0 700 210" width="100%" role="img" aria-label="DogWalker pipeline">
+            <defs>
+              <marker id="a2" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 z" fill="var(--border2)"/>
+              </marker>
+            </defs>
+            <g font-family="var(--mono)" font-size="9" text-anchor="middle">
+              <rect x="12" y="70" width="98" height="44" rx="6" fill="var(--bg3)" stroke="var(--accent)"/>
+              <text x="61" y="89" fill="var(--accent)">DATADOG API</text><text x="61" y="101" fill="var(--text3)">COLLECT</text>
+
+              <rect x="140" y="70" width="98" height="44" rx="6" fill="var(--bg3)" stroke="var(--accent)"/>
+              <text x="189" y="89" fill="var(--accent)">NORMALIZE</text><text x="189" y="101" fill="var(--text3)">CLEAN · TAG</text>
+
+              <rect x="268" y="70" width="98" height="44" rx="6" fill="rgba(177,140,245,0.14)" stroke="var(--accent)" stroke-width="1.5"/>
+              <text x="317" y="89" fill="var(--accent)">AWS DATABASE</text><text x="317" y="101" fill="var(--text2)">THE "DATA BOOK"</text>
+
+              <rect x="396" y="30" width="98" height="40" rx="6" fill="var(--bg3)" stroke="var(--accent2)"/>
+              <text x="445" y="47" fill="var(--accent2)">REQUEST-BY-TAG</text><text x="445" y="59" fill="var(--text3)">SEARCH · REUSE</text>
+
+              <rect x="396" y="82" width="98" height="40" rx="6" fill="var(--bg3)" stroke="var(--accent)"/>
+              <text x="445" y="99" fill="var(--accent)">BUILD-BY-TAG</text><text x="445" y="111" fill="var(--text3)">ASSEMBLE</text>
+
+              <rect x="396" y="134" width="98" height="40" rx="6" fill="var(--bg3)" stroke="var(--accent3)"/>
+              <text x="445" y="151" fill="var(--accent3)">GOVERNOR</text><text x="445" y="163" fill="var(--text3)">VALIDATE · FLAG</text>
+            </g>
+            <g stroke="var(--border2)" stroke-width="1.4" fill="none" marker-end="url(#a2)">
+              <line x1="110" y1="92" x2="134" y2="92"/>
+              <line x1="238" y1="92" x2="262" y2="92"/>
+              <line x1="366" y1="86" x2="390" y2="54"/>
+              <line x1="366" y1="92" x2="390" y2="100"/>
+              <line x1="366" y1="98" x2="390" y2="150"/>
+            </g>
+            <!-- lambda / ci loop -->
+            <path d="M445 178 C 445 200, 317 200, 317 120" fill="none" stroke="var(--accent3)" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#a2)"/>
+            <text x="330" y="196" fill="var(--text3)" font-family="var(--mono)" font-size="9">AWS LAMBDA · GITLAB CI/CD — REFRESH, VALIDATE, FLAG</text>
+          </svg>
+        </div>
+        <figcaption class="figure-caption"><b>FIG.02</b> Collection → normalization → catalog → three services on top, with automation continuously maintaining the record.</figcaption>
+      </figure>
+
+      <div class="cards-grid mt40">
+        <div class="card">
+          <span class="card-accent-bar bar-violet"></span>
+          <div class="card-label violet">Prototype 01</div>
+          <h4 class="card-title">Resource collection</h4>
+          <p class="card-desc">Using the Datadog Python API, I collected dashboards, widgets, alerts, monitors, metrics, custom metrics, synthetic tests, and related resources — retrieving both configuration and the metadata needed to understand each item.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-violet"></span>
+          <div class="card-label violet">Prototype 02</div>
+          <h4 class="card-title">Cleaning &amp; normalization</h4>
+          <p class="card-desc">Raw Datadog resources varied significantly in structure. I cleaned, grouped, tagged, and normalized the records before storing them in an AWS database — producing a figurative <strong>"data book"</strong> of the company's observability environment.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-green"></span>
+          <div class="card-label green">Prototype 03</div>
+          <h4 class="card-title">Request-by-tag API</h4>
+          <p class="card-desc">An API accepting searches through a CLI. A user searching for application latency monitoring might receive existing latency dashboards, relevant widgets, standard and custom metrics, existing alerts, and resources used by similar services — then choose a proven component instead of building one.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-amber"></span>
+          <div class="card-label amber">Prototype 04</div>
+          <h4 class="card-title">Automated catalog management</h4>
+          <p class="card-desc">AWS Lambda and GitLab CI/CD added new resources, refreshed records, validated metric references, detected broken components, identified dataless dashboards, highlighted stale resources, flagged unusual or expensive usage, and archived per governance rules.</p>
+        </div>
+      </div>
+
+      <div class="mini-label mt48">Build-by-tag — a reuse-first generation model</div>
+      <div class="split-grid split-2">
+        <div class="aside-block">
+          <div class="aside-block-title">The generation process</div>
+          <ol class="nlist">
+            <li>Interpret the user's tags.</li>
+            <li>Search for relevant existing components.</li>
+            <li>Rank components by usage and health.</li>
+            <li>Present reusable options.</li>
+            <li>Assemble selected components.</li>
+            <li>Generate missing pieces <em>only when necessary</em>.</li>
+            <li>Validate the resulting configuration.</li>
+            <li>Deploy or export the resource.</li>
+          </ol>
+        </div>
+        <div>
+          <h3 class="subhead">Optional dashboard generation</h3>
+          <div class="prose" style="margin-bottom:16px">
+            <p>Users could request a complete dashboard through a set of tags.</p>
+          </div>
+          <div class="code-label">Example</div>
+          <div class="code"><span class="kk">service</span>:<span class="vv">checkout</span>
+<span class="kk">environment</span>:<span class="vv">production</span>
+<span class="kk">signals</span>:<span class="vv">latency,error-rate,throughput</span></div>
+          <div class="aside-block mt20">
+            <div class="aside-block-title">DogWalker assembles</div>
+            <div class="pill-row">
+              <span class="pill">REQUEST THROUGHPUT</span>
+              <span class="pill">ERROR RATE</span>
+              <span class="pill">LATENCY PERCENTILES</span>
+              <span class="pill">DEPENDENCY HEALTH</span>
+              <span class="pill">DEPLOYMENT MARKERS</span>
+              <span class="pill">RELATED ALERTS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout green mt40">
+        <div class="k">The key constraint</div>
+        <p class="callout-text">The resulting dashboard could be generated using company-approved components rather than an arbitrary set of widgets.</p>
+      </div>
+    </section>
+
+    <!-- 07 FINAL -->
+    <section class="section" id="final">
+      <div class="section-header">
+        <span class="section-label">Final Design</span>
+        <span class="section-divider"></span>
+        <span class="section-num">07</span>
+      </div>
+      <p class="intro-lead" style="margin-bottom:36px">The final concept turned DogWalker into three connected services.</p>
+
+      <div class="trio">
+        <div class="sig">
+          <div class="art">
+            <svg width="120" height="110" viewBox="0 0 120 110" aria-hidden="true">
+              <rect x="16" y="20" width="88" height="14" rx="3" fill="var(--bg3)" stroke="var(--border2)"/>
+              <rect x="16" y="40" width="88" height="14" rx="3" fill="rgba(177,140,245,0.16)" stroke="var(--accent)"/>
+              <rect x="16" y="60" width="88" height="14" rx="3" fill="var(--bg3)" stroke="var(--border2)"/>
+              <rect x="16" y="80" width="88" height="14" rx="3" fill="var(--bg3)" stroke="var(--border2)"/>
+              <g class="a-srch">
+                <circle cx="82" cy="46" r="9" fill="none" stroke="var(--accent)" stroke-width="2"/>
+                <line x1="89" y1="53" x2="97" y2="61" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+          <h3>Catalog</h3>
+          <div class="was">Does this already exist?</div>
+          <p>A searchable inventory of the company's Datadog resources — which metric to use, which team already monitors this service, whether a resource is still active, and whether a custom metric is unusually expensive.</p>
+        </div>
+
+        <div class="sig">
+          <div class="art">
+            <svg width="120" height="110" viewBox="0 0 120 110" aria-hidden="true">
+              <rect x="10" y="46" width="26" height="18" rx="3" fill="var(--bg3)" stroke="var(--accent)"/>
+              <g class="a-asm">
+                <rect x="52" y="18" width="24" height="20" rx="3" fill="rgba(94,214,168,0.18)" stroke="var(--accent2)"/>
+                <rect x="52" y="44" width="24" height="20" rx="3" fill="rgba(94,214,168,0.18)" stroke="var(--accent2)"/>
+                <rect x="52" y="70" width="24" height="20" rx="3" fill="var(--bg3)" stroke="var(--accent)" stroke-dasharray="3 3"/>
+              </g>
+              <rect x="90" y="38" width="22" height="34" rx="3" fill="rgba(177,140,245,0.14)" stroke="var(--accent)"/>
+              <g stroke="var(--border2)" stroke-width="1.2">
+                <line x1="36" y1="55" x2="50" y2="55"/>
+                <line x1="76" y1="28" x2="88" y2="46"/>
+                <line x1="76" y1="54" x2="88" y2="55"/>
+                <line x1="76" y1="80" x2="88" y2="64"/>
+              </g>
+            </svg>
+          </div>
+          <h3>Builder</h3>
+          <div class="was">Reuse, then generate</div>
+          <p>A request-based system that recommends or generates dashboards, widgets, alerts, and related resources — searched through a command line using tags and operational language.</p>
+        </div>
+
+        <div class="sig">
+          <div class="art">
+            <svg width="120" height="110" viewBox="0 0 120 110" aria-hidden="true">
+              <rect x="18" y="24" width="84" height="62" rx="4" fill="none" stroke="var(--border2)"/>
+              <circle cx="34" cy="40" r="5" fill="var(--accent2)"/>
+              <circle cx="60" cy="40" r="5" fill="var(--accent3)"/>
+              <circle cx="86" cy="40" r="5" fill="var(--accent2)"/>
+              <circle cx="34" cy="68" r="5" fill="var(--accent3)"/>
+              <circle cx="60" cy="68" r="5" fill="var(--accent2)"/>
+              <circle cx="86" cy="68" r="5" fill="var(--accent2)"/>
+              <rect class="a-sweep" x="56" y="20" width="8" height="70" rx="4" fill="rgba(240,146,90,0.28)"/>
+            </svg>
+          </div>
+          <h3>Governor</h3>
+          <div class="was">Monitoring the monitoring</div>
+          <p>An automated system that identifies resources which are broken, stale, dataless, duplicated, unowned, misconfigured, or potentially expensive.</p>
+        </div>
+      </div>
+
+      <div class="mini-label mt48">The resulting workflow</div>
+      <div class="ba top">
+        <div class="box">
+          <div class="lab">Before DogWalker · hours to days</div>
+          <ol class="nlist">
+            <li>Decide what to monitor.</li>
+            <li>Search manually for metrics.</li>
+            <li>Ask another team for help.</li>
+            <li>Review Datadog documentation.</li>
+            <li>Build widgets individually.</li>
+            <li>Configure alerts.</li>
+            <li>Debug the queries.</li>
+            <li>Discover another team already built something similar.</li>
+          </ol>
+        </div>
+        <div class="arrow">→</div>
+        <div class="box after">
+          <div class="lab">With DogWalker · minutes</div>
+          <ol class="nlist">
+            <li>Describe the service and monitoring goal with tags.</li>
+            <li>Review ranked, working resources from the catalog.</li>
+            <li>Reuse existing components, or generate the missing configuration.</li>
+            <li>Validate and deploy.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 REFLECTION -->
+    <section class="section" id="reflection">
+      <div class="section-header">
+        <span class="section-label">Reflection</span>
+        <span class="section-divider"></span>
+        <span class="section-num">08</span>
+      </div>
+      <h2 class="subhead" style="font-size:1.9rem;margin-bottom:24px">Creation <em style="color:var(--accent)">and</em> restraint</h2>
+      <div class="prose" style="max-width:64ch">
+        <p>DogWalker began as a dashboard-generation project, but the research showed that generation alone would not solve the underlying problem. The organization did not simply need a faster way to create <em>more</em> Datadog resources — it needed a way to <strong>understand, reuse, and govern the resources it already had</strong>.</p>
+        <p>The catalog became the most important part of the concept because it reduced duplicated work and made internal observability knowledge visible across teams.</p>
+      </div>
+
+      <div class="pull">
+        <p class="pull-text">Automation can reduce friction while simultaneously making it easier to create unnecessary infrastructure.</p>
+        <div class="pull-cite">The tension in developer tooling</div>
+      </div>
+
+      <div class="callout">
+        <div class="k">What a self-service platform actually needs</div>
+        <p class="callout-text">It should make the recommended action easy — but also reveal when the best action is to reuse, repair, or delete something that already exists.</p>
+      </div>
+
+      <div class="mini-label mt48">What I would change today</div>
+      <div class="cards-grid">
+        <div class="card">
+          <span class="card-accent-bar bar-amber"></span>
+          <div class="card-label amber">Change 01</div>
+          <h4 class="card-title">Replace automatic deletion with lifecycle governance</h4>
+          <p class="card-desc">Resources would be flagged, assigned to owners, quarantined, and removed only after review or a defined expiration period.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-amber"></span>
+          <div class="card-label amber">Change 02</div>
+          <h4 class="card-title">Add stronger cost attribution</h4>
+          <p class="card-desc">Each catalog entry would show estimated cost, cardinality risk, usage trends, and the team responsible for the resource.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-green"></span>
+          <div class="card-label green">Change 03</div>
+          <h4 class="card-title">Measure reuse directly</h4>
+          <p class="card-desc">Track time to create a dashboard, share of requests resolved through reuse, duplicated resources prevented, stale resources retired, reduction in platform support requests, change in custom-metric spend, search success rate, and generated-resource failure rate.</p>
+        </div>
+        <div class="card">
+          <span class="card-accent-bar bar-violet"></span>
+          <div class="card-label violet">Change 04</div>
+          <h4 class="card-title">Add policy-as-code controls</h4>
+          <p class="card-desc">Generated dashboards and alerts would be checked against company standards before deployment — covering required ownership tags, approved metric namespaces, alert severity conventions, cost limits, naming standards, runbook links, and environment restrictions.</p>
+        </div>
+      </div>
+
+      <div class="mini-label mt48">Relationship to infrastructure as code</div>
+      <div class="split-grid split-2">
+        <div class="aside-block">
+          <div class="aside-block-title">Principles shared with Terraform</div>
+          <ul class="aside-list good">
+            <li>Resources represented through structured configuration</li>
+            <li>Creation automated and repeatable</li>
+            <li>Shared components reused</li>
+            <li>Validation before deployment</li>
+            <li>CI/CD maintaining the resulting system</li>
+            <li>Governance expressed as rules, not informal review</li>
+          </ul>
+        </div>
+        <div>
+          <div class="prose">
+            <p>DogWalker was not a replacement for Terraform, and the original implementation was specific to Datadog. Its underlying direction, however, anticipated a broader shift toward treating <strong>observability resources as governed, reusable infrastructure</strong> rather than manually configured dashboard artifacts.</p>
+          </div>
+          <div class="callout green">
+            <div class="k">The broader lesson</div>
+            <p class="callout-text" style="font-size:1.1rem">Observability is itself a platform. Once monitoring resources exist at organizational scale, they require discovery, ownership, lifecycle management, standards, and cost controls — just like any other production system.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-nav mt48">
+        <div class="closing">The company didn't need more dashboards. It needed to <em>find the ones it had</em>.</div>
+        <div class="foot-credit">
+          <b>DOGWALKER</b> — OBSERVABILITY SETUP AS A SEARCHABLE, REUSABLE SERVICE<br>
+          ENTERPRISE OBSERVABILITY AUTOMATION · FALL 2019 · CONFIDENTIAL CLIENT<br>
+          PRODUCT RESEARCH · DEVELOPER EXPERIENCE · AUTOMATION · PLATFORM ENGINEERING · OBSERVABILITY GOVERNANCE<br>
+          CHRISTOPHER JONES
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  var labels = {overview:'Overview',tldr:'TL;DR',problem:'The Problem',research:'Research',synthesis:'Synthesis',ideation:'Ideation',prototyping:'Testing & Prototypes',final:'Final Design',reflection:'Reflection'};
+  var links = {};
+  document.querySelectorAll('.nav-link').forEach(function(a){ links[a.getAttribute('data-target')] = a; });
+  var mobile = document.getElementById('mobilePhase');
+  var current = null;
+
+  function setActive(id){
+    if(id === current) return; current = id;
+    Object.keys(links).forEach(function(k){ links[k].classList.toggle('active', k === id); });
+    if(mobile) mobile.textContent = labels[id] || '';
+  }
+
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ setActive(e.target.id); } });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    Object.keys(labels).forEach(function(id){
+      var el = document.getElementById(id); if(el) obs.observe(el);
+    });
+  }
+  setActive('overview');
+})();
+</script>
+</body>
+</html>
